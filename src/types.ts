@@ -1,0 +1,155 @@
+export type BasePathType = "USER";
+
+export interface apiResponseType<T> {
+    success: boolean;
+    message: string;
+    statusCode: number;
+    data: T;
+  }
+
+  export interface IParams {
+    [field: string]: unknown;
+  }
+
+// API Request/Response Types
+export interface LoginRequest extends IParams {
+  user_name: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  role: string;
+  region_id: number | null;
+}
+
+export interface User {
+  user_id: number;
+  user_name: string;
+  role: string;
+  region_id: number | null;
+  is_active: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Region {
+  region_id: number;
+  name: string;
+  code: string;
+  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
+  parent_id: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ToliMember {
+  name: string;
+  mobile: string;
+}
+
+export interface CreateToliRequest extends IParams {
+  name: string;
+  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
+  region_id: number;
+  toli_user_id?: number | null;
+  pramukh: ToliMember;
+  members: ToliMember[];
+}
+
+export interface CreateToliResponse {
+  toli_id: number;
+  status: string;
+}
+
+export interface CreatePersonRequest extends IParams {
+  name: string;
+  phone_number?: string;
+  email?: string;
+  sex: 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED';
+  address_text?: string;
+  region_id?: number;
+  visheshta?: string;
+  answers?: Record<string, string>;
+}
+
+export interface CreatePersonResponse {
+  person_id: number;
+  status: string;
+}
+
+export interface CreateVisitRequest extends IParams {
+  person_name: string;
+  person_phone?: string;
+  person_email?: string;
+  person_sex: 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED';
+  toli_id?: number;
+  region_id?: number;
+  visited_at?: string;
+  total_members: number;
+  male_count: number;
+  female_count: number;
+  kids_count: number;
+  nishulk_sticker: number;
+  nishulk_folder: number;
+  nishulk_books: number;
+  shashulk_pushtak: number;
+  address_text?: string;
+  notes?: string;
+}
+
+export interface CreateVisitResponse {
+  visit_id: number;
+  status: string;
+}
+
+// Additional response types for GET endpoints
+export interface Toli {
+  toli_id: number;
+  name: string;
+  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
+  region_id: number;
+  toli_user_id: number | null;
+  pramukh_json: ToliMember;
+  members_json: ToliMember[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Person {
+  person_id: number;
+  name: string;
+  phone_number: string | null;
+  email: string | null;
+  sex: 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED';
+  address_text: string | null;
+  region_id: number | null;
+  created_by: number;
+  visheshta: string | null;
+  answers_json: Record<string, string> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Visit {
+  visit_id: number;
+  person_name: string;
+  person_phone: string | null;
+  person_email: string | null;
+  person_sex: 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED';
+  toli_id: number | null;
+  region_id: number | null;
+  visited_at: string;
+  created_by: number;
+  total_members: number;
+  male_count: number;
+  female_count: number;
+  kids_count: number;
+  nishulk_sticker: number;
+  nishulk_folder: number;
+  nishulk_books: number;
+  shashulk_pushtak: number;
+  address_text: string | null;
+  notes: string | null;
+  created_at: string;
+}

@@ -1,0 +1,30 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import LoginPage from '@/pages/LoginPage'
+import HomePage from '@/pages/HomePage'
+import ParivarPage from '@/pages/ParivarPage'
+import UtsukPage from '@/pages/UtsukPage'
+import ToliPage from '@/pages/ToliPage'
+// import AddToHomePrompt from '@/components/AddToHomePrompt'
+import { Toaster } from '@/components/ui/toaster'
+import { AuthProvider, PrivateRoute } from '@/contexts/AuthContext'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+          <Route path="/parivar" element={<PrivateRoute><ParivarPage /></PrivateRoute>} />
+          <Route path="/utsuk" element={<PrivateRoute><UtsukPage /></PrivateRoute>} />
+          <Route path="/toli" element={<PrivateRoute><ToliPage /></PrivateRoute>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        {/* <AddToHomePrompt /> */}
+        <Toaster />
+      </AuthProvider>
+    </BrowserRouter>
+  )
+}
+
+export default App
