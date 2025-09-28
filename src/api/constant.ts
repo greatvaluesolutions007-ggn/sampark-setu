@@ -5,6 +5,9 @@ const API_PATHS = {
   
   // Regions
   GET_REGIONS: '/v1/regions',
+  FETCH_REGIONS: '/fetch-regions',
+
+  GET_REGION_HIERARCHY: '/fetch-regions',
   
   // Toli Management
   CREATE_TOLI: '/toli',

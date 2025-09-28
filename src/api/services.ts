@@ -16,6 +16,8 @@ import type {
   Person,
   Visit,
   apiResponseType,
+  RegionDetails,
+  RegionResponse,
 } from '@/types';
 
 // Authentication Services
@@ -39,22 +41,44 @@ export const regionService = {
     // Add parent ID parameter based on type
     switch (type) {
       case 'VIBHAG':
-        if (parentId) params.prant_id = parentId.toString();
+        if (parentId) params.parent_id = parentId.toString();
         break;
       case 'JILA':
-        if (parentId) params.vibhag_id = parentId.toString();
+        if (parentId) params.parent_id = parentId.toString();
         break;
       case 'NAGAR':
-        if (parentId) params.jila_id = parentId.toString();
+        if (parentId) params.parent_id = parentId.toString();
         break;
       case 'KHAND':
-        if (parentId) params.nagar_id = parentId.toString();
+        if (parentId) params.parent_id = parentId.toString();
         break;
     }
     
     const response = await axiosInstance.get<apiResponseType<Region[]>>(API_PATHS.GET_REGIONS, { params });
     return response.data;
   },
+
+  getRegionById: async (regionId: number): Promise<apiResponseType<Region>> => {
+    const response = await Get<Region>("USER", `${API_PATHS.GET_REGIONS}/${regionId}`);
+    return response;
+  },
+
+  // New function to get region hierarchy
+  getRegionHierarchy: async (regionId: number): Promise<apiResponseType<RegionDetails>> => {
+    console.log(`[regionService] Requesting region hierarchy for ID: ${regionId}`);
+    const response = await axiosInstance.get<apiResponseType<RegionDetails>>(`/regions/hierarchy/${regionId}`);
+    return response.data;
+  },
+
+  // Fetch regions with region_id and ignore_validation parameters
+  fetchRegions: async (regionId: number, ignoreValidation: boolean = false): Promise<RegionResponse> => {
+    const params = {
+      region_id: regionId.toString(),
+      ignore_validation: ignoreValidation ? 'yes' : 'no'
+    };
+    const response = await axiosInstance.get<RegionResponse>(API_PATHS.FETCH_REGIONS, { params });
+    return response.data;
+  }
 };
 
 // Toli Services

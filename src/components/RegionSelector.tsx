@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { regionService } from '@/api/services'
-import type { Region } from '@/types'
+import type { Region, RegionData } from '@/types'
 
 interface RegionSelectorProps {
   onRegionChange: (prant: string, vibhag: string, jila: string, nagar: string) => void
@@ -12,24 +12,23 @@ interface RegionSelectorProps {
     jila?: string
     nagar?: string
   }
+  regionDetails?: RegionData,
   disabled?: boolean
 }
 
-export default function RegionSelector({ onRegionChange, initialValues, disabled = false }: RegionSelectorProps) {
+export default function RegionSelector({ onRegionChange, initialValues, disabled = false, regionDetails }: RegionSelectorProps) {
   const [prant, setPrant] = useState(initialValues?.prant || '')
   const [vibhag, setVibhag] = useState(initialValues?.vibhag || '')
   const [jila, setJila] = useState(initialValues?.jila || '')
   const [nagar, setNagar] = useState(initialValues?.nagar || '')
 
+  // For prant, load from API; for others, use passed regionDetails
   const [prantOptions, setPrantOptions] = useState<Region[]>([])
-  const [vibhagOptions, setVibhagOptions] = useState<Region[]>([])
-  const [jilaOptions, setJilaOptions] = useState<Region[]>([])
-  const [nagarOptions, setNagarOptions] = useState<Region[]>([])
-
   const [isLoadingPrant, setIsLoadingPrant] = useState(false)
-  const [isLoadingVibhag, setIsLoadingVibhag] = useState(false)
-  const [isLoadingJila, setIsLoadingJila] = useState(false)
-  const [isLoadingNagar, setIsLoadingNagar] = useState(false)
+  
+  const vibhagOptions = regionDetails?.child_regions?.vibhag || []
+  const jilaOptions = regionDetails?.child_regions?.jila || []
+  const nagarOptions = regionDetails?.child_regions?.nagar || []
 
   // Load PRANT regions on component mount
   useEffect(() => {
@@ -42,6 +41,10 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
       const response = await regionService.getRegions('PRANT')
       if (response.success) {
         setPrantOptions(response.data)
+        // Set first value as default if no initial value and no current selection
+        if (!initialValues?.prant && !prant && response.data.length > 0) {
+          setPrant(response.data[0].region_id.toString())
+        }
       }
     } catch (err) {
       console.error('Error loading prant regions:', err)
@@ -50,89 +53,33 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
     }
   }
 
-  // Load VIBHAG regions when prant is selected
+  // Update state when initialValues change
   useEffect(() => {
-    if (prant) {
-      loadVibhagRegions(parseInt(prant))
-    } else {
-      setVibhagOptions([])
-      setJilaOptions([])
-      setNagarOptions([])
-      setVibhag('')
-      setJila('')
-      setNagar('')
+    if (initialValues) {
+      setPrant(initialValues.prant || '')
+      setVibhag(initialValues.vibhag || '')
+      setJila(initialValues.jila || '')
+      setNagar(initialValues.nagar || '')
     }
-  }, [prant])
+  }, [initialValues])
 
-  const loadVibhagRegions = async (prantId: number) => {
-    try {
-      setIsLoadingVibhag(true)
-      const response = await regionService.getRegions('VIBHAG', prantId)
-      if (response.success) {
-        setVibhagOptions(response.data)
-        setJilaOptions([])
-        setNagarOptions([])
-        setJila('')
-        setNagar('')
-      }
-    } catch (err) {
-      console.error('Error loading vibhag regions:', err)
-    } finally {
-      setIsLoadingVibhag(false)
-    }
-  }
-
-  // Load JILA regions when vibhag is selected
+  // Set default values for other dropdowns when regionDetails change
   useEffect(() => {
-    if (vibhag) {
-      loadJilaRegions(parseInt(vibhag))
-    } else {
-      setJilaOptions([])
-      setNagarOptions([])
-      setJila('')
-      setNagar('')
-    }
-  }, [vibhag])
-
-  const loadJilaRegions = async (vibhagId: number) => {
-    try {
-      setIsLoadingJila(true)
-      const response = await regionService.getRegions('JILA', vibhagId)
-      if (response.success) {
-        setJilaOptions(response.data)
-        setNagarOptions([])
-        setNagar('')
+    if (regionDetails && !initialValues) {
+      // Set first vibhag as default if no initial value and no current selection
+      if (!vibhag && vibhagOptions.length > 0) {
+        setVibhag(vibhagOptions[0].id.toString())
       }
-    } catch (err) {
-      console.error('Error loading jila regions:', err)
-    } finally {
-      setIsLoadingJila(false)
-    }
-  }
-
-  // Load NAGAR regions when jila is selected
-  useEffect(() => {
-    if (jila) {
-      loadNagarRegions(parseInt(jila))
-    } else {
-      setNagarOptions([])
-      setNagar('')
-    }
-  }, [jila])
-
-  const loadNagarRegions = async (jilaId: number) => {
-    try {
-      setIsLoadingNagar(true)
-      const response = await regionService.getRegions('NAGAR', jilaId)
-      if (response.success) {
-        setNagarOptions(response.data)
+      // Set first jila as default if no initial value and no current selection
+      if (!jila && jilaOptions.length > 0) {
+        setJila(jilaOptions[0].id.toString())
       }
-    } catch (err) {
-      console.error('Error loading nagar regions:', err)
-    } finally {
-      setIsLoadingNagar(false)
+      // Set first nagar as default if no initial value and no current selection
+      if (!nagar && nagarOptions.length > 0) {
+        setNagar(nagarOptions[0].id.toString())
+      }
     }
-  }
+  }, [regionDetails, vibhagOptions, jilaOptions, nagarOptions])
 
   // Notify parent component when any region changes
   useEffect(() => {
@@ -162,7 +109,7 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         <Select 
           value={prant} 
           onValueChange={handlePrantChange}
-          disabled={disabled || isLoadingPrant}
+          disabled={disabled || isLoadingPrant || prantOptions.length === 0}
         >
           <SelectTrigger>
             <SelectValue placeholder={isLoadingPrant ? "लोड हो रहा है..." : "प्रांत चुनें"} />
@@ -182,14 +129,14 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         <Select 
           value={vibhag} 
           onValueChange={handleVibhagChange}
-          disabled={!prant || disabled || isLoadingVibhag}
+          disabled={disabled || vibhagOptions.length === 0}
         >
           <SelectTrigger>
-            <SelectValue placeholder={isLoadingVibhag ? "लोड हो रहा है..." : "विभाग चुनें"} />
+            <SelectValue placeholder="विभाग चुनें" />
           </SelectTrigger>
           <SelectContent>
             {vibhagOptions.map((v) => (
-              <SelectItem key={v.region_id} value={v.region_id.toString()}>
+              <SelectItem key={v.id} value={v.id.toString()}>
                 {v.name}
               </SelectItem>
             ))}
@@ -202,14 +149,14 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         <Select 
           value={jila} 
           onValueChange={handleJilaChange}
-          disabled={!vibhag || disabled || isLoadingJila}
+          disabled={disabled || jilaOptions.length === 0}
         >
           <SelectTrigger>
-            <SelectValue placeholder={isLoadingJila ? "लोड हो रहा है..." : "जिला चुनें"} />
+            <SelectValue placeholder="जिला चुनें" />
           </SelectTrigger>
           <SelectContent>
             {jilaOptions.map((j) => (
-              <SelectItem key={j.region_id} value={j.region_id.toString()}>
+              <SelectItem key={j.id} value={j.id.toString()}>
                 {j.name}
               </SelectItem>
             ))}
@@ -222,14 +169,14 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         <Select 
           value={nagar} 
           onValueChange={handleNagarChange}
-          disabled={!jila || disabled || isLoadingNagar}
+          disabled={disabled || nagarOptions.length === 0}
         >
           <SelectTrigger>
-            <SelectValue placeholder={isLoadingNagar ? "लोड हो रहा है..." : "नगर/खंड चुनें"} />
+            <SelectValue placeholder="नगर/खंड चुनें" />
           </SelectTrigger>
           <SelectContent>
             {nagarOptions.map((n) => (
-              <SelectItem key={n.region_id} value={n.region_id.toString()}>
+              <SelectItem key={n.id} value={n.id.toString()}>
                 {n.name}
               </SelectItem>
             ))}

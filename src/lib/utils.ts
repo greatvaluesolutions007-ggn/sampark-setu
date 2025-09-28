@@ -7,9 +7,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export const getBasePath = (type: BasePathType): string | undefined => {
-  switch (type) {
-    case "USER":
-      return import.meta.env.VITE_APP_BASE_PATH_USER;
+export const getBasePath = (base: BasePathType): string => {
+  switch (base) {
+    case 'USER':
+      return 'http://localhost:3000/api';
+    default:
+      return 'http://localhost:5173'; // This might be the issue
   }
 };

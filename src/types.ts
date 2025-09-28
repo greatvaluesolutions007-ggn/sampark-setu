@@ -31,7 +31,48 @@ export interface User {
   is_active: number;
   created_at: string;
   updated_at: string;
+  region_details?:RegionDetails | null;
 }
+
+
+export interface RegionResponse {
+  success: boolean;
+  data: RegionData;
+}
+
+export interface RegionData {
+  region_name: string;
+  region_type: "prant" | "vibhag" | "jila" | "nagar" | "khand"; // you can add more if needed
+  child_region_names: string[];
+  child_regions: {
+    vibhag?: RegionType[];
+    jila?: RegionType[];
+    nagar?: RegionType[];
+    khand?: RegionType[];
+  };
+}
+
+
+
+
+
+
+
+export interface RegionDetails {
+  prant: Region | null;
+  vibhag: Region | null;
+  jila: Region | null;
+  nagar: Region | null;
+}
+
+
+export interface RegionType {
+  id: number;
+  name: string;
+  code: string;
+  
+}
+
 
 export interface Region {
   region_id: number;

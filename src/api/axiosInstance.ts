@@ -3,7 +3,7 @@ import { getBasePath } from "@/lib/utils";
 import type { apiResponseType, BasePathType, IParams } from "@/types";
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 // Set base URL from environment variable
-const baseURL = import.meta.env.VITE_APP_BASE_PATH_USER || "http://localhost:3000/api";
+const baseURL =  "http://localhost:3000/api";
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
