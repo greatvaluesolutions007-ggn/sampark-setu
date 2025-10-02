@@ -79,9 +79,9 @@ export interface Region {
   name: string;
   code: string;
   type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
-  parent_id: number | null;
-  created_at: string;
-  updated_at: string;
+  parent_id?: number | null;
+  created_at?: string | null;
+  updated_at?: string| null;
 }
 
 export interface ToliMember {

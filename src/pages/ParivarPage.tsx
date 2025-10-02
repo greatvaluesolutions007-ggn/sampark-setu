@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -7,7 +7,7 @@ import { ArrowLeft, Plus, Minus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import RegionSelector from '@/components/RegionSelector'
-import { visitService } from '@/api/services'
+import { authService, visitService } from '@/api/services'
 import type { CreateVisitRequest } from '@/types'
 
 export default function ParivarPage() {
@@ -16,6 +16,26 @@ export default function ParivarPage() {
   
   // Region states
   const [nagar, setNagar] = useState<string>('')
+  const [regionId, setRegionId] = useState<number | null>(null) 
+
+
+
+  useEffect(() => {
+   getUserRegion()
+  }, [])
+
+
+
+  const getUserRegion = async () => {
+    try {
+      const userRegion = await authService.getCurrentUser()
+      if (userRegion.success && userRegion.data) {
+        setRegionId(userRegion.data.region_id)     
+      }
+    } catch (error) {
+      console.error('Error fetching user region:', error)
+    }
+      }
   
   // Form states
   const [samparkit, setSamparkit] = useState('')
@@ -73,7 +93,7 @@ export default function ParivarPage() {
       const visitData: CreateVisitRequest = {
         person_name: samparkit,
         person_sex: 'UNSPECIFIED',
-        region_id: nagar ? parseInt(nagar) : undefined,
+        region_id: regionId? regionId : 0,
         total_members: kul,
         male_count: purush,
         female_count: mahila,

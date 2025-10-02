@@ -71,7 +71,7 @@ export const regionService = {
   },
 
   // Fetch regions with region_id and ignore_validation parameters
-  fetchRegions: async (regionId: number, ignoreValidation: boolean = false): Promise<RegionResponse> => {
+  fetchRegions: async (regionId: number, ignoreValidation: boolean = true): Promise<RegionResponse> => {
     const params = {
       region_id: regionId.toString(),
       ignore_validation: ignoreValidation ? 'yes' : 'no'
