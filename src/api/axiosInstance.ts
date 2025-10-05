@@ -66,7 +66,8 @@ export const saveAuthTokenToAxios = () => {
 const extractor = <T>(response: AxiosResponse<apiResponseType<T>>) => {
   if (response?.status == undefined) throw new Error(response.statusText);
   const { status } = response;
-  if (status !== 200) throw new Error(response.statusText);
+  // Accept both 200 and 201 as success status codes
+  if (status !== 200 && status !== 201) throw new Error(response.statusText);
   return { ...response.data };
 };
 

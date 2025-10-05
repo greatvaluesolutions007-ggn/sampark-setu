@@ -10,6 +10,22 @@ import { authService } from '@/api'
 import { ArrowLeft } from 'lucide-react'
 import type { CreateUserRequest } from '@/types'
 
+
+ const getRegionIdFromType = (type: string): number => {
+        switch (type.toUpperCase()) {
+          case 'PRANT':
+            return 1
+          case 'VIBHAG':
+            return 2
+          case 'JILA':
+            return 3
+          case 'NAGAR':
+            return 4
+          default:
+            return 0
+        }
+      }
+
 export default function CreatePage() {
   const navigate = useNavigate()
   const { toast } = useToast()
@@ -23,9 +39,10 @@ export default function CreatePage() {
   const [error, setError] = useState('')
   const [currentUserRole, setCurrentUserRole] = useState<'ADMIN' | 'PRANT_KARYAKARTA' | 'VIBHAG_KARYAKARTA' | 'JILA_KARYAKARTA' | 'NAGAR_KARYAKARTA'>()
 
-  // Fetch current user's role on component mount
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
+    // Fetch current user's role on component mount
+    useEffect(() => {
+      console.log('Fetching current user...');
+      const fetchCurrentUser = async () => {
       try {
         const response = await authService.getCurrentUser()
         if (response.success && response.data) {
@@ -45,6 +62,7 @@ export default function CreatePage() {
     setRegionType(selectedRegionType)
   }
 
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
@@ -58,20 +76,7 @@ export default function CreatePage() {
       setError('')
 
       // Map regionType to proper role and region ID
-      const getRegionIdFromType = (type: string): number => {
-        switch (type.toUpperCase()) {
-          case 'PRANT':
-            return 1
-          case 'VIBHAG':
-            return 2
-          case 'JILA':
-            return 3
-          case 'NAGAR':
-            return 4
-          default:
-            return 0
-        }
-      }
+     
 
       // Get role directly from region type
       const role = `${regionType.toUpperCase()}_KARYAKARTA` as 'PRANT_KARYAKARTA' | 'VIBHAG_KARYAKARTA' | 'JILA_KARYAKARTA' | 'NAGAR_KARYAKARTA'
@@ -83,28 +88,43 @@ export default function CreatePage() {
         role: role
        }
 
-      const response = await authService.createUser(requestBody)
-
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to create user')
+      console.log('Making API call...')
+      let response;
+      try {
+        response = await authService.createUser(requestBody)
+        console.log('API response:', response)
+      } catch (apiError) {
+        console.error('API call error:', apiError)
+        throw apiError
       }
-
       
-      // Reset form on success
+      console.log('API call successful, resetting form...')
+      // Reset form
       setEmail('')
       setPassword('')
       setRegionName('')
       setRegionType('')
 
-       toast({
-        title: "उपयोगकर्ता सफलतापूर्वक बनाया गया",
-        description: `उपयोगकर्ता सफलतापूर्वक बनाया गया ${regionName} के लिए`,
-      })
+      console.log('Form reset complete, showing toast...')
+      // Show success toast and navigate
+      try {
+        console.log('Attempting to show toast...')
+        toast({
+          title: "उपयोगकर्ता सफलतापूर्वक बनाया गया",
+          description: `उपयोगकर्ता सफलतापूर्वक बनाया गया ${regionName} के लिए`,
+          variant: "default"
+        })
+        console.log('Toast call completed')
+      } catch (toastError) {
+        console.error('Error showing toast:', toastError)
+      }
 
-      // Navigate to home page after a short delay
+      console.log('Toast shown, setting up navigation...')
+      // Navigate to home page after a delay
       setTimeout(() => {
+        console.log('Navigating...')
         navigate('/')
-      }, 2000)
+      }, 1500)
 
 
     } catch (err: unknown) {
