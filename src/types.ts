@@ -23,6 +23,21 @@ export interface LoginResponse {
   region_id: number | null;
 }
 
+export interface CreateUserRequest extends IParams {
+  user_name: string;
+  password: string;
+  role: 'ADMIN' | 'PRANT_KARYAKARTA' | 'VIBHAG_KARYAKARTA' | 'JILA_KARYAKARTA' | 'NAGAR_KARYAKARTA';
+  region_id: number | null;
+}
+
+export interface CreateUserResponse {
+  user_id: number;
+  user_name: string;
+  role: string;
+  region_id: number | null;
+  is_active: number;
+}
+
 export interface User {
   user_id: number;
   user_name: string;

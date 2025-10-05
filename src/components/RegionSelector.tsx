@@ -16,22 +16,36 @@ interface RegionSelectorProps {
   disabled?: boolean
 }
 
-// Fetch child regions helper
+// Cache for child regions to avoid redundant API calls
+const regionCache = new Map<number, { vibhag: RegionType[], jila: RegionType[], nagar: RegionType[] }>()
+
+// Fetch child regions helper with caching
 const fetchChildRegions = async (regionId: number) => {
+  // Check cache first
+  if (regionCache.has(regionId)) {
+    return regionCache.get(regionId)!
+  }
+
   try {
     const resp = await regionService.fetchRegions(regionId)
-    return {
+    const result = {
       vibhag: resp?.data?.child_regions?.vibhag ?? [],
       jila: resp?.data?.child_regions?.jila ?? [],
       nagar: resp?.data?.child_regions?.nagar ?? []
     }
+    
+    // Cache the result
+    regionCache.set(regionId, result)
+    return result
   } catch (e) {
     console.error('Failed to fetch child regions', e)
-    return { vibhag: [], jila: [], nagar: [] }
+    const emptyResult = { vibhag: [], jila: [], nagar: [] }
+    regionCache.set(regionId, emptyResult)
+    return emptyResult
   }
 }
 
-export default function RegionSelector({ onRegionChange, initialValues, disabled = false }: RegionSelectorProps) {
+export default function RegionSelector({ onRegionChange, disabled = false }: RegionSelectorProps) {
   const [prant, setPrant] = useState('')
   const [vibhag, setVibhag] = useState('')
   const [jila, setJila] = useState('')
@@ -52,11 +66,20 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
   const [userRegionId, setUserRegionId] = useState<number | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
 
+  // Memoized user data to prevent refetching
+  const [userData, setUserData] = useState<{
+    regionDetails: RegionDetails | null
+    regionId: number | null
+  } | null>(null)
 
 
-  // Initialize - Load user data and setup regions
+
+  // Initialize - Load user data and setup regions (only once)
   useEffect(() => {
     const init = async () => {
+      // Skip if already initialized or user data is available
+      if (isInitialized || userData) return
+
       try {
         setIsLoading(true)
         const response = await authService.getCurrentUser()
@@ -67,6 +90,10 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
 
         const rd: RegionDetails | null | undefined = response.data.region_details
         const userId = response.data.region_id ?? null
+        
+        // Store user data to prevent refetching
+        setUserData({ regionDetails: rd || null, regionId: userId })
+        
         // Fetch options for non-assigned levels
         if (!userId) return
 
@@ -91,14 +118,12 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         setJilaAssigned(assignedJila)
         setNagarAssigned(assignedNagar)
         setUserRegionId(userId)
-        console.log(assignedJila, assignedNagar, assignedVibhag, assignedPrant, userId)
+        
         // Set values for assigned levels
         if (assignedPrant) setPrant(assignedPrant.region_id.toString())
         if (assignedVibhag) setVibhag(assignedVibhag.region_id.toString())
         if (assignedJila) setJila(assignedJila.region_id.toString())
         if (assignedNagar) setNagar(assignedNagar.region_id.toString())
-
-
 
         const childRegions = await fetchChildRegions(userId)
 
@@ -143,19 +168,18 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
       }
     }
     init()
-  }, [])
+  }, [isInitialized, userData])
 
 
-  // Notify parent when regions change
-  // useEffect(() => {
-  //   if (isInitialized) {
-  //     onRegionChange(prant, vibhag, jila, nagar)
-  //   }
-  // }, [prant, vibhag, jila, nagar, isInitialized, onRegionChange])
+  // Notify parent when regions change (memoized to prevent excessive calls)
+  useEffect(() => {
+    if (isInitialized) {
+      onRegionChange(prant, vibhag, jila, nagar)
+    }
+  }, [prant, vibhag, jila, nagar, isInitialized, onRegionChange])
 
-  // Handlers
-  const handleVibhagChange = async (value: string) => {
-    onRegionChange(prant, value, jila, nagar)
+  // Memoized handlers to prevent unnecessary re-renders and API calls
+  const handleVibhagChange = useCallback(async (value: string) => {
     setVibhag(value)
     setJila('')
     setNagar('')
@@ -172,10 +196,9 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         setNagar(childRegions.nagar[0].id.toString())
       }
     }
-  }
+  }, [userRegionId])
 
-  const handleJilaChange = async (value: string) => {
-    onRegionChange(prant, vibhag, value, nagar)
+  const handleJilaChange = useCallback(async (value: string) => {
     setJila(value)
     setNagar('')
 
@@ -187,12 +210,11 @@ export default function RegionSelector({ onRegionChange, initialValues, disabled
         setNagar(childRegions.nagar[0].id.toString())
       }
     }
-  }
+  }, [userRegionId])
 
-  const handleNagarChange = (value: string) => {
-    onRegionChange(prant, vibhag, jila, value)
+  const handleNagarChange = useCallback((value: string) => {
     setNagar(value)
-  }
+  }, [])
 
   return (
     <div className="grid grid-cols-2 gap-4">

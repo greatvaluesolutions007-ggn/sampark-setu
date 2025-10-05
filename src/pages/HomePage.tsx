@@ -92,6 +92,13 @@ export default function HomePage() {
                 onClick={() => navigate('/toli')}
                 color="bg-green-100 text-green-600"
               />
+              <ActionCard
+                icon={<Layers className="h-6 w-6" />}
+                title="Create User"
+                subtitle="create new user"
+                onClick={() => navigate('/create')}
+                color="bg-green-100 text-green-600"
+              />
             </div>
 
             {/* Statistics Cards */}

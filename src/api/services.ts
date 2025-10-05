@@ -4,6 +4,8 @@ import API_PATHS from './constant';
 import type {
   LoginRequest,
   LoginResponse,
+  CreateUserRequest,
+  CreateUserResponse,
   User,
   Region,
   CreateToliRequest,
@@ -29,6 +31,11 @@ export const authService = {
 
   getCurrentUser: async (): Promise<apiResponseType<User>> => {
     const response = await Get<User>("USER", API_PATHS.GET_CURRENT_USER);
+    return response;
+  },
+
+  createUser: async (userData: CreateUserRequest): Promise<apiResponseType<CreateUserResponse>> => {
+    const response = await Post<CreateUserResponse>("USER", API_PATHS.CREATE_USER, userData);
     return response;
   },
 };

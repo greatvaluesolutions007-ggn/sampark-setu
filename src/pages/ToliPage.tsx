@@ -21,6 +21,7 @@ export default function ToliPage() {
   const [nagar, setNagar] = useState<string>('')
   const [regionResponse, setRegionResponse] =  useState<RegionResponse|null>(null);
   const [regionId, setRegionId] = useState<number | null>(null);
+  const [toliUserId, setToliUserId] = useState<number | null>(null); // To link toli to a user if needed
   
   // Form states
   const [name, setName] = useState('')
@@ -102,6 +103,8 @@ export default function ToliPage() {
          const response = await regionService.fetchRegions(userResponse.data.region_id, true);
       if(response && response.success){
 
+        setToliUserId(userResponse.data.user_id);
+
         setRegionResponse(response);
         
         // Set default regionId - use the first available region from the hierarchy
@@ -149,12 +152,12 @@ export default function ToliPage() {
     try {
       setIsLoading(true)
       setError('')
-
       const toliData: CreateToliRequest = {
         name: name,
         type: 'NAGAR', // Default to NAGAR type
         region_id: regionId || (nagar ? parseInt(nagar) : parseInt(jila) || parseInt(vibhag) || parseInt(prant)),
         pramukh: pramukh,
+        toli_user_id: toliUserId,
         members: members.filter(m => m.name.trim() !== '' || m.mobile.trim() !== '')
       }
 

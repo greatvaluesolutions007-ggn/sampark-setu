@@ -2,6 +2,7 @@ const API_PATHS = {
   // Authentication
   LOGIN: '/login',
   GET_CURRENT_USER: '/users/me',
+  CREATE_USER: '/users',
   
   // Regions
   GET_REGIONS: '/v1/regions',
