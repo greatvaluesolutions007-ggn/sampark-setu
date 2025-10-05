@@ -98,18 +98,8 @@ export default function RegionSelector({ onRegionChange, disabled = false }: Reg
         if (!userId) return
 
         // Set assigned regions
-        const assignedPrant = rd?.prant ?? {
-          "region_id": 2,
-          "name": "गुरुग्राम",
-          "code": "GGM",
-          "type": "JILA"
-        }
-        const assignedVibhag = rd?.vibhag ?? {
-          "region_id": 2,
-          "name": "गुरुग्राम",
-          "code": "GGM",
-          "type": "JILA"
-        }
+        const assignedPrant = rd?.prant ??null
+        const assignedVibhag = rd?.vibhag ??null
         const assignedJila = rd?.jila ?? null
         const assignedNagar = rd?.nagar ?? null
 

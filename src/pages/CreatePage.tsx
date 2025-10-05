@@ -89,16 +89,13 @@ export default function CreatePage() {
         throw new Error(response.message || 'Failed to create user')
       }
 
-      toast({
-        title: "Success!",
-        description: `User created successfully for region: ${regionName}`,
-      })
-
+      
       // Reset form on success
       setEmail('')
       setPassword('')
       setRegionName('')
       setRegionType('')
+
        toast({
         title: "उपयोगकर्ता सफलतापूर्वक बनाया गया",
         description: `उपयोगकर्ता सफलतापूर्वक बनाया गया ${regionName} के लिए`,
@@ -107,7 +104,7 @@ export default function CreatePage() {
       // Navigate to home page after a short delay
       setTimeout(() => {
         navigate('/')
-      }, 1500)
+      }, 2000)
 
 
     } catch (err: unknown) {
