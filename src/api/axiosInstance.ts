@@ -2,8 +2,12 @@ import { CONSTANT } from "@/lib/constant";
 import { getBasePath } from "@/lib/utils";
 import type { apiResponseType, BasePathType, IParams } from "@/types";
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-// Set base URL from environment variable
-const baseURL = import.meta.env.VITE_APP_BASE_PATH_USER || "http://localhost:3000/api";
+// Build base URL from Vite environment variables (fallbacks provided)
+const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || "http";
+const apiHost = (import.meta as any).env?.VITE_API_HOST || "localhost";
+const apiPort = (import.meta as any).env?.VITE_API_PORT ?? "3000";
+const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || "/api";
+const baseURL = `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ""}${apiPrefix}`;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -66,7 +70,8 @@ export const saveAuthTokenToAxios = () => {
 const extractor = <T>(response: AxiosResponse<apiResponseType<T>>) => {
   if (response?.status == undefined) throw new Error(response.statusText);
   const { status } = response;
-  if (status !== 200) throw new Error(response.statusText);
+  // Accept both 200 and 201 as success status codes
+  if (status !== 200 && status !== 201) throw new Error(response.statusText);
   return { ...response.data };
 };
 

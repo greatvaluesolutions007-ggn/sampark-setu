@@ -1,14 +1,18 @@
-# Sampark API Documentation
+# Sampark Setu API Documentation
 
-## Base URL
-```
-http://localhost:3000/api
-```
+This document provides comprehensive documentation for all API endpoints used in the Sampark Setu project.
+
+## Base Configuration
+
+- **Base URL**: `http://localhost:3000/api`
+- **Content-Type**: `application/json`
+- **Authentication**: Bearer Token (JWT)
 
 ## Authentication
-All API endpoints (except login and reset-admin-password) require JWT authentication via Authorization header:
+
+All API requests require authentication via Bearer token in the Authorization header:
 ```
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer <your_jwt_token>
 ```
 
 ---
@@ -16,619 +20,498 @@ Authorization: Bearer <JWT_TOKEN>
 ## 1. Authentication APIs
 
 ### 1.1 Login
-**POST** `/login`
+**Endpoint**: `POST /login`
 
-**Description:** Authenticate user and get JWT token
+**Description**: Authenticate user and get access token
 
-**Request Body:**
+**Request Body**:
 ```json
 {
-  "user_name": "admin",
-  "password": "admin123"
+  "user_name": "string",
+  "password": "string"
 }
 ```
 
-**Response:**
+**Response Body**:
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "role": "ADMIN",
-  "region_id": null
-}
-```
-
-**Example:**
-```bash
-curl -X POST http://localhost:3000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"user_name":"admin","password":"admin123"}'
-```
-
-### 1.2 Get Current User Info
-**GET** `/users/me`
-
-**Description:** Get current authenticated user details
-
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-**Response:**
-```json
-{
-  "user_id": 1,
-  "user_name": "admin",
-  "role": "ADMIN",
-  "region_id": null,
-  "is_active": 1,
-  "created_at": "2025-09-20T19:56:04.000Z",
-  "updated_at": "2025-09-20T19:57:08.000Z"
-}
-```
-
-### 1.3 Get All Regions
-**GET** `/regions`
-
-**Description:** Get all available regions
-
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-**Response:**
-```json
-[
-  {
-    "region_id": 1,
-    "name": "हरियाणा",
-    "code": "HR",
-    "type": "PRANT",
-    "parent_id": null,
-    "created_at": "2025-09-20T19:56:04.000Z",
-    "updated_at": "2025-09-20T19:56:04.000Z"
-  },
-  {
-    "region_id": 4,
-    "name": "गुरुग्राम नगर",
-    "code": "GGM_NG",
-    "type": "NAGAR",
-    "parent_id": 2,
-    "created_at": "2025-09-20T19:56:04.000Z",
-    "updated_at": "2025-09-20T19:56:04.000Z"
+  "success": true,
+  "message": "Login successful",
+  "statusCode": 200,
+  "data": {
+    "token": "string",
+    "role": "string",
+    "region_id": 123
   }
-]
+}
+```
+
+### 1.2 Get Current User
+**Endpoint**: `GET /users/me`
+
+**Description**: Get current authenticated user details
+
+**Request Body**: None
+
+**Response Body**:
+```json
+{
+  "success": true,
+  "message": "User details retrieved",
+  "statusCode": 200,
+  "data": {
+    "user_id": 123,
+    "user_name": "string",
+    "role": "string",
+    "region_id": 123,
+    "is_active": 1,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z",
+    "region_details": {
+      "prant": {
+        "region_id": 1,
+        "name": "string",
+        "code": "string",
+        "type": "PRANT"
+      },
+      "vibhag": {
+        "region_id": 2,
+        "name": "string",
+        "code": "string",
+        "type": "VIBHAG"
+      },
+      "jila": {
+        "region_id": 3,
+        "name": "string",
+        "code": "string",
+        "type": "JILA"
+      },
+      "nagar": {
+        "region_id": 4,
+        "name": "string",
+        "code": "string",
+        "type": "NAGAR"
+      }
+    }
+  }
+}
 ```
 
 ---
 
-## 2. Toli Management APIs
+## 2. Region Management APIs
 
-### 2.1 Create Toli
-**POST** `/toli`
+### 2.1 Get Regions
+**Endpoint**: `GET /v1/regions`
 
-**Description:** Create a new toli (team)
+**Description**: Get regions by type and optional parent ID
 
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-Content-Type: application/json
-```
+**Query Parameters**:
+- `type` (required): Region type - `PRANT`, `VIBHAG`, `JILA`, `NAGAR`, or `KHAND`
+- `parent_id` (optional): Parent region ID for hierarchical queries
 
-**Request Body:**
+**Request Body**: None
+
+**Response Body**:
 ```json
 {
-  "name": "गुरुग्राम टोली 1",
-  "type": "NAGAR",
-  "region_id": 4,
-  "toli_user_id": null,
-  "pramukh": {
-    "name": "राम कुमार",
-    "mobile": "9811111111"
-  },
-  "members": [
+  "success": true,
+  "message": "Regions retrieved",
+  "statusCode": 200,
+  "data": [
     {
-      "name": "सीता देवी",
-      "mobile": "9812222222"
-    },
-    {
-      "name": "हरी ओम",
-      "mobile": "9813333333"
+      "region_id": 123,
+      "name": "string",
+      "code": "string",
+      "type": "PRANT",
+      "parent_id": null,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
     }
   ]
 }
 ```
 
-**Response:**
+### 2.2 Get Region by ID
+**Endpoint**: `GET /v1/regions/{regionId}`
+
+**Description**: Get specific region details by ID
+
+**Path Parameters**:
+- `regionId`: Region ID
+
+**Request Body**: None
+
+**Response Body**:
 ```json
 {
-  "toli_id": 1,
-  "status": "created"
+  "success": true,
+  "message": "Region details retrieved",
+  "statusCode": 200,
+  "data": {
+    "region_id": 123,
+    "name": "string",
+    "code": "string",
+    "type": "PRANT",
+    "parent_id": null,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  }
+}
+
+
+### 2.3 Fetch Regions
+**Endpoint**: `GET /fetch-regions`
+
+**Description**: Fetch regions with region_id and ignore_validation parameters
+
+**Query Parameters**:
+- `region_id` (required): Region ID
+- `ignore_validation` (optional): "yes" or "no" (default: "yes")
+
+**Request Body**: None
+
+**Response Body**:
+```json
+{
+  "success": true,
+  "data": {
+    "region_name": "string",
+    "region_type": "prant",
+    "child_region_names": ["string"],
+    "child_regions": {
+      "vibhag": [
+        {
+          "id": 1,
+          "name": "string",
+          "code": "string"
+        }
+      ],
+      "jila": [
+        {
+          "id": 2,
+          "name": "string",
+          "code": "string"
+        }
+      ],
+      "nagar": [
+        {
+          "id": 3,
+          "name": "string",
+          "code": "string"
+        }
+      ],
+      "khand": [
+        {
+          "id": 4,
+          "name": "string",
+          "code": "string"
+        }
+      ]
+    }
+  }
 }
 ```
 
-**Example:**
-```bash
-curl -X POST http://localhost:3000/api/toli \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <JWT_TOKEN>" \
-  -d '{
-    "name": "गुरुग्राम टोली 1",
-    "type": "NAGAR",
-    "region_id": 4,
-    "pramukh": {
-      "name": "राम कुमार",
-      "mobile": "9811111111"
-    },
-    "members": [
-      {"name": "सीता देवी", "mobile": "9812222222"},
-      {"name": "हरी ओम", "mobile": "9813333333"}
-    ]
-  }'
+---
+
+## 3. Toli Management APIs
+
+### 3.1 Create Toli
+**Endpoint**: `POST /toli`
+
+**Description**: Create a new toli (group)
+
+**Request Body**:
+```json
+{
+  "name": "string",
+  "type": "PRANT",
+  "region_id": 123,
+  "toli_user_id": 456,
+  "pramukh": {
+    "name": "string",
+    "mobile": "string"
+  },
+  "members": [
+    {
+      "name": "string",
+      "mobile": "string"
+    }
+  ]
+}
 ```
 
-### 2.2 Get All Tolis
-**GET** `/toli`
-
-**Description:** Get all tolis with optional filtering
-
-**Headers:**
+**Response Body**:
+```json
+{
+  "success": true,
+  "message": "Toli created successfully",
+  "statusCode": 200,
+  "data": {
+    "toli_id": 123,
+    "status": "created"
+  }
+}
 ```
-Authorization: Bearer <JWT_TOKEN>
-```
 
-**Query Parameters:**
+### 3.2 Get Tolis
+**Endpoint**: `GET /toli`
+
+**Description**: Get list of tolis with optional filtering
+
+**Query Parameters**:
 - `region_id` (optional): Filter by region ID
 - `type` (optional): Filter by toli type
-- `limit` (optional): Number of results (default: 100)
-- `offset` (optional): Offset for pagination (default: 0)
+- `limit` (optional): Number of records to return
+- `offset` (optional): Number of records to skip
 
-**Response:**
+**Request Body**: None
+
+**Response Body**:
 ```json
-[
-  {
-    "toli_id": 1,
-    "name": "गुरुग्राम टोली 1",
-    "type": "NAGAR",
-    "region_id": 4,
-    "toli_user_id": null,
-    "pramukh_json": {
-      "name": "राम कुमार",
-      "mobile": "9811111111"
-    },
-    "members_json": [
-      {
-        "name": "सीता देवी",
-        "mobile": "9812222222"
+{
+  "success": true,
+  "message": "Tolis retrieved",
+  "statusCode": 200,
+  "data": [
+    {
+      "toli_id": 123,
+      "name": "string",
+      "type": "PRANT",
+      "region_id": 123,
+      "toli_user_id": 456,
+      "pramukh_json": {
+        "name": "string",
+        "mobile": "string"
       },
-      {
-        "name": "हरी ओम",
-        "mobile": "9813333333"
-      }
-    ],
-    "created_at": "2025-09-20T19:56:04.000Z",
-    "updated_at": "2025-09-20T19:56:04.000Z"
-  }
-]
-```
-
----
-
-## 3. Person Management APIs
-
-### 3.1 Create Person
-**POST** `/person`
-
-**Description:** Create a new person record
-
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-Content-Type: application/json
-```
-
-**Request Body:**
-```json
-{
-  "name": "राम कुमार",
-  "phone_number": "9811111111",
-  "email": "ram@example.com",
-  "sex": "MALE",
-  "address_text": "गुरुग्राम, हरियाणा",
-  "region_id": 4,
-  "visheshta": "सामाजिक कार्यकर्ता",
-  "answers": {
-    "age": "35",
-    "occupation": "व्यापारी"
-  }
-}
-```
-
-**Field Details:**
-- `name` (required): Person's name
-- `phone_number` (optional): Phone number
-- `email` (optional): Email address
-- `sex` (required): One of "MALE", "FEMALE", "OTHER", "UNSPECIFIED"
-- `address_text` (optional): Address description
-- `region_id` (optional): Region ID
-- `visheshta` (optional): Special characteristics
-- `answers` (optional): JSON object with custom answers
-
-**Response:**
-```json
-{
-  "person_id": 1,
-  "status": "created"
-}
-```
-
-**Example:**
-```bash
-curl -X POST http://localhost:3000/api/person \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <JWT_TOKEN>" \
-  -d '{
-    "name": "राम कुमार",
-    "phone_number": "9811111111",
-    "email": "ram@example.com",
-    "sex": "MALE",
-    "address_text": "गुरुग्राम, हरियाणा",
-    "region_id": 4,
-    "visheshta": "सामाजिक कार्यकर्ता",
-    "answers": {
-      "age": "35",
-      "occupation": "व्यापारी"
+      "members_json": [
+        {
+          "name": "string",
+          "mobile": "string"
+        }
+      ],
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
     }
-  }'
-```
-
-### 3.2 Get All Persons
-**GET** `/person`
-
-**Description:** Get all persons with optional filtering
-
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-**Query Parameters:**
-- `region_id` (optional): Filter by region ID
-- `search` (optional): Search by name
-- `limit` (optional): Number of results (default: 100)
-- `offset` (optional): Offset for pagination (default: 0)
-
-**Response:**
-```json
-[
-  {
-    "person_id": 1,
-    "name": "राम कुमार",
-    "phone_number": "9811111111",
-    "email": "ram@example.com",
-    "sex": "MALE",
-    "address_text": "गुरुग्राम, हरियाणा",
-    "region_id": 4,
-    "created_by": 1,
-    "visheshta": "सामाजिक कार्यकर्ता",
-    "answers_json": {
-      "age": "35",
-      "occupation": "व्यापारी"
-    },
-    "created_at": "2025-09-20T19:56:04.000Z",
-    "updated_at": "2025-09-20T19:56:04.000Z"
-  }
-]
+  ]
+}
 ```
 
 ---
 
-## 4. Visit Management APIs
+## 4. Person Management APIs (Utsuk Shakti)
 
-### 4.1 Create Visit
-**POST** `/visit`
+### 4.1 Create Person
+**Endpoint**: `POST /person`
 
-**Description:** Create a new visit record (main data collection)
+**Description**: Create a new person record
 
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-Content-Type: application/json
-```
-
-**Request Body:**
+**Request Body**:
 ```json
 {
-  "person_name": "राम कुमार",
-  "person_phone": "9811111111",
-  "person_email": "ram@example.com",
+  "name": "string",
+  "phone_number": "string",
+  "email": "string",
+  "sex": "MALE",
+  "address_text": "string",
+  "region_id": 123,
+  "visheshta": "string",
+  "answers": {
+    "key1": "value1",
+    "key2": "value2"
+  }
+}
+```
+
+**Response Body**:
+```json
+{
+  "success": true,
+  "message": "Person created successfully",
+  "statusCode": 200,
+  "data": {
+    "person_id": 123,
+    "status": "created"
+  }
+}
+```
+
+### 4.2 Get Persons
+**Endpoint**: `GET /person`
+
+**Description**: Get list of persons with optional filtering
+
+**Query Parameters**:
+- `region_id` (optional): Filter by region ID
+- `search` (optional): Search term for name/phone/email
+- `limit` (optional): Number of records to return
+- `offset` (optional): Number of records to skip
+
+**Request Body**: None
+
+**Response Body**:
+```json
+{
+  "success": true,
+  "message": "Persons retrieved",
+  "statusCode": 200,
+  "data": [
+    {
+      "person_id": 123,
+      "name": "string",
+      "phone_number": "string",
+      "email": "string",
+      "sex": "MALE",
+      "address_text": "string",
+      "region_id": 123,
+      "created_by": 456,
+      "visheshta": "string",
+      "answers_json": {
+        "key1": "value1",
+        "key2": "value2"
+      },
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+## 5. Visit Management APIs (Parivar Data)
+
+### 5.1 Create Visit
+**Endpoint**: `POST /visit`
+
+**Description**: Create a new visit record
+
+**Request Body**:
+```json
+{
+  "person_name": "string",
+  "person_phone": "string",
+  "person_email": "string",
   "person_sex": "MALE",
-  "toli_id": 1,
-  "region_id": 4,
-  "visited_at": "2025-01-20T10:00:00Z",
-  "total_members": 4,
-  "male_count": 2,
+  "toli_id": 123,
+  "region_id": 456,
+  "visited_at": "2024-01-01T00:00:00Z",
+  "total_members": 5,
+  "male_count": 3,
   "female_count": 2,
-  "kids_count": 0,
-  "nishulk_sticker": 1,
-  "nishulk_folder": 1,
-  "nishulk_books": 2,
-  "shashulk_pushtak": 1,
-  "address_text": "गुरुग्राम, हरियाणा",
-  "notes": "सफल भेंट"
+  "kids_count": 1,
+  "nishulk_sticker": 10,
+  "nishulk_folder": 5,
+  "nishulk_books": 3,
+  "shashulk_pushtak": 2,
+  "address_text": "string",
+  "notes": "string"
 }
 ```
 
-**Field Details:**
-- `person_name` (required): Person's name for this visit
-- `person_phone` (optional): Person's phone number
-- `person_email` (optional): Person's email
-- `person_sex` (required): One of "MALE", "FEMALE", "OTHER", "UNSPECIFIED"
-- `toli_id` (optional): Associated toli ID
-- `region_id` (optional): Region ID
-- `visited_at` (optional): Visit timestamp (ISO format)
-- `total_members` (required): Total household members
-- `male_count` (required): Number of male members
-- `female_count` (required): Number of female members
-- `kids_count` (required): Number of children
-- `nishulk_sticker` (required): Number of free stickers distributed
-- `nishulk_folder` (required): Number of free folders distributed
-- `nishulk_books` (required): Number of free books distributed
-- `shashulk_pushtak` (required): Number of paid books distributed
-- `address_text` (optional): Visit address
-- `notes` (optional): Additional notes
-
-**Response:**
+**Response Body**:
 ```json
 {
-  "visit_id": 1,
-  "status": "created"
+  "success": true,
+  "message": "Visit created successfully",
+  "statusCode": 200,
+  "data": {
+    "visit_id": 123,
+    "status": "created"
+  }
 }
 ```
 
-**Example:**
-```bash
-curl -X POST http://localhost:3000/api/visit \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <JWT_TOKEN>" \
-  -d '{
-    "person_name": "राम कुमार",
-    "person_phone": "9811111111",
-    "person_email": "ram@example.com",
-    "person_sex": "MALE",
-    "toli_id": 1,
-    "region_id": 4,
-    "visited_at": "2025-01-20T10:00:00Z",
-    "total_members": 4,
-    "male_count": 2,
-    "female_count": 2,
-    "kids_count": 0,
-    "nishulk_sticker": 1,
-    "nishulk_folder": 1,
-    "nishulk_books": 2,
-    "shashulk_pushtak": 1,
-    "address_text": "गुरुग्राम, हरियाणा",
-    "notes": "सफल भेंट"
-  }'
-```
+### 5.2 Get Visits
+**Endpoint**: `GET /visit`
 
-### 4.2 Get All Visits
-**GET** `/visit`
+**Description**: Get list of visits with optional filtering
 
-**Description:** Get all visits with optional filtering
-
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-**Query Parameters:**
+**Query Parameters**:
 - `region_id` (optional): Filter by region ID
 - `toli_id` (optional): Filter by toli ID
 - `user_id` (optional): Filter by user ID
-- `start_date` (optional): Filter by start date (ISO format)
-- `end_date` (optional): Filter by end date (ISO format)
-- `search` (optional): Search by person name
-- `limit` (optional): Number of results (default: 100)
-- `offset` (optional): Offset for pagination (default: 0)
+- `start_date` (optional): Filter visits from this date
+- `end_date` (optional): Filter visits until this date
+- `search` (optional): Search term for person name/phone/email
+- `limit` (optional): Number of records to return
+- `offset` (optional): Number of records to skip
 
-**Response:**
-```json
-[
-  {
-    "visit_id": 1,
-    "person_name": "राम कुमार",
-    "person_phone": "9811111111",
-    "person_email": "ram@example.com",
-    "person_sex": "MALE",
-    "toli_id": 1,
-    "region_id": 4,
-    "visited_at": "2025-01-20T10:00:00.000Z",
-    "created_by": 1,
-    "total_members": 4,
-    "male_count": 2,
-    "female_count": 2,
-    "kids_count": 0,
-    "nishulk_sticker": 1,
-    "nishulk_folder": 1,
-    "nishulk_books": 2,
-    "shashulk_pushtak": 1,
-    "address_text": "गुरुग्राम, हरियाणा",
-    "notes": "सफल भेंट",
-    "created_at": "2025-09-20T19:56:04.000Z"
-  }
-]
-```
+**Request Body**: None
 
----
-
-## 5. Error Responses
-
-All APIs return consistent error responses:
-
-### 400 Bad Request
+**Response Body**:
 ```json
 {
-  "error": "Bad Request",
-  "message": "Invalid region ID"
-}
-```
-
-### 401 Unauthorized
-```json
-{
-  "error": "Unauthorized",
-  "message": "Invalid username or password"
-}
-```
-
-### 403 Forbidden
-```json
-{
-  "error": "Forbidden",
-  "message": "Cannot create toli outside your assigned region"
-}
-```
-
-### 404 Not Found
-```json
-{
-  "error": "Not Found",
-  "message": "User not found"
-}
-```
-
-### 409 Conflict
-```json
-{
-  "error": "Conflict",
-  "message": "Username already exists"
-}
-```
-
-### 500 Internal Server Error
-```json
-{
-  "error": "Internal Server Error",
-  "message": "Person creation failed",
-  "details": "Bind parameters must not contain undefined"
+  "success": true,
+  "message": "Visits retrieved",
+  "statusCode": 200,
+  "data": [
+    {
+      "visit_id": 123,
+      "person_name": "string",
+      "person_phone": "string",
+      "person_email": "string",
+      "person_sex": "MALE",
+      "toli_id": 123,
+      "region_id": 456,
+      "visited_at": "2024-01-01T00:00:00Z",
+      "created_by": 789,
+      "total_members": 5,
+      "male_count": 3,
+      "female_count": 2,
+      "kids_count": 1,
+      "nishulk_sticker": 10,
+      "nishulk_folder": 5,
+      "nishulk_books": 3,
+      "shashulk_pushtak": 2,
+      "address_text": "string",
+      "notes": "string",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ]
 }
 ```
 
 ---
 
-## 6. User Roles and Permissions
+## Error Responses
 
-### Role Hierarchy:
-1. **ADMIN** - Full access to all resources
-2. **PRANT_KARYAKARTA** - Access to prant-level data
-3. **VIBHAG_KARYAKARTA** - Access to vibhag-level data
-4. **JILA_KARYAKARTA** - Access to jila-level data
-5. **NAGAR_KARYAKARTA** - Access to nagar-level data
+All APIs return standardized error responses:
 
-### Access Control:
-- Users can only access data within their assigned region
-- Admin users can access all regions
-- Non-admin users cannot create resources outside their region
-
----
-
-## 7. Data Types
-
-### Region Types:
-- `PRANT` - State level
-- `VIBHAG` - Division level
-- `JILA` - District level
-- `NAGAR` - City level
-- `KHAND` - Ward level
-
-### Sex Types:
-- `MALE`
-- `FEMALE`
-- `OTHER`
-- `UNSPECIFIED`
-
-### Toli Types:
-- `PRANT`
-- `VIBHAG`
-- `JILA`
-- `NAGAR`
-- `KHAND`
-
----
-
-## 8. Testing Credentials
-
-### Admin User:
-- **Username:** `admin`
-- **Password:** `admin123`
-- **Role:** `ADMIN`
-
-### Test Users:
-- **Prant User:** `prant_user` / `prant123`
-- **Vibhag User:** `vibhag_user` / `vibhag123`
-- **Jila User:** `jila_user` / `jila123`
-- **Nagar User:** `nagar_user` / `nagar123`
-
----
-
-## 9. Integration Notes
-
-1. **JWT Token Expiry:** 30 days
-2. **Content-Type:** Always use `application/json`
-3. **Character Encoding:** UTF-8 (supports Hindi and other Indian languages)
-4. **Date Format:** ISO 8601 (e.g., "2025-01-20T10:00:00Z")
-5. **Pagination:** Use `limit` and `offset` parameters
-6. **Error Handling:** Check HTTP status codes and error messages
-7. **Authentication:** Include JWT token in Authorization header for all protected endpoints
-
----
-
-## 10. Quick Start Example
-
-```javascript
-// 1. Login
-const loginResponse = await fetch('http://localhost:3000/api/login', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    user_name: 'admin',
-    password: 'admin123'
-  })
-});
-
-const { token } = await loginResponse.json();
-
-// 2. Create a visit
-const visitResponse = await fetch('http://localhost:3000/api/visit', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  },
-  body: JSON.stringify({
-    person_name: 'राम कुमार',
-    person_phone: '9811111111',
-    person_sex: 'MALE',
-    total_members: 4,
-    male_count: 2,
-    female_count: 2,
-    kids_count: 0,
-    nishulk_sticker: 1,
-    nishulk_folder: 1,
-    nishulk_books: 2,
-    shashulk_pushtak: 1,
-    notes: 'सफल भेंट'
-  })
-});
-
-const visitResult = await visitResponse.json();
-console.log('Visit created:', visitResult);
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "statusCode": 400,
+  "data": null
+}
 ```
 
+### Common HTTP Status Codes:
+- `200`: Success
+- `400`: Bad Request
+- `401`: Unauthorized (Token expired/invalid)
+- `403`: Forbidden
+- `404`: Not Found
+- `500`: Internal Server Error
+
 ---
 
-**For any questions or issues, please contact the backend team.**
+## Authentication Flow
+
+1. User submits credentials to `/login`
+2. Server returns JWT token and user details
+3. Client stores token in localStorage
+4. All subsequent requests include token in Authorization header
+5. On 401 response, client automatically redirects to login page
+
+---
+
+## Notes
+
+- All timestamps are in ISO 8601 format
+- Region types are case-sensitive: `PRANT`, `VIBHAG`, `JILA`, `NAGAR`, `KHAND`
+- Sex values are: `MALE`, `FEMALE`, `OTHER`, `UNSPECIFIED`
+- All optional fields can be `null` in responses
+- Pagination is supported via `limit` and `offset` parameters

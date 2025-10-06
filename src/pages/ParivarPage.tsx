@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -7,7 +7,7 @@ import { ArrowLeft, Plus, Minus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import RegionSelector from '@/components/RegionSelector'
-import { visitService } from '@/api/services'
+import { authService, visitService } from '@/api/services'
 import type { CreateVisitRequest } from '@/types'
 
 export default function ParivarPage() {
@@ -16,9 +16,30 @@ export default function ParivarPage() {
   
   // Region states
   const [nagar, setNagar] = useState<string>('')
+  const [regionId, setRegionId] = useState<number | null>(null) 
+
+
+
+  useEffect(() => {
+   getUserRegion()
+  }, [])
+
+
+
+  const getUserRegion = async () => {
+    try {
+      const userRegion = await authService.getCurrentUser()
+      if (userRegion.success && userRegion.data) {
+        setRegionId(userRegion.data.region_id)     
+      }
+    } catch (error) {
+      console.error('Error fetching user region:', error)
+    }
+      }
   
   // Form states
   const [samparkit, setSamparkit] = useState('')
+  const [phone, setPhone] = useState('')
   const [purush, setPurush] = useState(0)
   const [mahila, setMahila] = useState(0)
   const [bachche, setBachche] = useState(0)
@@ -35,17 +56,19 @@ export default function ParivarPage() {
   // Validation states
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [touchedName, setTouchedName] = useState(false)
+  const [touchedPhone, setTouchedPhone] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   // Validation functions
   const nameValid = samparkit.length >= 3
+  const phoneValid = /^\d{10}$/.test(phone)
   const kulValid = kul > 0
   const purushValid = purush >= 0
   const mahilaValid = mahila >= 0
   const bachcheValid = bachche >= 0
   
-  const isFormValid = nameValid && kulValid && purushValid && mahilaValid && bachcheValid
+  const isFormValid = nameValid && phoneValid && kulValid && purushValid && mahilaValid && bachcheValid
 
   // Counter functions
   const inc = (setter: React.Dispatch<React.SetStateAction<number>>) => {
@@ -72,8 +95,8 @@ export default function ParivarPage() {
 
       const visitData: CreateVisitRequest = {
         person_name: samparkit,
-        person_sex: 'UNSPECIFIED',
-        region_id: nagar ? parseInt(nagar) : undefined,
+        person_phone: phone,
+        person_sex: 'OTHER',
         total_members: kul,
         male_count: purush,
         female_count: mahila,
@@ -99,6 +122,7 @@ export default function ParivarPage() {
 
       // Reset form on success
       setSamparkit('')
+      setPhone('')
       setPurush(0)
       setMahila(0)
       setBachche(0)
@@ -108,6 +132,7 @@ export default function ParivarPage() {
       setShashulkPustak(0)
       setNagar('')
       setSubmitAttempted(false)
+      setTouchedPhone(false)
 
       // Navigate to home page after a short delay
       setTimeout(() => {
@@ -141,17 +166,34 @@ export default function ParivarPage() {
                 disabled={isLoading}
               />
 
-              <div className="space-y-2">
-                <Label>संपर्कित सदस्य</Label>
-                <Input
-                  placeholder="नाम"
-                  value={samparkit}
-                  onChange={(e) => setSamparkit(e.target.value)}
-                  onBlur={() => setTouchedName(true)}
-                />
-                {(submitAttempted || touchedName) && !nameValid && (
-                  <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
-                )}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>संपर्कित सदस्य</Label>
+                  <Input
+                    placeholder="नाम"
+                    value={samparkit}
+                    onChange={(e) => setSamparkit(e.target.value)}
+                    onBlur={() => setTouchedName(true)}
+                  />
+                  {(submitAttempted || touchedName) && !nameValid && (
+                    <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>फ़ोन नंबर</Label>
+                  <Input
+                    type="tel"
+                    placeholder="10 अंकों का मोबाइल नंबर"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    onBlur={() => setTouchedPhone(true)}
+                    maxLength={10}
+                  />
+                  {(submitAttempted || touchedPhone) && !phoneValid && (
+                    <p className="text-sm text-primary">कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें</p>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-4">

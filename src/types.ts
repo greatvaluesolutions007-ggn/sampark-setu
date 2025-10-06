@@ -23,6 +23,21 @@ export interface LoginResponse {
   region_id: number | null;
 }
 
+export interface CreateUserRequest extends IParams {
+  user_name: string;
+  password: string;
+  role: 'ADMIN' | 'PRANT_KARYAKARTA' | 'VIBHAG_KARYAKARTA' | 'JILA_KARYAKARTA' | 'NAGAR_KARYAKARTA';
+  region_id: number | null;
+}
+
+export interface CreateUserResponse {
+  user_id: number;
+  user_name: string;
+  role: string;
+  region_id: number | null;
+  is_active: number;
+}
+
 export interface User {
   user_id: number;
   user_name: string;
@@ -31,16 +46,57 @@ export interface User {
   is_active: number;
   created_at: string;
   updated_at: string;
+  region_details?:RegionDetails | null;
 }
+
+
+export interface RegionResponse {
+  success: boolean;
+  data: RegionData;
+}
+
+export interface RegionData {
+  region_name: string;
+  region_type: "prant" | "vibhag" | "jila" | "nagar" | "khand"; // you can add more if needed
+  child_region_names: string[];
+  child_regions: {
+    vibhag?: RegionType[];
+    jila?: RegionType[];
+    nagar?: RegionType[];
+    khand?: RegionType[];
+  };
+}
+
+
+
+
+
+
+
+export interface RegionDetails {
+  prant: Region | null;
+  vibhag: Region | null;
+  jila: Region | null;
+  nagar: Region | null;
+}
+
+
+export interface RegionType {
+  id: number;
+  name: string;
+  code: string;
+  
+}
+
 
 export interface Region {
   region_id: number;
   name: string;
   code: string;
   type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
-  parent_id: number | null;
-  created_at: string;
-  updated_at: string;
+  parent_id?: number | null;
+  created_at?: string | null;
+  updated_at?: string| null;
 }
 
 export interface ToliMember {

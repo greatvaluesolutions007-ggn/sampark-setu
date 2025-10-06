@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -7,8 +7,8 @@ import { ArrowLeft, Plus, Trash } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import RegionSelector from '@/components/RegionSelector'
-import { toliService } from '@/api/services'
-import type { CreateToliRequest, ToliMember } from '@/types'
+import { authService, regionService, toliService } from '@/api/services'
+import type { CreateToliRequest, RegionResponse, ToliMember } from '@/types'
 
 export default function ToliPage() {
   const navigate = useNavigate()
@@ -19,6 +19,9 @@ export default function ToliPage() {
   const [vibhag, setVibhag] = useState<string>('')
   const [jila, setJila] = useState<string>('')
   const [nagar, setNagar] = useState<string>('')
+  const [regionResponse, setRegionResponse] =  useState<RegionResponse|null>(null);
+  const [regionId, setRegionId] = useState<number | null>(null);
+  const [toliUserId, setToliUserId] = useState<number | null>(null); // To link toli to a user if needed
   
   // Form states
   const [name, setName] = useState('')
@@ -35,6 +38,11 @@ export default function ToliPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
+
+  useEffect(()=>{
+    fetchUserRegion()
+  },[])
+
   // Validation functions
   const nameValid = name.length >= 3
   const pramukhNameValid = pramukh.name.length >= 3
@@ -47,10 +55,21 @@ export default function ToliPage() {
 
   // Handle region changes from RegionSelector
   const handleRegionChange = (prantValue: string, vibhagValue: string, jilaValue: string, nagarValue: string) => {
+    console.log('handleRegionChange called with:', { prantValue, vibhagValue, jilaValue, nagarValue })
+    
     setPrant(prantValue)
     setVibhag(vibhagValue)
     setJila(jilaValue)
     setNagar(nagarValue)
+    
+    // Set regionId based on the selected values (priority: nagar > jila > vibhag > prant)
+    const selectedRegionId = nagarValue || jilaValue || vibhagValue || prantValue
+    if (selectedRegionId) {
+      setRegionId(parseInt(selectedRegionId))
+      console.log('Region changed, new regionId:', selectedRegionId)
+    } else {
+      console.log('No regionId selected from values:', { prantValue, vibhagValue, jilaValue, nagarValue })
+    }
   }
 
   // Handle mobile input - only allow digits and limit to 10
@@ -73,6 +92,58 @@ export default function ToliPage() {
     setMembers(newMembers)
   }
 
+
+
+  const fetchUserRegion  = async()=>{
+    try{
+    
+      const userResponse = await authService.getCurrentUser();
+
+      if(userResponse.success && userResponse.data.region_id){
+         const response = await regionService.fetchRegions(userResponse.data.region_id, true);
+      if(response && response.success){
+
+        setToliUserId(userResponse.data.user_id);
+
+        setRegionResponse(response);
+        
+        // Set default regionId - use the first available region from the hierarchy
+        const regionData = response.data;
+        console.log('Region data received:', regionData);
+        console.log('Child regions:', regionData.child_regions);
+        
+        let defaultRegionId = null;
+        
+        // Priority: nagar > jila > vibhag > prant
+        // Access the id property from RegionType objects
+        if (regionData.child_regions?.nagar && regionData.child_regions.nagar.length > 0) {
+          defaultRegionId = regionData.child_regions.nagar[0].id;
+          console.log('Selected nagar regionId:', defaultRegionId, 'from:', regionData.child_regions.nagar[0]);
+        } else if (regionData.child_regions?.jila && regionData.child_regions.jila.length > 0) {
+          defaultRegionId = regionData.child_regions.jila[0].id;
+          console.log('Selected jila regionId:', defaultRegionId, 'from:', regionData.child_regions.jila[0]);
+        } else if (regionData.child_regions?.vibhag && regionData.child_regions.vibhag.length > 0) {
+          defaultRegionId = regionData.child_regions.vibhag[0].id;
+          console.log('Selected vibhag regionId:', defaultRegionId, 'from:', regionData.child_regions.vibhag[0]);
+        } else if (userResponse.data.region_id) {
+          defaultRegionId = userResponse.data.region_id;
+          console.log('Using user region_id:', defaultRegionId);
+        }
+        
+        if (defaultRegionId) {
+          setRegionId(defaultRegionId);
+          console.log('Default regionId set:', defaultRegionId);
+        } else {
+          console.log('No default regionId found');
+        }
+      }
+      }
+     
+    }catch(e){
+      console.error('Error fetching user region:', e);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitAttempted(true)
@@ -81,12 +152,12 @@ export default function ToliPage() {
     try {
       setIsLoading(true)
       setError('')
-
       const toliData: CreateToliRequest = {
         name: name,
         type: 'NAGAR', // Default to NAGAR type
-        region_id: nagar ? parseInt(nagar) : parseInt(jila) || parseInt(vibhag) || parseInt(prant),
+        region_id: regionId || (nagar ? parseInt(nagar) : parseInt(jila) || parseInt(vibhag) || parseInt(prant)),
         pramukh: pramukh,
+        toli_user_id: toliUserId,
         members: members.filter(m => m.name.trim() !== '' || m.mobile.trim() !== '')
       }
 
@@ -144,6 +215,8 @@ export default function ToliPage() {
               <RegionSelector 
                 onRegionChange={handleRegionChange}
                 disabled={isLoading}
+                regionDetails={regionResponse?.data}
+
               />
 
               <div className="space-y-2">

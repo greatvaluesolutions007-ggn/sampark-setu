@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,12 +9,13 @@ import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import RegionSelector from '@/components/RegionSelector'
-import { personService } from '@/api/services'
+import { authService, personService } from '@/api/services'
 import type { CreatePersonRequest } from '@/types'
 
 export default function UtsukPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
+   const [regionId, setRegionId] = useState<number | null>(null) 
   
   // Region states
   const [nagar, setNagar] = useState<string>('')
@@ -58,6 +59,21 @@ export default function UtsukPage() {
   
   const isFormValid = nameValid && phoneValid && emailValid && sexValid && addressValid && questionsValid
 
+   useEffect(() => {
+     getUserRegion()
+    }, [])
+
+  const getUserRegion = async () => {
+      try {
+        const userRegion = await authService.getCurrentUser()
+        if (userRegion.success && userRegion.data) {
+          setRegionId(userRegion.data.region_id)     
+        }
+      } catch (error) {
+        console.error('Error fetching user region:', error)
+      }
+        }
+
   // Debug logging
   console.log('Form validation:', {
     nameValid,
@@ -95,7 +111,7 @@ export default function UtsukPage() {
         email: form.email || undefined,
         sex: form.sex as 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED',
         address_text: form.address || undefined,
-        region_id: nagar ? parseInt(nagar) : undefined,
+        region_id: regionId!,
         visheshta: form.vishesh || undefined,
         answers: answers.reduce((acc, answer, index) => {
           acc[`question_${index + 1}`] = answer
