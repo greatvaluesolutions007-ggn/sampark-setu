@@ -21,7 +21,7 @@ export const getBasePath = (base: BasePathType): string => {
       {
         const devProtocol = (import.meta as any).env?.VITE_DEV_PROTOCOL || 'http';
         const devHost = (import.meta as any).env?.VITE_DEV_HOST || 'localhost';
-        const devPort = (import.meta as any).env?.VITE_DEV_PORT ?? '8000';
+        const devPort = (import.meta as any).env?.VITE_DEV_PORT ?? '80';
         return `${devProtocol}://${devHost}${devPort ? `:${devPort}` : ''}`;
       }
   }

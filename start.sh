@@ -5,6 +5,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
+##### comment from line number 8 to 18 if running locally
 # Backend/API env (defaults set here; can be overridden when invoking)
 export VITE_API_PROTOCOL="${VITE_API_PROTOCOL:-http}"
 export VITE_API_HOST="${VITE_API_HOST:-13.235.114.249}"
@@ -17,8 +18,8 @@ export VITE_DEV_HOST="${VITE_DEV_HOST:-13.235.114.249}"
 export VITE_DEV_PORT="${VITE_DEV_PORT:-80}"
 
 # CLI host/port for Vite dev server
-HOST="${HOST:-${VITE_DEV_HOST}}"
-PORT="${PORT:-${VITE_DEV_PORT}}"
+HOST=0.0.0.0
+PORT=80
 
 # Install deps if node_modules missing (safe no-op if already installed)
 if [ ! -d node_modules ]; then
