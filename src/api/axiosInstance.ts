@@ -2,8 +2,12 @@ import { CONSTANT } from "@/lib/constant";
 import { getBasePath } from "@/lib/utils";
 import type { apiResponseType, BasePathType, IParams } from "@/types";
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-// Set base URL from environment variable
-const baseURL =  "http://localhost:3000/api";
+// Build base URL from Vite environment variables (fallbacks provided)
+const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || "http";
+const apiHost = (import.meta as any).env?.VITE_API_HOST || "localhost";
+const apiPort = (import.meta as any).env?.VITE_API_PORT ?? "3000";
+const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || "/api";
+const baseURL = `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ""}${apiPrefix}`;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
