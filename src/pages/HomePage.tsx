@@ -38,7 +38,7 @@ export default function HomePage() {
           <div className="flex border-b border-gray-200">
           <NavTab 
             icon={<Home className="h-4 w-4" />} 
-            label="Overview" 
+            label="Dashboard" 
             active={activeTab === 'overview'}
             onClick={() => setActiveTab('overview')}
           />
