@@ -19,7 +19,7 @@ export default function HomePage() {
           <div className="flex items-center gap-3">
             <img src="https://www.rss.org//images/ico_2205.ico" alt="RSS" className="h-8 w-8" />
             <div>
-              <h1 className="text-2xl font-bold text-primary">संपर्क सेतु</h1>
+              <h1 className="text-2xl font-bold text-primary">शताब्दी गृह सम्प्रक</h1>
               <p className="text-sm text-muted-foreground">आपका व्यक्तिगत डैशबोर्ड</p>
             </div>
           </div>
