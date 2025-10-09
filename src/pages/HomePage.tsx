@@ -7,7 +7,7 @@ import { useState } from 'react'
 export default function HomePage() {
   const navigate = useNavigate()
   const { logout } = useAuth()
-  const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'sashulk'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk'| 'sashulk'>('overview')
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-orange-50/40 to-white">
@@ -38,7 +38,7 @@ export default function HomePage() {
           <div className="flex border-b border-gray-200">
           <NavTab 
             icon={<Home className="h-4 w-4" />} 
-            label="Dashboard" 
+            label="टोली जानकरी" 
             active={activeTab === 'overview'}
             onClick={() => setActiveTab('overview')}
           />
@@ -50,16 +50,17 @@ export default function HomePage() {
           />
           <NavTab 
             icon={<BookOpen className="h-4 w-4" />} 
-            label="निशुल्क" 
-            active={activeTab === 'nishulk'}
-            onClick={() => setActiveTab('nishulk')}
+            label="उत्सुक शक्ति" 
+            active={activeTab === 'utsuk'}
+            onClick={() => setActiveTab('utsuk')}
           />
           <NavTab 
             icon={<FileText className="h-4 w-4" />} 
-            label="सशुल्क" 
-            active={activeTab === 'sashulk'}
+            label="साहित्य" 
+            active={activeTab === 'sashulk' }
             onClick={() => setActiveTab('sashulk')}
           />
+
           </div>
         </div>
       </div>
@@ -69,38 +70,7 @@ export default function HomePage() {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <>
-            {/* Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <ActionCard
-                icon={<Users className="h-6 w-6" />}
-                title="परिवार डेटा"
-                subtitle="परिवार का विवरण संग्रह करें"
-                onClick={() => navigate('/parivar')}
-                color="bg-blue-100 text-blue-600"
-              />
-              <ActionCard
-                icon={<UserPlus className="h-6 w-6" />}
-                title="उत्सुक शक्ति"
-                subtitle="नये उत्सुक सदस्य जोड़ें"
-                onClick={() => navigate('/utsuk')}
-                color="bg-purple-100 text-purple-600"
-              />
-              <ActionCard
-                icon={<Layers className="h-6 w-6" />}
-                title="टोली निर्माण"
-                subtitle="टोली बनाएं"
-                onClick={() => navigate('/toli')}
-                color="bg-green-100 text-green-600"
-              />
-              <ActionCard
-                icon={<Layers className="h-6 w-6" />}
-                title="Create User"
-                subtitle="create new user"
-                onClick={() => navigate('/create')}
-                color="bg-green-100 text-green-600"
-              />
-            </div>
-
+           
             {/* Statistics Cards */}
             <div className="space-y-6">
               {/* Top Row - Teams and New Joins */}
@@ -111,54 +81,28 @@ export default function HomePage() {
                   icon={<Users className="h-6 w-6" />}
                   color="bg-blue-100 text-blue-600"
                 />
-                <StatCard
-                  title="नए जुड़े"
-                  value="32"
-                  icon={<UserPlus className="h-6 w-6" />}
-                  color="bg-purple-100 text-purple-600"
-                />
+
               </div>
 
-              {/* Total Members Section */}
-              <div>
-                <h2 className="text-lg font-semibold text-primary mb-4">कुल सदस्य</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <StatCard
-                    title="कुल"
-                    value="782"
-                    icon={<Users className="h-6 w-6" />}
-                    color="bg-green-100 text-green-600"
-                  />
-                  <StatCard
-                    title="परिवार"
-                    value="156"
-                    icon={<Users className="h-6 w-6" />}
-                    color="bg-blue-100 text-blue-600"
-                  />
-                </div>
-              </div>
-
-              {/* Books Section */}
-              <div>
-                <h2 className="text-lg font-semibold text-primary mb-4">पुस्तकें</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <StatCard
-                    title="निशुल्क"
-                    value="420"
-                    icon={<BookOpen className="h-6 w-6" />}
-                    color="bg-green-100 text-green-600"
-                  />
-                  <StatCard
-                    title="सशुल्क"
-                    value="235"
-                    icon={<FileText className="h-6 w-6" />}
-                    color="bg-orange-100 text-orange-600"
-                  />
-                </div>
-              </div>
             </div>
           </>
         )}
+
+        {activeTab === 'utsuk' && (
+            <div className="space-y-6">
+              {/* <h2 className="text-lg font-semibold text-primary mb-4">उत्सुक शक्ति विवरण</h2> */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <StatCard
+                  title="कुल उत्सुक शक्ति सदस्य"
+                  value="98"
+                  icon={<Users className="h-6 w-6" />}
+                  color="bg-green-100 text-green-600"
+                />
+                
+              </div>
+            </div>
+          )
+        }
 
         {activeTab === 'parivar' && (
           <div className="space-y-6">
@@ -171,14 +115,14 @@ export default function HomePage() {
                 color="bg-blue-100 text-blue-600"
               />
               <StatCard
-                title="कुल सदस्य"
+                title="कुल संपर्कित"
                 value="782"
                 icon={<Users className="h-6 w-6" />}
                 color="bg-green-100 text-green-600"
               />
             </div>
             
-            <h2 className="text-lg font-semibold text-primary mb-4">लिंगानुपात</h2>
+           
             <div className="space-y-4">
               <StatCard
                 title="पुरुष"
@@ -230,16 +174,43 @@ export default function HomePage() {
 
         {activeTab === 'sashulk' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-primary mb-4">सशुल्क साहित्य</h2>
-            <div className="space-y-4">
-              <StatCard
-                title="कुल पुस्तकें"
-                value="235"
-                icon={<FileText className="h-6 w-6" />}
-                color="bg-orange-100 text-orange-600"
-              />
-            </div>
+            <div className="space-y-6">
+  {/* Paid Content Section */}
+  
+
+<div className="space-y-6">
+  {/* Free Content Section */}
+  <h2 className="text-lg font-semibold text-primary mb-4">निशुल्क साहित्य</h2>
+  <div className="space-y-4">
+    <StatCard
+      title="कुल स्टीकर"
+      value="1250"
+      icon={<BookOpen className="h-6 w-6" />}
+      color="bg-green-100 text-green-600"
+    />
+    <StatCard
+      title="कुल फोल्डर"
+      value="680"
+      icon={<BookOpen className="h-6 w-6" />}
+      color="bg-blue-100 text-blue-600"
+    />
+ 
+
+    <h2 className="text-lg font-semibold text-primary mb-4">सशुल्क साहित्य</h2>
+  <div className="space-y-4">
+    <StatCard
+      title="कुल पुस्तकें"
+      value="235"
+      icon={<FileText className="h-6 w-6" />}
+      color="bg-orange-100 text-orange-600"
+    />
+  </div>
+</div>
+  </div>
+</div>
+
           </div>
+          
         )}
       </div>
     </div>
