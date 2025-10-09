@@ -77,8 +77,10 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-3 h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl">ॐ</div>
-          <CardTitle className="text-2xl font-bold">संपर्क सेतु</CardTitle>
-          <p className="text-sm text-muted-foreground">संघ संपर्क अभियान डिजिटल प्लेटफॉर्म</p>
+          <CardTitle className="text-2xl font-bold">शताब्दी गृह सम्पर्क</CardTitle>
+          <p className="text-sm text-muted-foreground">संघ शताब्दी व्यापक गृह सम्पर्क अभियान</p>
+          <p className="text-sm text-muted-foreground">हरियाणा प्रान्त</p>
+           <p className="text-sm text-muted-foreground">30 नवम्बर - 21 दिसम्बर</p>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
