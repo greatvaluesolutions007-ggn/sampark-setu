@@ -19,8 +19,8 @@ export default function HomePage() {
           <div className="flex items-center gap-3">
             <img src="https://www.rss.org//images/ico_2205.ico" alt="RSS" className="h-8 w-8" />
             <div>
-              <h1 className="text-2xl font-bold text-primary">शताब्दी गृह संपर्क</h1>
-              <p className="text-sm text-muted-foreground">आपका व्यक्तिगत डैशबोर्ड</p>
+              <h1 className="text-2xl font-bold text-primary">संघ शताब्दी व्यापक गृह संपर्क अभियान (हरियाणा)</h1>
+              <p className="text-sm text-muted-foreground">व्यक्तिगत डैशबोर्ड</p>
             </div>
           </div>
           <Button 
