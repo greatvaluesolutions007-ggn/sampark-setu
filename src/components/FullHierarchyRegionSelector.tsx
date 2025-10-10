@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { authService, regionService } from '@/api/services'
-import type { RegionHierarchy, Region } from '@/types'
+import { authService } from '@/api/services'
+import type { RegionHierarchy } from '@/types'
 
 interface FullHierarchyRegionSelectorProps {
   onRegionChange?: (regionId: number, regionName: string, regionType: string) => void
@@ -80,10 +80,10 @@ export default function FullHierarchyRegionSelector({
         vibhag: regionDetails.vibhag || null,
         jila: regionDetails.jila || null,
         nagar: regionDetails.nagar || null,
-        khand: regionDetails.khand || null,
-        basti: regionDetails.basti || null,
-        mandal: regionDetails.mandal || null,
-        gram: regionDetails.gram || null
+        khand: null,
+        basti: null,
+        mandal: null,
+        gram: null
       }
 
       console.log('Built hierarchy from user API:', regionHierarchy)
@@ -97,7 +97,7 @@ export default function FullHierarchyRegionSelector({
         detectedPathType = 'GRAMNIYE'
       }
       
-      setPathType(detectedPathType)
+      setPathType(detectedPathType as 'GRAMNIYE' | 'NAGARIYE' | null)
       console.log('Detected path type:', detectedPathType)
 
       // Call onRegionChange with the most specific region available
@@ -150,7 +150,6 @@ export default function FullHierarchyRegionSelector({
 
   // Don't return early on error - show error but still display fields
 
-  const getDisplayValue = (region: Region | null) => region?.name || ''
 
   return (
     <div className="space-y-4">

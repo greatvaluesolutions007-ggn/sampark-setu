@@ -20,7 +20,7 @@ import type {
   Person,
   Visit,
   apiResponseType,
-  RegionDetails,
+  RegionHierarchy,
   RegionResponse,
   ValidateCodeRequest,
   ValidateCodeResponse,

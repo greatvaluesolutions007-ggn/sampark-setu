@@ -27,7 +27,7 @@ if [ ! -d node_modules ]; then
   npm install --no-audit --no-fund
 fi
 
-CMD="npm start"
+CMD="node node_modules/typescript/bin/tsc -b && node node_modules/vite/bin/vite.js preview --host ${HOST} --port ${PORT}"
 
 if [ "${NOHUP:-}" != "" ]; then
   echo "[start] Starting in background with nohup on ${HOST}:${PORT}"

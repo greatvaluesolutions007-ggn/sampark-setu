@@ -20,15 +20,12 @@ export default function ToliPage() {
   
   // Form states
   const [name, setName] = useState('')
-  const [pramukh, setPramukh] = useState<ToliMember>({ name: '', mobile: '' })
   const [members, setMembers] = useState<ToliMember[]>([])
   
   // Validation states
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [touchedFields, setTouchedFields] = useState({
-    name: false,
-    pramukhName: false,
-    pramukhMobile: false
+    name: false
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -113,10 +110,9 @@ export default function ToliPage() {
 
       // Reset form on success
       setName('')
-      setPramukh({ name: '', mobile: '' })
       setMembers([])
       setSubmitAttempted(false)
-      setTouchedFields({ name: false, pramukhName: false, pramukhMobile: false })
+      setTouchedFields({ name: false })
 
       // Navigate to home page after a short delay
       setTimeout(() => {

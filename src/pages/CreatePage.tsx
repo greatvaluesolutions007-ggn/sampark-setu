@@ -150,7 +150,7 @@ export default function CreatePage() {
               <form id="create-form" onSubmit={handleSubmit} className="space-y-4">
                 <HierarchicalRegionDropdown 
                   onRegionChange={handleRegionChange}
-                  userRole={currentUserRole}
+                  accessLevel="TOLI_CREATION"
                   disabled={!currentUserRole}
                 />
 
