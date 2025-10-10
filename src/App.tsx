@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '@/pages/LoginPage'
+import RegisterPage from '@/pages/RegisterPage'
 import HomePage from '@/pages/HomePage'
 import ParivarPage from '@/pages/ParivarPage'
 import UtsukPage from '@/pages/UtsukPage'
@@ -8,6 +9,7 @@ import ToliPage from '@/pages/ToliPage'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthProvider, PrivateRoute } from '@/contexts/AuthContext'
 import CreatePage from './pages/CreatePage'
+import DebugPage from './pages/DebugPage'
 
 function App() {
   return (
@@ -15,7 +17,9 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-           <Route path="/create" element={<CreatePage/>} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/create" element={<CreatePage/>} />
+          <Route path="/debug" element={<DebugPage />} />
           <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
           <Route path="/parivar" element={<PrivateRoute><ParivarPage /></PrivateRoute>} />
           <Route path="/utsuk" element={<PrivateRoute><UtsukPage /></PrivateRoute>} />

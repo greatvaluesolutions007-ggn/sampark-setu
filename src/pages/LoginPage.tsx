@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Mail, Eye, EyeOff } from 'lucide-react'
+import { User, Eye, EyeOff } from 'lucide-react'
 import { authService } from '@/api/services'
 import { useAuth } from '@/contexts/AuthContext'
 import type { LoginRequest } from '@/types'
@@ -13,17 +13,17 @@ import type { LoginRequest } from '@/types'
 export default function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [submitAttempted, setSubmitAttempted] = useState(false)
-  const [touchedEmail, setTouchedEmail] = useState(false)
+  const [touchedUsername, setTouchedUsername] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  const usernameValid = username.trim().length >= 3 && !/\s/.test(username)
   const passwordValid = password.trim().length >= 6
-  const isFormValid = emailValid && passwordValid
+  const isFormValid = usernameValid && passwordValid
 
 
   async function handleSubmit(e: React.FormEvent) {
@@ -36,7 +36,7 @@ export default function LoginPage() {
     setIsLoading(true)
     try {
       const credentials: LoginRequest = {
-        user_name: email,
+        user_name: username,
         password: password
       }
       
@@ -61,7 +61,7 @@ export default function LoginPage() {
       localStorage.setItem('regionId', response.data.region_id?.toString() || '')
       
       // Update auth context
-      await login(email)
+      await login(username)
       
       navigate('/')
     } catch (err: unknown) {
@@ -77,10 +77,8 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-3 h-12 w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl">ॐ</div>
-          <CardTitle className="text-2xl font-bold">शताब्दी गृह सम्पर्क</CardTitle>
-          <p className="text-sm text-muted-foreground">संघ शताब्दी व्यापक गृह सम्पर्क अभियान</p>
-          <p className="text-sm text-muted-foreground">हरियाणा प्रान्त</p>
-           <p className="text-sm text-muted-foreground">30 नवम्बर - 21 दिसम्बर</p>
+          <CardTitle className="text-2xl font-bold">संपर्क सेतु</CardTitle>
+          <p className="text-sm text-muted-foreground">संघ संपर्क अभियान डिजिटल प्लेटफॉर्म</p>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
@@ -90,14 +88,18 @@ export default function LoginPage() {
             <TabsContent value="login">
               <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">ईमेल</Label>
+                  <Label htmlFor="username">उपयोगकर्ता नाम</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      <Mail className="h-4 w-4" />
+                      <User className="h-4 w-4" />
                     </span>
-                    <Input id="email" type="email" placeholder="अपका ईमेल दर्ज करें" value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => setTouchedEmail(true)} className="pl-9" />
+                    <Input id="username" type="text" placeholder="अपका उपयोगकर्ता नाम दर्ज करें" value={username} onChange={(e) => setUsername(e.target.value)} onBlur={() => setTouchedUsername(true)} className="pl-9" />
                   </div>
-                  {(touchedEmail || submitAttempted) && !emailValid && <p className="text-sm text-primary">वैध ईमेल दर्ज करें</p>}
+                  {(touchedUsername || submitAttempted) && !usernameValid && (
+                    <p className="text-sm text-primary">
+                      {username.trim().length < 3 ? 'उपयोगकर्ता नाम कम से कम 3 अक्षरों का होना चाहिए' : 'उपयोगकर्ता नाम में स्पेस नहीं हो सकते'}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">पासवर्ड</Label>
@@ -116,6 +118,18 @@ export default function LoginPage() {
               </form>
             </TabsContent>
           </Tabs>
+          
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              नया खाता बनाना चाहते हैं?{' '}
+              <button
+                onClick={() => navigate('/register')}
+                className="text-orange-600 hover:text-orange-700 font-medium"
+              >
+                पंजीकरण करें
+              </button>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

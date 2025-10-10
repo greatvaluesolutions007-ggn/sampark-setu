@@ -3,12 +3,16 @@ const API_PATHS = {
   LOGIN: '/login',
   GET_CURRENT_USER: '/users/me',
   CREATE_USER: '/users',
+  RESET_PASSWORD: '/reset-password',
+  
+  // Code Validation (Legacy - keep for backward compatibility)
+  VALIDATE_CODE: '/v2/validate-code',
+  CREATE_USER_WITH_CODE: '/v2/users',
   
   // Regions
-  GET_REGIONS: '/v1/regions',
-  FETCH_REGIONS: '/fetch-regions',
-
-  GET_REGION_HIERARCHY: '/fetch-regions',
+  GET_REGIONS: '/regions',
+  FETCH_REGIONS: '/regions',
+  GET_REGION_HIERARCHY: '/regions',
   
   // Toli Management
   CREATE_TOLI: '/toli',
