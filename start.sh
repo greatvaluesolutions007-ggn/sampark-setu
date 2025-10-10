@@ -27,7 +27,7 @@ if [ ! -d node_modules ]; then
   npm install --no-audit --no-fund
 fi
 
-CMD="npm run dev -- --host ${HOST} --port ${PORT}"
+CMD="npm start"
 
 if [ "${NOHUP:-}" != "" ]; then
   echo "[start] Starting in background with nohup on ${HOST}:${PORT}"
