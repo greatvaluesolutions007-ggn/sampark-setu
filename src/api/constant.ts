@@ -6,8 +6,8 @@ const API_PATHS = {
   RESET_PASSWORD: '/reset-password',
   
   // Code Validation (Legacy - keep for backward compatibility)
-  VALIDATE_CODE: '/v2/validate-code',
-  CREATE_USER_WITH_CODE: '/v2/users',
+  VALIDATE_CODE: '/validate-code',
+  CREATE_USER_WITH_CODE: '/users',
   
   // Regions
   GET_REGIONS: '/regions',
