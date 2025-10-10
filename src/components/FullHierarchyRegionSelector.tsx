@@ -12,7 +12,6 @@ interface FullHierarchyRegionSelectorProps {
 
 export default function FullHierarchyRegionSelector({ 
   onRegionChange,
-  disabled = false,
   refreshKey
 }: FullHierarchyRegionSelectorProps) {
   const [hierarchy, setHierarchy] = useState<RegionHierarchy>({

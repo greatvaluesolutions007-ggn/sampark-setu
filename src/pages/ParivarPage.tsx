@@ -15,8 +15,8 @@ export default function ParivarPage() {
   const { toast } = useToast()
   
   // Region states
-  const [nagar, setNagar] = useState<string>('')
-  const [regionId, setRegionId] = useState<number | null>(null) 
+  const [, setNagar] = useState<string>('')
+  const [, setRegionId] = useState<number | null>(null) 
 
 
 

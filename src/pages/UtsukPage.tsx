@@ -18,7 +18,7 @@ export default function UtsukPage() {
    const [regionId, setRegionId] = useState<number | null>(null) 
   
   // Region states
-  const [nagar, setNagar] = useState<string>('')
+  const [, setNagar] = useState<string>('')
   
   // Form states
   const [form, setForm] = useState({
