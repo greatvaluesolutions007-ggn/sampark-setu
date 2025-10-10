@@ -40,13 +40,11 @@ export default function ToliPage() {
 
   // Validation functions
   const nameValid = name.length >= 3
-  const pramukhNameValid = pramukh.name.length >= 3
-  const pramukhMobileValid = /^[6-9]\d{9}$/.test(pramukh.mobile)
   const membersValid = members.every(member => 
     member.name.length >= 3 && /^[6-9]\d{9}$/.test(member.mobile)
   )
   
-  const isFormValid = nameValid && pramukhNameValid && pramukhMobileValid && membersValid
+  const isFormValid = nameValid && membersValid
 
   // Handle region changes from FullHierarchyRegionSelector
   const handleRegionChange = (regionId: number, regionName: string, regionType: string) => {
@@ -54,11 +52,6 @@ export default function ToliPage() {
     setRegionId(regionId)
   }
 
-  // Handle mobile input - only allow digits and limit to 10
-  const handleMobileChange = (value: string, setter: React.Dispatch<React.SetStateAction<ToliMember>>) => {
-    const mobileValue = value.replace(/\D/g, '').slice(0, 10)
-    setter(prev => ({ ...prev, mobile: mobileValue }))
-  }
 
   const addMember = () => {
     setMembers([...members, { name: '', mobile: '' }])
@@ -102,10 +95,6 @@ export default function ToliPage() {
       setError('')
       const toliData: CreateToliRequest = {
         name: name,
-        type: 'NAGAR', // Default to NAGAR type
-        region_id: regionId,
-        pramukh: pramukh,
-        toli_user_id: toliUserId,
         members: members.filter(m => m.name.trim() !== '' || m.mobile.trim() !== '')
       }
 
@@ -173,38 +162,6 @@ export default function ToliPage() {
                 {(submitAttempted || touchedFields.name) && !nameValid && (
                   <p className="text-sm text-primary">टोली का नाम कम से कम 3 अक्षरों का होना चाहिए</p>
                 )}
-              </div>
-
-              <div className="space-y-4">
-                <Label className="text-lg font-semibold">प्रमुख</Label>
-                <div className="space-y-3 p-4 border rounded-lg">
-                  <div className="space-y-2">
-                    <Label>नाम</Label>
-                    <Input
-                      placeholder="प्रमुख का नाम"
-                      value={pramukh.name}
-                      onChange={(e) => {
-                        setPramukh(prev => ({ ...prev, name: e.target.value }))
-                        setTouchedFields(prev => ({ ...prev, pramukhName: true }))
-                      }}
-                    />
-                    {(submitAttempted || touchedFields.pramukhName) && !pramukhNameValid && (
-                      <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label>मोबाइल</Label>
-                    <Input
-                      placeholder="मोबाइल नंबर"
-                      value={pramukh.mobile}
-                      onChange={(e) => handleMobileChange(e.target.value, setPramukh)}
-                      maxLength={10}
-                    />
-                    {(submitAttempted || touchedFields.pramukhMobile) && !pramukhMobileValid && (
-                      <p className="text-sm text-primary">कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें</p>
-                    )}
-                  </div>
-                </div>
               </div>
 
               <div className="space-y-4">

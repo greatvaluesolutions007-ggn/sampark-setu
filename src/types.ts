@@ -128,10 +128,6 @@ export interface ToliMember {
 
 export interface CreateToliRequest extends IParams {
   name: string;
-  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
-  region_id: number;
-  toli_user_id?: number | null;
-  pramukh: ToliMember;
   members: ToliMember[];
 }
 
