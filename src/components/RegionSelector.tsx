@@ -14,6 +14,7 @@ interface RegionSelectorProps {
   }
   regionDetails?: RegionData,
   disabled?: boolean
+  readOnly?: boolean
 }
 
 // Cache for child regions to avoid redundant API calls
@@ -45,7 +46,7 @@ const fetchChildRegions = async (regionId: number) => {
   }
 }
 
-export default function RegionSelector({ onRegionChange, disabled = false }: RegionSelectorProps) {
+export default function RegionSelector({ onRegionChange, disabled = false, readOnly = false }: RegionSelectorProps) {
   const [prant, setPrant] = useState('')
   const [vibhag, setVibhag] = useState('')
   const [jila, setJila] = useState('')
@@ -208,6 +209,13 @@ export default function RegionSelector({ onRegionChange, disabled = false }: Reg
 
   return (
     <div className="grid grid-cols-2 gap-4">
+      {readOnly && (
+        <div className="col-span-2 mb-2">
+          <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded border">
+            📍 क्षेत्र की जानकारी आपके पंजीकरण से ली गई है और इसे बदला नहीं जा सकता।
+          </p>
+        </div>
+      )}
       <div>
         <Label>प्रांत</Label>
         <Select
@@ -215,7 +223,7 @@ export default function RegionSelector({ onRegionChange, disabled = false }: Reg
           onValueChange={() => { }}
           disabled={true}
         >
-          <SelectTrigger>
+          <SelectTrigger className={readOnly ? "bg-gray-100 cursor-not-allowed" : ""}>
             <SelectValue placeholder={isLoading ? "लोड हो रहा है..." : "प्रांत चुनें"} />
           </SelectTrigger>
           <SelectContent>
@@ -233,9 +241,9 @@ export default function RegionSelector({ onRegionChange, disabled = false }: Reg
         <Select
           value={vibhagAssigned ? vibhagAssigned.region_id.toString() : vibhag}
           onValueChange={handleVibhagChange}
-          disabled={disabled || isLoading || !!vibhagAssigned || vibhagOptions.length === 0}
+          disabled={readOnly || disabled || isLoading || !!vibhagAssigned || vibhagOptions.length === 0}
         >
-          <SelectTrigger>
+          <SelectTrigger className={readOnly ? "bg-gray-100 cursor-not-allowed" : ""}>
             <SelectValue placeholder={isLoading ? "लोड हो रहा है..." : "विभाग चुनें"} />
           </SelectTrigger>
           <SelectContent>
@@ -259,9 +267,9 @@ export default function RegionSelector({ onRegionChange, disabled = false }: Reg
         <Select
           value={jilaAssigned ? jilaAssigned.region_id.toString() : jila}
           onValueChange={handleJilaChange}
-          disabled={disabled || isLoading || !!jilaAssigned || jilaOptions.length === 0}
+          disabled={readOnly || disabled || isLoading || !!jilaAssigned || jilaOptions.length === 0}
         >
-          <SelectTrigger>
+          <SelectTrigger className={readOnly ? "bg-gray-100 cursor-not-allowed" : ""}>
             <SelectValue placeholder={isLoading ? "लोड हो रहा है..." : "जिला चुनें"} />
           </SelectTrigger>
           <SelectContent className='z-[999999]'>
@@ -285,9 +293,9 @@ export default function RegionSelector({ onRegionChange, disabled = false }: Reg
         <Select
           value={nagarAssigned ? nagarAssigned.region_id.toString() : nagar}
           onValueChange={handleNagarChange}
-          disabled={disabled || isLoading || !!nagarAssigned || nagarOptions.length === 0}
+          disabled={readOnly || disabled || isLoading || !!nagarAssigned || nagarOptions.length === 0}
         >
-          <SelectTrigger>
+          <SelectTrigger className={readOnly ? "bg-gray-100 cursor-not-allowed" : ""}>
             <SelectValue placeholder={isLoading ? "लोड हो रहा है..." : "नगर/खंड चुनें"} />
           </SelectTrigger>
           <SelectContent>

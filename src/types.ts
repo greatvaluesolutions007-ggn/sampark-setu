@@ -23,6 +23,16 @@ export interface LoginResponse {
   region_id: number | null;
 }
 
+export interface ResetPasswordRequest extends IParams {
+  user_name: string;
+  new_password: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+  status: string;
+}
+
 export interface CreateUserRequest extends IParams {
   user_name: string;
   password: string;
@@ -41,6 +51,7 @@ export interface CreateUserResponse {
 export interface User {
   user_id: number;
   user_name: string;
+  full_name?: string;
   role: string;
   region_id: number | null;
   is_active: number;
@@ -93,10 +104,21 @@ export interface Region {
   region_id: number;
   name: string;
   code: string;
-  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
+  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND' | 'BASTI' | 'MANDAL' | 'GRAM';
   parent_id?: number | null;
   created_at?: string | null;
   updated_at?: string| null;
+}
+
+export interface RegionHierarchy {
+  prant: Region | null;
+  vibhag: Region | null;
+  jila: Region | null;
+  nagar: Region | null;
+  khand: Region | null;
+  basti: Region | null;
+  mandal: Region | null;
+  gram: Region | null;
 }
 
 export interface ToliMember {
@@ -106,10 +128,6 @@ export interface ToliMember {
 
 export interface CreateToliRequest extends IParams {
   name: string;
-  type: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND';
-  region_id: number;
-  toli_user_id?: number | null;
-  pramukh: ToliMember;
   members: ToliMember[];
 }
 
@@ -208,4 +226,26 @@ export interface Visit {
   address_text: string | null;
   notes: string | null;
   created_at: string;
+}
+
+// Code Validation Types
+export interface ValidateCodeRequest extends IParams {
+  user_code: string;
+}
+
+export interface ValidateCodeResponse {
+  is_valid: boolean;
+  access_level: 'TOLI_CREATION' | 'VIEW_ONLY' | null;
+  allowed_region_types: ('PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND' | 'BASLI' | 'GRAM')[];
+  message: string;
+}
+
+// Enhanced User Creation with Code
+export interface CreateUserWithCodeRequest extends IParams {
+  user_code: string;
+  user_name: string;
+  password: string;
+  full_name: string;
+  mobile_number: string;
+  region_id: number;
 }
