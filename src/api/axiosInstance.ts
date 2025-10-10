@@ -2,23 +2,12 @@ import { CONSTANT } from "@/lib/constant";
 import { getBasePath } from "@/lib/utils";
 import type { apiResponseType, BasePathType, IParams } from "@/types";
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-// Build base URL - use relative URLs in development for Vite proxy
-const isDev = (import.meta as any).env?.DEV;
-let baseURL;
-
-if (isDev) {
-  // In development, use relative URLs to work with Vite proxy
-  baseURL = "/api";
-} else {
-  // In production, use full URLs
-  const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || "http";
-  const apiHost = (import.meta as any).env?.VITE_API_HOST || "localhost";
-  const apiPort = (import.meta as any).env?.VITE_API_PORT ?? "3000";
-  const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || "/api";
-  baseURL = `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ""}${apiPrefix}`;
-}
-
-console.log('API Base URL:', baseURL, '(isDev:', isDev, ')');
+// Build base URL from Vite environment variables (fallbacks provided)
+const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || "http";
+const apiHost = (import.meta as any).env?.VITE_API_HOST || "localhost";
+const apiPort = (import.meta as any).env?.VITE_API_PORT ?? "3000";
+const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || "/api";
+const baseURL = `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ""}${apiPrefix}`;
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
