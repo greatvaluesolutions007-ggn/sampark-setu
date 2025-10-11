@@ -27,16 +27,15 @@ export default function HomePage() {
                 <p className="text-sm text-muted-foreground">व्यक्तिगत डैशबोर्ड</p>
               </div>
             </div>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={logout}
-            className="flex items-center gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            लॉगआउट
-          </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={logout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              लॉगआउट
+            </Button>
           </header>
 
           {/* Navigation Tabs */}
