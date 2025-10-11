@@ -249,3 +249,27 @@ export interface CreateUserWithCodeRequest extends IParams {
   mobile_number: string;
   region_id: number;
 }
+
+// Reporting Summary Types
+export interface ToliSummaryResponse {
+  total_tolies: number;
+}
+
+export interface UtsukSummaryResponse {
+  utsuk_count: number;
+}
+
+export interface ParivarSummaryResponse {
+  total_families: number;
+  total_contacted: number;
+  male_count: number;
+  female_count: number;
+  kids_count: number;
+}
+
+export interface SahityaSummaryResponse {
+  sticker_count: number;
+  total_folder: number;
+  nishulk_books: number;
+  shashulk_books: number;
+}
