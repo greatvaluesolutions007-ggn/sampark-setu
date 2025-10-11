@@ -27,15 +27,16 @@ export default function HomePage() {
                 <p className="text-sm text-muted-foreground">व्यक्तिगत डैशबोर्ड</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={logout}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              लॉगआउट
-            </Button>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={logout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            लॉगआउट
+          </Button>
           </header>
 
           {/* Navigation Tabs */}
@@ -65,24 +66,6 @@ export default function HomePage() {
               onClick={() => setActiveTab('sashulk')}
             />
 
-            <NavTab
-              icon={<Users className="h-4 w-4" />}
-              label="परिवार"
-              active={activeTab === 'parivar'}
-              onClick={() => setActiveTab('parivar')}
-            />
-            <NavTab
-              icon={<BookOpen className="h-4 w-4" />}
-              label="उत्सुक शक्ति"
-              active={activeTab === 'utsuk'}
-              onClick={() => setActiveTab('utsuk')}
-            />
-            <NavTab
-              icon={<FileText className="h-4 w-4" />}
-              label="साहित्य"
-              active={activeTab === 'sashulk'}
-              onClick={() => setActiveTab('sashulk')}
-            />
           </div>
         </div>
       </div>
@@ -98,3 +81,5 @@ export default function HomePage() {
     </div>
   )
 }
+
+
