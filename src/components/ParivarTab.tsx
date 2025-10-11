@@ -5,7 +5,7 @@ import { reportingService } from '@/api/services'
 import type { ParivarSummaryResponse } from '@/types'
 
 export default function ParivarTab() {
-  const [summary, setSummary] = useState<ParivarSummaryResponse>({
+  const [summary, setSummary] = useState<Required<ParivarSummaryResponse>>({
     total_families: 0,
     total_contacted: 0,
     male_count: 0,
@@ -23,7 +23,13 @@ export default function ParivarTab() {
       setIsLoading(true)
       const response = await reportingService.getParivarSummary()
       if (response.success) {
-        setSummary(response.data)
+        setSummary({
+          total_families: response.data.total_families ?? 0,
+          total_contacted: response.data.total_contacted ?? 0,
+          male_count: response.data.male_count ?? 0,
+          female_count: response.data.female_count ?? 0,
+          kids_count: response.data.kids_count ?? 0,
+        })
       }
     } catch (error) {
       console.error('Error fetching parivar summary:', error)

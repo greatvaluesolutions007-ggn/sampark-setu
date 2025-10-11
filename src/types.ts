@@ -252,24 +252,24 @@ export interface CreateUserWithCodeRequest extends IParams {
 
 // Reporting Summary Types
 export interface ToliSummaryResponse {
-  total_tolies: number | null;
+  total_tolies?: number;
 }
 
 export interface UtsukSummaryResponse {
-  utsuk_count: number | null;
+  utsuk_count?: number;
 }
 
 export interface ParivarSummaryResponse {
-  total_families: number | null;
-  total_contacted: number | null;
-  male_count: number | null;
-  female_count: number | null;
-  kids_count: number | null;
+  total_families?: number;
+  total_contacted?: number;
+  male_count?: number;
+  female_count?: number;
+  kids_count?: number;
 }
 
 export interface SahityaSummaryResponse {
-  sticker_count: number | null;
-  total_folder: number | null;
-  nishulk_books: number | null;
-  shashulk_books: number | null;
+  sticker_count?: number;
+  total_folder?: number;
+  nishulk_books?: number;
+  shashulk_books?: number;
 }

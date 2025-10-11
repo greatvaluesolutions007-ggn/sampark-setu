@@ -25,7 +25,7 @@ export default function OverviewTab({ user }: OverviewTabProps) {
       setIsLoading(true)
       const response = await reportingService.getToliSummary()
       if (response.success) {
-        setToliCount(response.data.total_tolies)
+        setToliCount(response.data.total_tolies ?? 0)
       }
     } catch (error) {
       console.error('Error fetching toli summary:', error)
