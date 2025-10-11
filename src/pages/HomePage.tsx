@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom'
 import { Users, UserPlus, Layers, ArrowRight, Home, BookOpen, FileText, LogOut } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
