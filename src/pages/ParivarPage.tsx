@@ -18,8 +18,6 @@ export default function ParivarPage() {
   const [, setNagar] = useState<string>('')
   const [, setRegionId] = useState<number | null>(null) 
 
-
-
   useEffect(() => {
    getUserRegion()
   }, [])
@@ -35,7 +33,7 @@ export default function ParivarPage() {
     } catch (error) {
       console.error('Error fetching user region:', error)
     }
-      }
+  }
   
   // Form states
   const [samparkit, setSamparkit] = useState('')

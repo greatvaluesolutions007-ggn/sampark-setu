@@ -72,18 +72,7 @@ export default function UtsukPage() {
       } catch (error) {
         console.error('Error fetching user region:', error)
       }
-        }
-
-  // Debug logging
-  console.log('Form validation:', {
-    nameValid,
-    phoneValid,
-    emailValid,
-    sexValid,
-    addressValid,
-    questionsValid,
-    isFormValid
-  })
+  }
 
   // Handle region changes from RegionSelector
   const handleRegionChange = (_prantValue: string, _vibhagValue: string, _jilaValue: string, nagarValue: string) => {
