@@ -51,25 +51,29 @@ start_app() {
   echo "[start] Starting $APP_NAME on ${HOST}:${PORT}..."
   CMD="node node_modules/vite/bin/vite.js build && node node_modules/vite/bin/vite.js preview --host ${HOST} --port ${PORT}"
   
-  if [ "${NOHUP:-}" != "" ]; then
-    nohup bash -lc "$CMD" > "$LOG_FILE" 2>&1 &
-    echo $! > "$PID_FILE"
-    echo "[start] Started $APP_NAME with PID $(cat "$PID_FILE"). Logs: $LOG_FILE"
-  else
-    exec bash -lc "$CMD"
-  fi
+  # Always run in background when called from command line
+  nohup bash -lc "$CMD" > "$LOG_FILE" 2>&1 &
+  echo $! > "$PID_FILE"
+  echo "[start] Started $APP_NAME with PID $(cat "$PID_FILE"). Logs: $LOG_FILE"
+  echo "[start] To stop: ./start.sh stop"
+  echo "[start] To view logs: ./start.sh logs"
 }
 
 # Function to stop the app
 stop_app() {
+  # First, kill any untracked Vite processes
+  echo "[stop] Killing any existing Vite processes..."
+  pkill -f "vite.js preview" 2>/dev/null || true
+  
   if ! is_running; then
     echo "[stop] $APP_NAME is not running"
+    rm -f "$PID_FILE"
     return 0
   fi
 
   PID=$(cat "$PID_FILE")
   echo "[stop] Stopping $APP_NAME (PID: $PID)..."
-  kill "$PID"
+  kill "$PID" 2>/dev/null || true
   
   # Wait for graceful shutdown
   for i in {1..10}; do
