@@ -25,6 +25,10 @@ import type {
   ValidateCodeRequest,
   ValidateCodeResponse,
   CreateUserWithCodeRequest,
+  ToliSummaryResponse,
+  UtsukSummaryResponse,
+  ParivarSummaryResponse,
+  SahityaSummaryResponse,
 } from '@/types';
 
 // Authentication Services
@@ -200,6 +204,29 @@ export const visitService = {
     offset?: number
   }): Promise<apiResponseType<Visit[]>> => {
     const response = await Get<Visit[]>("USER", API_PATHS.GET_VISITS, params);
+    return response;
+  },
+};
+
+// Reporting Services
+export const reportingService = {
+  getToliSummary: async (): Promise<apiResponseType<ToliSummaryResponse>> => {
+    const response = await Get<ToliSummaryResponse>("USER", API_PATHS.TOLI_SUMMARY);
+    return response;
+  },
+
+  getUtsukSummary: async (): Promise<apiResponseType<UtsukSummaryResponse>> => {
+    const response = await Get<UtsukSummaryResponse>("USER", API_PATHS.UTSUK_SUMMARY);
+    return response;
+  },
+
+  getParivarSummary: async (): Promise<apiResponseType<ParivarSummaryResponse>> => {
+    const response = await Get<ParivarSummaryResponse>("USER", API_PATHS.PARIVAR_SUMMARY);
+    return response;
+  },
+
+  getSahityaSummary: async (): Promise<apiResponseType<SahityaSummaryResponse>> => {
+    const response = await Get<SahityaSummaryResponse>("USER", API_PATHS.SAHITYA_SUMMARY);
     return response;
   },
 };

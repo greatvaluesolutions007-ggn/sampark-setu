@@ -16,11 +16,15 @@ export default function ToliPage() {
   
   // Region states
   const [regionId, setRegionId] = useState<number | null>(null);
-  const [toliUserId, setToliUserId] = useState<number | null>(null); // To link toli to a user if needed
+  const [toliUserId, setToliUserId] = useState<number | null>(null);
   
   // Form states
   const [name, setName] = useState('')
   const [members, setMembers] = useState<ToliMember[]>([])
+  
+  // Existing toli state
+  const [existingToliId, setExistingToliId] = useState<number | null>(null)
+  const [isLoadingData, setIsLoadingData] = useState(true)
   
   // Validation states
   const [submitAttempted, setSubmitAttempted] = useState(false)
@@ -32,7 +36,7 @@ export default function ToliPage() {
 
 
   useEffect(()=>{
-    fetchUserId()
+    fetchUserIdAndLoadToli()
   },[])
 
   // Validation functions
@@ -66,14 +70,38 @@ export default function ToliPage() {
 
 
 
-  const fetchUserId = async()=>{
+  const fetchUserIdAndLoadToli = async()=>{
     try{
+      setIsLoadingData(true)
       const userResponse = await authService.getCurrentUser();
       if(userResponse.success && userResponse.data.user_id){
-        setToliUserId(userResponse.data.user_id);
+        const userId = userResponse.data.user_id
+        const userRegionId = userResponse.data.region_id
+        
+        setToliUserId(userId);
+        
+        // Fetch user's existing toli and load it into form
+        const toliResponse = await toliService.getTolis({
+          region_id: userRegionId || undefined,
+          limit: 10,
+          offset: 0
+        })
+        
+        if(toliResponse.success && toliResponse.data.length > 0) {
+          // Find the user's toli (if exists)
+          const userToli = toliResponse.data.find(t => t.toli_user_id === userId)
+          if (userToli) {
+            // Load existing toli data into form fields
+            setExistingToliId(userToli.toli_id)
+            setName(userToli.name)
+            setMembers(userToli.members_json || [])
+          }
+        }
       }
     }catch(e){
-      console.error('Error fetching user ID:', e);
+      console.error('Error fetching user ID and toli:', e);
+    } finally {
+      setIsLoadingData(false)
     }
   }
 
@@ -105,14 +133,15 @@ export default function ToliPage() {
       // Show success toast
       toast({
         title: "सफलतापूर्वक सहेजा गया!",
-        description: `टोली सफलतापूर्वक बनाई गई। Toli ID: ${response.data.toli_id}`,
+        description: existingToliId 
+          ? `टोली सफलतापूर्वक अपडेट की गई।`
+          : `टोली सफलतापूर्वक बनाई गई। Toli ID: ${response.data.toli_id}`,
       })
 
-      // Reset form on success
-      setName('')
-      setMembers([])
-      setSubmitAttempted(false)
-      setTouchedFields({ name: false })
+      // If creating new, reload to show as existing
+      if (!existingToliId) {
+        await fetchUserIdAndLoadToli()
+      }
 
       // Navigate to home page after a short delay
       setTimeout(() => {
@@ -128,6 +157,17 @@ export default function ToliPage() {
     }
   }
 
+  if (isLoadingData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">लोड हो रहा है...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="flex-1 p-4 pb-20">
@@ -135,9 +175,18 @@ export default function ToliPage() {
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4 flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" /> वापस जाएँ
           </Button>
+
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl text-center">टोली निर्माण</CardTitle>
+              <CardTitle className="text-xl text-center">
+                {existingToliId ? 'टोली विवरण / संपादन' : 'टोली निर्माण'}
+              </CardTitle>
+              {existingToliId && (
+                <p className="text-sm text-center text-muted-foreground mt-2">
+                  टोली ID: {existingToliId}
+                  <span className="block text-green-600 mt-1">✓ मौजूदा टोली लोड की गई</span>
+                </p>
+              )}
             </CardHeader>
             <CardContent>
               <form id="toli-form" onSubmit={handleSubmit} className="space-y-4">
@@ -225,7 +274,9 @@ export default function ToliPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">
         <div className="max-w-xl mx-auto">
           <Button type="submit" form="toli-form" className="w-full" disabled={!isFormValid || isLoading}>
-            {isLoading ? 'टोली बनाई जा रही है...' : 'टोली बनाएं'}
+            {isLoading 
+              ? (existingToliId ? 'अपडेट हो रहा है...' : 'टोली बनाई जा रही है...') 
+              : (existingToliId ? 'टोली अपडेट करें' : 'टोली बनाएं')}
           </Button>
         </div>
       </div>

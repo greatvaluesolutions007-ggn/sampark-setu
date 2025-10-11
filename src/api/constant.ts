@@ -25,6 +25,12 @@ const API_PATHS = {
   // Visit Management (Parivar Data)
   CREATE_VISIT: '/visit',
   GET_VISITS: '/visit',
+  
+  // Reporting APIs
+  TOLI_SUMMARY: '/reporting/tolis/summary',
+  UTSUK_SUMMARY: '/reporting/utsukshakti/summary',
+  PARIVAR_SUMMARY: '/reporting/parivar/summary',
+  SAHITYA_SUMMARY: '/reporting/sahitya/summary',
 }
 
 export default API_PATHS;
