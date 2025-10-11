@@ -1,11 +1,9 @@
-import { useNavigate } from 'react-router-dom'
-import { Users, UserPlus, Layers, ArrowRight, Home, BookOpen, FileText, LogOut } from 'lucide-react'
+import { Users, ArrowRight, Home, BookOpen, FileText, LogOut } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
 export default function HomePage() {
-  const navigate = useNavigate()
   const { logout } = useAuth()
   const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk'| 'sashulk'>('overview')
 
