@@ -1,11 +1,22 @@
-import { Users, ArrowRight, Home, BookOpen, FileText, LogOut } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Users, UserPlus, Layers, ArrowRight, Home, BookOpen, FileText, LogOut } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
 export default function HomePage() {
+  const navigate = useNavigate()
   const { logout } = useAuth()
-  const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk'| 'sashulk'>('overview')
+
+  const userRole = localStorage.getItem('userRole') ?? ''
+
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'parivar' | 'nishulk' | 'utsuk' | 'overview_basti_gram' | 'sashulk'
+  >(
+    (userRole === 'BASTI_KARYAKARTA' || userRole === 'GRAM_KARYAKARTA')
+      ? 'overview_basti_gram'
+      : 'overview'
+  )
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-orange-50/40 to-white">
@@ -14,93 +25,137 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4">
           {/* Header */}
           <header className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <img src="https://www.rss.org//images/ico_2205.ico" alt="RSS" className="h-8 w-8" />
-            <div>
-              <h1 className="text-2xl font-bold text-primary">संघ शताब्दी व्यापक गृह संपर्क अभियान (हरियाणा)</h1>
-              <p className="text-sm text-muted-foreground">व्यक्तिगत डैशबोर्ड</p>
+            <div className="flex items-center gap-3">
+              <img
+                src="https://www.rss.org//images/ico_2205.ico"
+                alt="RSS"
+                className="h-8 w-8"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-primary">शताब्दी गृह संपर्क</h1>
+                <p className="text-sm text-muted-foreground">आपका व्यक्तिगत डैशबोर्ड</p>
+              </div>
             </div>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={logout}
-            className="flex items-center gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            लॉगआउट
-          </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={logout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              लॉगआउट
+            </Button>
           </header>
 
           {/* Navigation Tabs */}
           <div className="flex border-b border-gray-200">
-          <NavTab 
-            icon={<Home className="h-4 w-4" />} 
-            label="टोली जानकरी" 
-            active={activeTab === 'overview'}
-            onClick={() => setActiveTab('overview')}
-          />
-          <NavTab 
-            icon={<Users className="h-4 w-4" />} 
-            label="परिवार" 
-            active={activeTab === 'parivar'}
-            onClick={() => setActiveTab('parivar')}
-          />
-          <NavTab 
-            icon={<BookOpen className="h-4 w-4" />} 
-            label="उत्सुक शक्ति" 
-            active={activeTab === 'utsuk'}
-            onClick={() => setActiveTab('utsuk')}
-          />
-          <NavTab 
-            icon={<FileText className="h-4 w-4" />} 
-            label="साहित्य" 
-            active={activeTab === 'sashulk' }
-            onClick={() => setActiveTab('sashulk')}
-          />
+            {/* Show "टोली जानकरी" only if not BASTI/GRAM */}
+            {userRole !== 'BASTI_KARYAKARTA' && userRole !== 'GRAM_KARYAKARTA' && (
+              <NavTab
+                icon={<Home className="h-4 w-4" />}
+                label="टोली जानकरी"
+                active={activeTab === 'overview'}
+                onClick={() => setActiveTab('overview')}
+              />
+            )}
 
+            {/* Show Dashboard only for BASTI or GRAM */}
+            {(userRole === 'BASTI_KARYAKARTA' || userRole === 'GRAM_KARYAKARTA') && (
+              <NavTab
+                icon={<Home className="h-4 w-4" />}
+                label="Dashboard"
+                active={activeTab === 'overview_basti_gram'}
+                onClick={() => setActiveTab('overview_basti_gram')}
+              />
+            )}
+
+            <NavTab
+              icon={<Users className="h-4 w-4" />}
+              label="परिवार"
+              active={activeTab === 'parivar'}
+              onClick={() => setActiveTab('parivar')}
+            />
+            <NavTab
+              icon={<BookOpen className="h-4 w-4" />}
+              label="उत्सुक शक्ति"
+              active={activeTab === 'utsuk'}
+              onClick={() => setActiveTab('utsuk')}
+            />
+            <NavTab
+              icon={<FileText className="h-4 w-4" />}
+              label="साहित्य"
+              active={activeTab === 'sashulk'}
+              onClick={() => setActiveTab('sashulk')}
+            />
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6">
-        {/* Tab Content */}
-        {activeTab === 'overview' && (
-          <>
-           
-            {/* Statistics Cards */}
-            <div className="space-y-6">
-              {/* Top Row - Teams and New Joins */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <StatCard
-                  title="कुल टोलिया"
-                  value="24"
-                  icon={<Users className="h-6 w-6" />}
-                  color="bg-blue-100 text-blue-600"
-                />
-
-              </div>
-
+        {/* Overview tab content (for non‑BASTI/GRAM users) */}
+        {activeTab === 'overview' && userRole !== 'BASTI_KARYAKARTA' && userRole !== 'GRAM_KARYAKARTA' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatCard
+                title="कुल टोलिया"
+                value="24"
+                icon={<Users className="h-6 w-6" />}
+                color="bg-blue-100 text-blue-600"
+              />
             </div>
-          </>
+          </div>
         )}
 
-        {activeTab === 'utsuk' && (
-            <div className="space-y-6">
-              {/* <h2 className="text-lg font-semibold text-primary mb-4">उत्सुक शक्ति विवरण</h2> */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <StatCard
-                  title="कुल उत्सुक शक्ति सदस्य"
-                  value="98"
+        {/* Dashboard content (for BASTI or GRAM users) */}
+        {activeTab === 'overview_basti_gram' &&
+          (userRole === 'BASTI_KARYAKARTA' || userRole === 'GRAM_KARYAKARTA') && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <ActionCard
                   icon={<Users className="h-6 w-6" />}
+                  title="परिवार डेटा"
+                  subtitle="परिवार का विवरण संग्रह करें"
+                  onClick={() => navigate('/parivar')}
+                  color="bg-blue-100 text-blue-600"
+                />
+                <ActionCard
+                  icon={<UserPlus className="h-6 w-6" />}
+                  title="उत्सुक शक्ति"
+                  subtitle="नये उत्सुक सदस्य जोड़ें"
+                  onClick={() => navigate('/utsuk')}
+                  color="bg-purple-100 text-purple-600"
+                />
+                <ActionCard
+                  icon={<Layers className="h-6 w-6" />}
+                  title="टोली निर्माण"
+                  subtitle="टोली बनाएं"
+                  onClick={() => navigate('/toli')}
                   color="bg-green-100 text-green-600"
                 />
-                
+                {/* <ActionCard
+                  icon={<Layers className="h-6 w-6" />}
+                  title="Create User"
+                  subtitle="create new user"
+                  onClick={() => navigate('/create')}
+                  color="bg-green-100 text-green-600"
+                /> */}
               </div>
+            </>
+          )}
+
+        {activeTab === 'utsuk' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatCard
+                title="कुल उत्सुक शक्ति सदस्य"
+                value="98"
+                icon={<Users className="h-6 w-6" />}
+                color="bg-green-100 text-green-600"
+              />
             </div>
-          )
-        }
+          </div>
+        )}
 
         {activeTab === 'parivar' && (
           <div className="space-y-6">
@@ -119,8 +174,6 @@ export default function HomePage() {
                 color="bg-green-100 text-green-600"
               />
             </div>
-            
-           
             <div className="space-y-4">
               <StatCard
                 title="पुरुष"
@@ -172,43 +225,16 @@ export default function HomePage() {
 
         {activeTab === 'sashulk' && (
           <div className="space-y-6">
-            <div className="space-y-6">
-  {/* Paid Content Section */}
-  
-
-<div className="space-y-6">
-  {/* Free Content Section */}
-  <h2 className="text-lg font-semibold text-primary mb-4">निशुल्क साहित्य</h2>
-  <div className="space-y-4">
-    <StatCard
-      title="कुल स्टीकर"
-      value="1250"
-      icon={<BookOpen className="h-6 w-6" />}
-      color="bg-green-100 text-green-600"
-    />
-    <StatCard
-      title="कुल फोल्डर"
-      value="680"
-      icon={<BookOpen className="h-6 w-6" />}
-      color="bg-blue-100 text-blue-600"
-    />
- 
-
-    <h2 className="text-lg font-semibold text-primary mb-4">सशुल्क साहित्य</h2>
-  <div className="space-y-4">
-    <StatCard
-      title="कुल पुस्तकें"
-      value="235"
-      icon={<FileText className="h-6 w-6" />}
-      color="bg-orange-100 text-orange-600"
-    />
-  </div>
-</div>
-  </div>
-</div>
-
+            <h2 className="text-lg font-semibold text-primary mb-4">सशुल्क साहित्य</h2>
+            <div className="space-y-4">
+              <StatCard
+                title="कुल पुस्तकें"
+                value="235"
+                icon={<FileText className="h-6 w-6" />}
+                color="bg-orange-100 text-orange-600"
+              />
+            </div>
           </div>
-          
         )}
       </div>
     </div>
@@ -216,41 +242,48 @@ export default function HomePage() {
 }
 
 // Navigation Tab Component
-function NavTab({ icon, label, active = false, onClick }: { 
-  icon: React.ReactNode, 
-  label: string, 
-  active?: boolean,
-  onClick: () => void 
+function NavTab({
+  icon,
+  label,
+  active = false,
+  onClick,
+}: {
+  icon: React.ReactNode
+  label: string
+  active?: boolean
+  onClick: () => void
 }) {
   return (
-    <button 
+    <button
       onClick={onClick}
       className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 relative transition-colors ${
-        active 
-          ? 'text-primary' 
-          : 'text-muted-foreground hover:text-foreground'
+        active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
       }`}
     >
       {icon}
       <span className="text-sm font-medium whitespace-nowrap">{label}</span>
-      {active && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
-      )}
+      {active && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>}
     </button>
   )
 }
 
 // Action Card Component
-function ActionCard({ icon, title, subtitle, onClick, color }: { 
-  icon: React.ReactNode, 
-  title: string, 
-  subtitle: string, 
-  onClick: () => void, 
-  color: string 
+function ActionCard({
+  icon,
+  title,
+  subtitle,
+  onClick,
+  color,
+}: {
+  icon: React.ReactNode
+  title: string
+  subtitle: string
+  onClick: () => void
+  color: string
 }) {
   return (
-    <button 
-      onClick={onClick} 
+    <button
+      onClick={onClick}
       className="group rounded-lg border bg-white p-4 text-left shadow-sm transition hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       <div className={`inline-flex items-center justify-center rounded-md ${color} p-2 mb-3`}>
@@ -268,11 +301,16 @@ function ActionCard({ icon, title, subtitle, onClick, color }: {
 }
 
 // Statistics Card Component
-function StatCard({ title, value, icon, color }: { 
-  title: string, 
-  value: string, 
-  icon: React.ReactNode, 
-  color: string 
+function StatCard({
+  title,
+  value,
+  icon,
+  color,
+}: {
+  title: string
+  value: string
+  icon: React.ReactNode
+  color: string
 }) {
   return (
     <div className="bg-white rounded-xl border p-6 shadow-sm">
@@ -288,5 +326,3 @@ function StatCard({ title, value, icon, color }: {
     </div>
   )
 }
-
-
