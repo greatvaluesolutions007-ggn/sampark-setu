@@ -65,6 +65,24 @@ export default function HomePage() {
               onClick={() => setActiveTab('sashulk')}
             />
 
+            <NavTab
+              icon={<Users className="h-4 w-4" />}
+              label="परिवार"
+              active={activeTab === 'parivar'}
+              onClick={() => setActiveTab('parivar')}
+            />
+            <NavTab
+              icon={<BookOpen className="h-4 w-4" />}
+              label="उत्सुक शक्ति"
+              active={activeTab === 'utsuk'}
+              onClick={() => setActiveTab('utsuk')}
+            />
+            <NavTab
+              icon={<FileText className="h-4 w-4" />}
+              label="साहित्य"
+              active={activeTab === 'sashulk'}
+              onClick={() => setActiveTab('sashulk')}
+            />
           </div>
         </div>
       </div>
