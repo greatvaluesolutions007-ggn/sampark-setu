@@ -391,7 +391,7 @@ export default function HierarchicalRegionDropdown({
           <p className="text-xs mt-1">
             {accessLevel === 'TOLI_CREATION' 
               ? 'आप सभी स्तरों तक जा सकते हैं और टोली बना सकते हैं'
-              : 'आप केवल नगर/खंड स्तर तक चयन कर सकते हैं (नागरिक के लिए नगर, ग्रामीय के लिए खंड)'
+              : 'आप केवल नगर/खंड स्तर तक चयन कर सकते हैं (नगरीय के लिए नगर, ग्रामीण के लिए खंड)'
             }
           </p>
         </div>
@@ -488,8 +488,8 @@ export default function HierarchicalRegionDropdown({
               <SelectValue placeholder="प्रकार चुनें" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="GRAMNIYE">ग्रामीय</SelectItem>
-              <SelectItem value="NAGARIYE">नागरिक</SelectItem>
+              <SelectItem value="GRAMNIYE">ग्रामीण</SelectItem>
+              <SelectItem value="NAGARIYE">नगरीय</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -786,7 +786,7 @@ export default function HierarchicalRegionDropdown({
           {selected.vibhag && <div>विभाग: {selected.vibhag.name}</div>}
           {selected.jila && <div>जिला: {selected.jila.name}</div>}
           {selected.prakar && (
-            <div>प्रकार: {selected.prakar === 'GRAMNIYE' ? 'ग्रामीय' : 'नागरिक'}</div>
+            <div>प्रकार: {selected.prakar === 'GRAMNIYE' ? 'ग्रामीण' : 'नगरीय'}</div>
           )}
           {selected.nagar && <div>नगर: {selected.nagar.name}</div>}
           {selected.khand && <div>खंड: {selected.khand.name}</div>}

@@ -241,12 +241,12 @@ export default function FullHierarchyRegionSelector({
             <Label>प्रकार</Label>
             <Select disabled={true} value={pathType || ''}>
               <SelectTrigger className="bg-gray-100 cursor-not-allowed">
-                <SelectValue placeholder={pathType ? (pathType === 'GRAMNIYE' ? 'ग्रामीय' : 'नागरिक') : "प्रकार लोड नहीं हो सका"} />
+                <SelectValue placeholder={pathType ? (pathType === 'GRAMNIYE' ? 'ग्रामीण' : 'नगरीय') : "प्रकार लोड नहीं हो सका"} />
               </SelectTrigger>
               <SelectContent>
                 {pathType && (
                   <SelectItem value={pathType}>
-                    {pathType === 'GRAMNIYE' ? 'ग्रामीय' : 'नागरिक'}
+                    {pathType === 'GRAMNIYE' ? 'ग्रामीण' : 'नगरीय'}
                   </SelectItem>
                 )}
               </SelectContent>
