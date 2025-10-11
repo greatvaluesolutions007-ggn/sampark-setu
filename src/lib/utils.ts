@@ -10,15 +10,15 @@ export function cn(...inputs: ClassValue[]) {
 export const getBasePath = (base: BasePathType): string => {
   const isDev = (import.meta as any).env?.DEV;
   
-  if (isDev) {
-    // In development, use relative URLs to work with Vite proxy
-    switch (base) {
-      case 'USER':
-        return '/api';
-      default:
-        return '';
-    }
-  }
+  // if (isDev) {
+  //   // In development, use relative URLs to work with Vite proxy
+  //   switch (base) {
+  //     case 'USER':
+  //       return '/api';
+  //     default:
+  //       return '';
+  //   }
+  // }
   
   // In production, use full URLs
   switch (base) {
@@ -28,6 +28,7 @@ export const getBasePath = (base: BasePathType): string => {
         const apiHost = (import.meta as any).env?.VITE_API_HOST || 'localhost';
         const apiPort = (import.meta as any).env?.VITE_API_PORT ?? '3000';
         const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || '/api';
+        return 'http://13.235.114.249:3000/api/'
         return `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ''}${apiPrefix}`;
       }
     default:

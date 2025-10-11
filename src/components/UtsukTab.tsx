@@ -16,7 +16,7 @@ export default function UtsukTab() {
       setIsLoading(true)
       const response = await reportingService.getUtsukSummary()
       if (response.success) {
-        setUtsukCount(response.data.utsuk_count)
+        setUtsukCount(response.data.utsuk_count ?? 0)
       }
     } catch (error) {
       console.error('Error fetching utsuk summary:', error)

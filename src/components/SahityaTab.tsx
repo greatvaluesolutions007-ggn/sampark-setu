@@ -5,7 +5,7 @@ import { reportingService } from '@/api/services'
 import type { SahityaSummaryResponse } from '@/types'
 
 export default function SahityaTab() {
-  const [summary, setSummary] = useState<SahityaSummaryResponse>({
+  const [summary, setSummary] = useState<Required<SahityaSummaryResponse>>({
     sticker_count: 0,
     total_folder: 0,
     nishulk_books: 0,
@@ -22,7 +22,12 @@ export default function SahityaTab() {
       setIsLoading(true)
       const response = await reportingService.getSahityaSummary()
       if (response.success) {
-        setSummary(response.data)
+        setSummary({
+          sticker_count: response.data.sticker_count ?? 0,
+          total_folder: response.data.total_folder ?? 0,
+          nishulk_books: response.data.nishulk_books ?? 0,
+          shashulk_books: response.data.shashulk_books ?? 0,
+        })
       }
     } catch (error) {
       console.error('Error fetching sahitya summary:', error)
