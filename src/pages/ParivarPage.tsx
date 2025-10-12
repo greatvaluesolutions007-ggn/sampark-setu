@@ -200,8 +200,7 @@ export default function ParivarPage() {
                   <div className="space-y-2">
                     {userRole && (
                       <div>
-                        <Label className="text-sm font-medium text-blue-800">आपका प्रकार</Label>
-                        <p className="text-sm text-blue-700 mt-1">{userRole}</p>
+                        <p className="text-sm text-blue-700">{userRole}</p>
                       </div>
                     )}
                     {regionHierarchy && (
