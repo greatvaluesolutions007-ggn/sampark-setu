@@ -29,10 +29,29 @@ export default function ParivarPage() {
           const details = userRegion.data.region_details
           const hierarchy = []
           
+          // Always show Prant, Vibhag, Jila
           if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
           if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
           if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
-          if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+          
+          // Show hierarchy based on user role
+          if (userRegion.data.role === 'GRAM_KARYAKARTA') {
+            // GRAM_KARYAKARTA: Prant -> Vibhag -> Jila -> Khand -> Mandal -> Gram
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+          } else if (userRegion.data.role === 'BASTI_KARYAKARTA') {
+            // BASTI_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar -> Basti
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          } else {
+            // For other roles, show available details
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          }
           
           setRegionHierarchy(hierarchy.join(' > '))
         }
