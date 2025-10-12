@@ -14,6 +14,7 @@ export default function HomePage() {
   const { logout, user } = useAuth()
   const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk' | 'sashulk'>('overview')
   const [regionHierarchy, setRegionHierarchy] = useState<string>('')
+  const [userRole, setUserRole] = useState<string>('')
   const isDashboard = ['BASTI_KARYAKARTA', 'GRAM_KARYAKARTA'].includes(user?.role ?? '')
 
   useEffect(() => {
@@ -66,6 +67,17 @@ export default function HomePage() {
           }
           
           setRegionHierarchy(hierarchy.join(' > '))
+          
+          // Set user role display name
+          const roleDisplayNames: { [key: string]: string } = {
+            'PRANT_KARYAKARTA': 'प्रांत कार्यकर्ता',
+            'VIBHAG_KARYAKARTA': 'विभाग कार्यकर्ता',
+            'JILA_KARYAKARTA': 'जिला कार्यकर्ता',
+            'NAGAR_KARYAKARTA': 'नगर कार्यकर्ता',
+            'BASTI_KARYAKARTA': 'बस्ती कार्यकर्ता',
+            'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
+          }
+          setUserRole(roleDisplayNames[userRegion.data.role] || userRegion.data.role)
         }
       }
     } catch (error) {
@@ -131,11 +143,23 @@ export default function HomePage() {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6">
-        {/* Region Hierarchy Display */}
-        {regionHierarchy && (
+        {/* Region Hierarchy and Role Display */}
+        {(regionHierarchy || userRole) && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
-            <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+            <div className="space-y-2">
+              {userRole && (
+                <div>
+                  <Label className="text-sm font-medium text-blue-800">आपका प्रकार</Label>
+                  <p className="text-sm text-blue-700 mt-1">{userRole}</p>
+                </div>
+              )}
+              {regionHierarchy && (
+                <div>
+                  <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+                  <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
         

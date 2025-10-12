@@ -15,6 +15,7 @@ export default function ParivarPage() {
   
   // Region hierarchy state
   const [regionHierarchy, setRegionHierarchy] = useState<string>('')
+  const [userRole, setUserRole] = useState<string>('')
 
   useEffect(() => {
     getUserRegion()
@@ -54,6 +55,17 @@ export default function ParivarPage() {
           }
           
           setRegionHierarchy(hierarchy.join(' > '))
+          
+          // Set user role display name
+          const roleDisplayNames: { [key: string]: string } = {
+            'PRANT_KARYAKARTA': 'प्रांत कार्यकर्ता',
+            'VIBHAG_KARYAKARTA': 'विभाग कार्यकर्ता',
+            'JILA_KARYAKARTA': 'जिला कार्यकर्ता',
+            'NAGAR_KARYAKARTA': 'नगर कार्यकर्ता',
+            'BASTI_KARYAKARTA': 'बस्ती कार्यकर्ता',
+            'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
+          }
+          setUserRole(roleDisplayNames[userRegion.data.role] || userRegion.data.role)
         }
       }
     } catch (error) {
@@ -182,11 +194,23 @@ export default function ParivarPage() {
             <CardContent>
               <form id="parivar-form" onSubmit={handleSubmit} className="space-y-4">
               
-              {/* Display User Region Hierarchy */}
-              {regionHierarchy && (
+              {/* Display User Region Hierarchy and Role */}
+              {(regionHierarchy || userRole) && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                  <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
-                  <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+                  <div className="space-y-2">
+                    {userRole && (
+                      <div>
+                        <Label className="text-sm font-medium text-blue-800">आपका प्रकार</Label>
+                        <p className="text-sm text-blue-700 mt-1">{userRole}</p>
+                      </div>
+                    )}
+                    {regionHierarchy && (
+                      <div>
+                        <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+                        <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
