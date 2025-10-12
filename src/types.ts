@@ -52,6 +52,7 @@ export interface User {
   user_id: number;
   user_name: string;
   full_name?: string;
+  mobile?: string;
   role: string;
   region_id: number | null;
   is_active: number;
