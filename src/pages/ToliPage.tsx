@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Plus, Trash } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
-import FullHierarchyRegionSelector from '@/components/FullHierarchyRegionSelector'
 import { authService, toliService } from '@/api/services'
 import type { CreateToliRequest, ToliMember } from '@/types'
 
@@ -14,11 +13,11 @@ export default function ToliPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
   
-  // Region states
-  const [regionId, setRegionId] = useState<number | null>(null);
-  const [toliUserId, setToliUserId] = useState<number | null>(null);
+  // User states
   const [regionHierarchy, setRegionHierarchy] = useState<string>('')
   const [userRole, setUserRole] = useState<string>('')
+  const [userName, setUserName] = useState<string>('')
+  const [userMobile, setUserMobile] = useState<string>('')
   
   // Form states
   const [name, setName] = useState('')
@@ -49,11 +48,6 @@ export default function ToliPage() {
   
   const isFormValid = nameValid && membersValid
 
-  // Handle region changes from FullHierarchyRegionSelector
-  const handleRegionChange = (regionId: number, regionName: string, regionType: string) => {
-    console.log('handleRegionChange called with:', { regionId, regionName, regionType })
-    setRegionId(regionId)
-  }
 
 
   const addMember = () => {
@@ -80,7 +74,6 @@ export default function ToliPage() {
         const userId = userResponse.data.user_id
         const userRegionId = userResponse.data.region_id
         
-        setToliUserId(userId);
         
         // Build region hierarchy and role display
         if (userResponse.data.region_details) {
@@ -135,6 +128,10 @@ export default function ToliPage() {
             'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
           }
           setUserRole(roleDisplayNames[userResponse.data.role] || userResponse.data.role)
+          
+          // Set user name and mobile for Toli Pramukh info
+          setUserName(userResponse.data.full_name || userResponse.data.user_name || '')
+          setUserMobile(userResponse.data.mobile || '')
         }
         
         // Fetch user's existing toli and load it into form
@@ -167,10 +164,6 @@ export default function ToliPage() {
     setSubmitAttempted(true)
     if (!isFormValid) return
 
-    if (!regionId) {
-      setError('कृपया पहले क्षेत्र की जानकारी लोड होने दें')
-      return
-    }
 
     try {
       setIsLoading(true)
@@ -236,7 +229,7 @@ export default function ToliPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl text-center">
-                {existingToliId ? 'टोली विवरण / संपादन' : 'टोली निर्माण'}
+                {existingToliId ? 'टोली विवरण / संपादन' : 'गृह सम्पर्क टोली निर्माण'}
               </CardTitle>
               {existingToliId && (
                 <p className="text-sm text-center text-muted-foreground mt-2">
@@ -267,11 +260,26 @@ export default function ToliPage() {
                 </div>
               )}
 
-              <FullHierarchyRegionSelector 
-                onRegionChange={handleRegionChange}
-                disabled={isLoading}
-                refreshKey={toliUserId || undefined} // This will refresh the component when user changes
-              />
+              {/* Toli Pramukh Information */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                <h3 className="text-lg font-semibold text-green-800 mb-3">टोली प्रमुख जानकारी</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm font-medium text-green-700">नाम:</Label>
+                    <span className="text-sm text-green-600">{userName || 'नहीं दिया गया'}</span>
+                  </div>
+                  {userMobile && (
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium text-green-700">मोबाइल नंबर:</Label>
+                      <span className="text-sm text-green-600">{userMobile}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm font-medium text-green-700">दायित्व:</Label>
+                    <span className="text-sm text-green-600">{userRole || 'नहीं दिया गया'}</span>
+                  </div>
+                </div>
+              </div>
 
               <div className="space-y-2">
                 <Label>टोली का नाम</Label>
