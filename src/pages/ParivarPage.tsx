@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Plus, Minus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
-import RegionSelector from '@/components/RegionSelector'
 import { authService, visitService } from '@/api/services'
 import type { CreateVisitRequest } from '@/types'
 
@@ -14,21 +13,29 @@ export default function ParivarPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
   
-  // Region states
-  const [, setNagar] = useState<string>('')
-  const [, setRegionId] = useState<number | null>(null) 
+  // Region hierarchy state
+  const [regionHierarchy, setRegionHierarchy] = useState<string>('')
 
   useEffect(() => {
-   getUserRegion()
+    getUserRegion()
   }, [])
-
-
 
   const getUserRegion = async () => {
     try {
       const userRegion = await authService.getCurrentUser()
       if (userRegion.success && userRegion.data) {
-        setRegionId(userRegion.data.region_id)     
+        // Build region hierarchy string from user's region details
+        if (userRegion.data.region_details) {
+          const details = userRegion.data.region_details
+          const hierarchy = []
+          
+          if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
+          if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
+          if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
+          if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+          
+          setRegionHierarchy(hierarchy.join(' > '))
+        }
       }
     } catch (error) {
       console.error('Error fetching user region:', error)
@@ -77,10 +84,6 @@ export default function ParivarPage() {
     setter(prev => Math.max(0, prev - 1))
   }
 
-  // Handle region changes from RegionSelector
-  const handleRegionChange = (_prantValue: string, _vibhagValue: string, _jilaValue: string, nagarValue: string) => {
-    setNagar(nagarValue)
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -103,6 +106,7 @@ export default function ParivarPage() {
         nishulk_folder: nishulkFolder,
         nishulk_books: nishulkPustak,
         shashulk_pushtak: shashulkPustak
+        // region_id will be extracted from auth token in backend
       }
 
       const response = await visitService.createVisit(visitData)
@@ -128,7 +132,6 @@ export default function ParivarPage() {
       setNishulkFolder(0)
       setNishulkPustak(0)
       setShashulkPustak(0)
-      setNagar('')
       setSubmitAttempted(false)
       setTouchedPhone(false)
 
@@ -159,10 +162,14 @@ export default function ParivarPage() {
             </CardHeader>
             <CardContent>
               <form id="parivar-form" onSubmit={handleSubmit} className="space-y-4">
-              <RegionSelector 
-                onRegionChange={handleRegionChange}
-                disabled={isLoading}
-              />
+              
+              {/* Display User Region Hierarchy */}
+              {regionHierarchy && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+                  <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <div className="space-y-2">

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Users } from 'lucide-react'
 import StatCard from '@/components/StatCard'
-import { reportingService } from '@/api/services'
+import { reportingService, authService } from '@/api/services'
+import { Label } from '@/components/ui/label'
 import type { ParivarSummaryResponse } from '@/types'
 
 export default function ParivarTab() {
@@ -13,9 +14,11 @@ export default function ParivarTab() {
     kids_count: 0,
   })
   const [isLoading, setIsLoading] = useState(true)
+  const [regionHierarchy, setRegionHierarchy] = useState<string>('')
 
   useEffect(() => {
     fetchParivarSummary()
+    getUserRegion()
   }, [])
 
   const fetchParivarSummary = async () => {
@@ -38,9 +41,39 @@ export default function ParivarTab() {
     }
   }
 
+  const getUserRegion = async () => {
+    try {
+      const userRegion = await authService.getCurrentUser()
+      if (userRegion.success && userRegion.data) {
+        // Build region hierarchy string from user's region details
+        if (userRegion.data.region_details) {
+          const details = userRegion.data.region_details
+          const hierarchy = []
+          
+          if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
+          if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
+          if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
+          if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+          
+          setRegionHierarchy(hierarchy.join(' > '))
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user region:', error)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold text-primary mb-4">परिवार विवरण</h2>
+      
+      {/* Display User Region Hierarchy */}
+      {regionHierarchy && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+          <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <StatCard
