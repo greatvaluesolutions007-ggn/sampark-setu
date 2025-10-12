@@ -89,6 +89,10 @@ export interface RegionDetails {
   vibhag: Region | null;
   jila: Region | null;
   nagar: Region | null;
+  khand: Region | null;
+  mandal: Region | null;
+  gram: Region | null;
+  basti: Region | null;
 }
 
 

@@ -17,6 +17,8 @@ export default function ToliPage() {
   // Region states
   const [regionId, setRegionId] = useState<number | null>(null);
   const [toliUserId, setToliUserId] = useState<number | null>(null);
+  const [regionHierarchy, setRegionHierarchy] = useState<string>('')
+  const [userRole, setUserRole] = useState<string>('')
   
   // Form states
   const [name, setName] = useState('')
@@ -79,6 +81,61 @@ export default function ToliPage() {
         const userRegionId = userResponse.data.region_id
         
         setToliUserId(userId);
+        
+        // Build region hierarchy and role display
+        if (userResponse.data.region_details) {
+          const details = userResponse.data.region_details
+          const hierarchy = []
+          
+          // Always show Prant, Vibhag, Jila
+          if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
+          if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
+          if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
+          
+          // Show hierarchy based on user role
+          if (userResponse.data.role === 'GRAM_KARYAKARTA') {
+            // GRAM_KARYAKARTA: Prant -> Vibhag -> Jila -> Khand -> Mandal -> Gram
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+          } else if (userResponse.data.role === 'BASTI_KARYAKARTA') {
+            // BASTI_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar -> Basti
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          } else if (userResponse.data.role === 'NAGAR_KARYAKARTA') {
+            // NAGAR_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+          } else if (userResponse.data.role === 'JILA_KARYAKARTA') {
+            // JILA_KARYAKARTA: Prant -> Vibhag -> Jila
+            // Already included above
+          } else if (userResponse.data.role === 'VIBHAG_KARYAKARTA') {
+            // VIBHAG_KARYAKARTA: Prant -> Vibhag
+            // Already included above
+          } else if (userResponse.data.role === 'PRANT_KARYAKARTA') {
+            // PRANT_KARYAKARTA: Prant
+            // Already included above
+          } else {
+            // For other roles, show available details
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          }
+          
+          setRegionHierarchy(hierarchy.join(' > '))
+          
+          // Set user role display name
+          const roleDisplayNames: { [key: string]: string } = {
+            'PRANT_KARYAKARTA': 'प्रांत कार्यकर्ता',
+            'VIBHAG_KARYAKARTA': 'विभाग कार्यकर्ता',
+            'JILA_KARYAKARTA': 'जिला कार्यकर्ता',
+            'NAGAR_KARYAKARTA': 'नगर कार्यकर्ता',
+            'BASTI_KARYAKARTA': 'बस्ती कार्यकर्ता',
+            'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
+          }
+          setUserRole(roleDisplayNames[userResponse.data.role] || userResponse.data.role)
+        }
         
         // Fetch user's existing toli and load it into form
         const toliResponse = await toliService.getTolis({
@@ -190,6 +247,26 @@ export default function ToliPage() {
             </CardHeader>
             <CardContent>
               <form id="toli-form" onSubmit={handleSubmit} className="space-y-4">
+              
+              {/* Display User Region Hierarchy and Role */}
+              {(regionHierarchy || userRole) && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <div className="space-y-2">
+                    {userRole && (
+                      <div>
+                        <p className="text-sm text-blue-700">{userRole}</p>
+                      </div>
+                    )}
+                    {regionHierarchy && (
+                      <div>
+                        <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+                        <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <FullHierarchyRegionSelector 
                 onRegionChange={handleRegionChange}
                 disabled={isLoading}
