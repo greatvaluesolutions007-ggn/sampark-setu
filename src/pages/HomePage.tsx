@@ -1,7 +1,9 @@
 import { Home, BookOpen, FileText, LogOut, Users } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { Label } from '@/components/ui/label'
+import { useState, useEffect } from 'react'
+import { authService } from '@/api/services'
 import NavTab from '@/components/NavTab'
 import OverviewTab from '@/components/OverviewTab'
 import ParivarTab from '@/components/ParivarTab'
@@ -11,7 +13,65 @@ import SahityaTab from '@/components/SahityaTab'
 export default function HomePage() {
   const { logout, user } = useAuth()
   const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk' | 'sashulk'>('overview')
+  const [regionHierarchy, setRegionHierarchy] = useState<string>('')
   const isDashboard = ['BASTI_KARYAKARTA', 'GRAM_KARYAKARTA'].includes(user?.role ?? '')
+
+  useEffect(() => {
+    getUserRegion()
+  }, [])
+
+  const getUserRegion = async () => {
+    try {
+      const userRegion = await authService.getCurrentUser()
+      if (userRegion.success && userRegion.data) {
+        // Build region hierarchy string from user's region details
+        if (userRegion.data.region_details) {
+          const details = userRegion.data.region_details
+          const hierarchy = []
+          
+          // Always show Prant, Vibhag, Jila
+          if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
+          if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
+          if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
+          
+          // Show hierarchy based on user role
+          if (userRegion.data.role === 'GRAM_KARYAKARTA') {
+            // GRAM_KARYAKARTA: Prant -> Vibhag -> Jila -> Khand -> Mandal -> Gram
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+          } else if (userRegion.data.role === 'BASTI_KARYAKARTA') {
+            // BASTI_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar -> Basti
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          } else if (userRegion.data.role === 'NAGAR_KARYAKARTA') {
+            // NAGAR_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+          } else if (userRegion.data.role === 'JILA_KARYAKARTA') {
+            // JILA_KARYAKARTA: Prant -> Vibhag -> Jila
+            // Already included above
+          } else if (userRegion.data.role === 'VIBHAG_KARYAKARTA') {
+            // VIBHAG_KARYAKARTA: Prant -> Vibhag
+            // Already included above
+          } else if (userRegion.data.role === 'PRANT_KARYAKARTA') {
+            // PRANT_KARYAKARTA: Prant
+            // Already included above
+          } else {
+            // For other roles, show available details
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          }
+          
+          setRegionHierarchy(hierarchy.join(' > '))
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user region:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-orange-50/40 to-white">
@@ -71,6 +131,14 @@ export default function HomePage() {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6">
+        {/* Region Hierarchy Display */}
+        {regionHierarchy && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+            <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+          </div>
+        )}
+        
         {/* Tab Content */}
         {activeTab === 'overview' && <OverviewTab user={user} />}
         {activeTab === 'parivar' && <ParivarTab />}
