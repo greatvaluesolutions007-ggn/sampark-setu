@@ -114,7 +114,7 @@ export default function HomePage() {
           <div className="flex border-b border-gray-200">
             <NavTab
               icon={<Home className="h-4 w-4" />}
-              label={isDashboard ? 'डैशबोर्ड' : 'टोली जानकरी'}
+              label="टोली की जानकारी"
               active={activeTab === 'overview'}
               onClick={() => setActiveTab('overview')}
             />
