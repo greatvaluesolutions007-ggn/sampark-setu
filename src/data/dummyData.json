@@ -1,0 +1,596 @@
+{
+  "regions": {
+    "1": {
+      "name": "हरियाणा प्रांत",
+      "type": "PRANT",
+      "parent_id": null,
+      "children": {
+        "toli": [
+          {
+            "key_name": "VIBHAG",
+            "value": "गुरुग्राम विभाग",
+            "region_id": 2,
+            "total_tolies": 45
+          },
+          {
+            "key_name": "VIBHAG", 
+            "value": "फरीदाबाद विभाग",
+            "region_id": 3,
+            "total_tolies": 38
+          },
+          {
+            "key_name": "VIBHAG",
+            "value": "रोहतक विभाग", 
+            "region_id": 4,
+            "total_tolies": 52
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "VIBHAG",
+            "value": "गुरुग्राम विभाग",
+            "region_id": 2,
+            "total_families": 1250,
+            "total_contacted": 1180,
+            "male_count": "3200",
+            "female_count": "3100", 
+            "kids_count": "1800"
+          },
+          {
+            "key_name": "VIBHAG",
+            "value": "फरीदाबाद विभाग", 
+            "region_id": 3,
+            "total_families": 980,
+            "total_contacted": 920,
+            "male_count": "2450",
+            "female_count": "2380",
+            "kids_count": "1520"
+          },
+          {
+            "key_name": "VIBHAG",
+            "value": "रोहतक विभाग",
+            "region_id": 4,
+            "total_families": 1580,
+            "total_contacted": 1520,
+            "male_count": "4200",
+            "female_count": "4100",
+            "kids_count": "2750"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "VIBHAG",
+            "value": "गुरुग्राम विभाग",
+            "region_id": 2,
+            "utsuk_count": 85
+          },
+          {
+            "key_name": "VIBHAG",
+            "value": "फरीदाबाद विभाग",
+            "region_id": 3,
+            "utsuk_count": 68
+          },
+          {
+            "key_name": "VIBHAG", 
+            "value": "रोहतक विभाग",
+            "region_id": 4,
+            "utsuk_count": 95
+          }
+        ]
+      }
+    },
+    "2": {
+      "name": "गुरुग्राम विभाग",
+      "type": "VIBHAG",
+      "parent_id": 1,
+      "children": {
+        "toli": [
+          {
+            "key_name": "JILA",
+            "value": "गुरुग्राम जिला",
+            "region_id": 5,
+            "total_tolies": 28
+          },
+          {
+            "key_name": "JILA",
+            "value": "रेवाड़ी जिला", 
+            "region_id": 6,
+            "total_tolies": 17
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "JILA",
+            "value": "गुरुग्राम जिला",
+            "region_id": 5,
+            "total_families": 850,
+            "total_contacted": 820,
+            "male_count": "2200",
+            "female_count": "2100",
+            "kids_count": "1200"
+          },
+          {
+            "key_name": "JILA",
+            "value": "रेवाड़ी जिला",
+            "region_id": 6,
+            "total_families": 400,
+            "total_contacted": 360,
+            "male_count": "1050",
+            "female_count": "1000",
+            "kids_count": "600"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "JILA",
+            "value": "गुरुग्राम जिला",
+            "region_id": 5,
+            "utsuk_count": 45
+          },
+          {
+            "key_name": "JILA",
+            "value": "रेवाड़ी जिला",
+            "region_id": 6,
+            "utsuk_count": 40
+          }
+        ]
+      }
+    },
+    "3": {
+      "name": "फरीदाबाद विभाग",
+      "type": "VIBHAG",
+      "parent_id": 1,
+      "children": {
+        "toli": [
+          {
+            "key_name": "JILA",
+            "value": "फरीदाबाद जिला",
+            "region_id": 7,
+            "total_tolies": 22
+          },
+          {
+            "key_name": "JILA",
+            "value": "पलवल जिला",
+            "region_id": 8,
+            "total_tolies": 16
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "JILA",
+            "value": "फरीदाबाद जिला",
+            "region_id": 7,
+            "total_families": 650,
+            "total_contacted": 620,
+            "male_count": "1650",
+            "female_count": "1580",
+            "kids_count": "950"
+          },
+          {
+            "key_name": "JILA",
+            "value": "पलवल जिला",
+            "region_id": 8,
+            "total_families": 330,
+            "total_contacted": 300,
+            "male_count": "800",
+            "female_count": "750",
+            "kids_count": "570"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "JILA",
+            "value": "फरीदाबाद जिला",
+            "region_id": 7,
+            "utsuk_count": 35
+          },
+          {
+            "key_name": "JILA",
+            "value": "पलवल जिला",
+            "region_id": 8,
+            "utsuk_count": 33
+          }
+        ]
+      }
+    },
+    "4": {
+      "name": "रोहतक विभाग",
+      "type": "VIBHAG",
+      "parent_id": 1,
+      "children": {
+        "toli": [
+          {
+            "key_name": "JILA",
+            "value": "रोहतक जिला",
+            "region_id": 9,
+            "total_tolies": 32
+          },
+          {
+            "key_name": "JILA",
+            "value": "हिसार जिला",
+            "region_id": 10,
+            "total_tolies": 20
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "JILA",
+            "value": "रोहतक जिला",
+            "region_id": 9,
+            "total_families": 950,
+            "total_contacted": 920,
+            "male_count": "2400",
+            "female_count": "2350",
+            "kids_count": "1580"
+          },
+          {
+            "key_name": "JILA",
+            "value": "हिसार जिला",
+            "region_id": 10,
+            "total_families": 630,
+            "total_contacted": 600,
+            "male_count": "1600",
+            "female_count": "1550",
+            "kids_count": "1170"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "JILA",
+            "value": "रोहतक जिला",
+            "region_id": 9,
+            "utsuk_count": 58
+          },
+          {
+            "key_name": "JILA",
+            "value": "हिसार जिला",
+            "region_id": 10,
+            "utsuk_count": 37
+          }
+        ]
+      }
+    },
+    "5": {
+      "name": "गुरुग्राम जिला",
+      "type": "JILA",
+      "parent_id": 2,
+      "children": {
+        "toli": [
+          {
+            "key_name": "NAGAR",
+            "value": "गुरुग्राम नगर",
+            "region_id": 11,
+            "total_tolies": 5
+          },
+          {
+            "key_name": "KHAND",
+            "value": "सोहना खंड",
+            "region_id": 12,
+            "total_tolies": 3
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "NAGAR",
+            "value": "गुरुग्राम नगर",
+            "region_id": 11,
+            "total_families": 180,
+            "total_contacted": 160,
+            "male_count": "480",
+            "female_count": "450",
+            "kids_count": "300"
+          },
+          {
+            "key_name": "KHAND",
+            "value": "सोहना खंड",
+            "region_id": 12,
+            "total_families": 100,
+            "total_contacted": 80,
+            "male_count": "240",
+            "female_count": "230",
+            "kids_count": "180"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "NAGAR",
+            "value": "गुरुग्राम नगर",
+            "region_id": 11,
+            "utsuk_count": 10
+          },
+          {
+            "key_name": "KHAND",
+            "value": "सोहना खंड",
+            "region_id": 12,
+            "utsuk_count": 5
+          }
+        ]
+      }
+    },
+    "6": {
+      "name": "रेवाड़ी जिला",
+      "type": "JILA",
+      "parent_id": 2,
+      "children": {
+        "toli": [
+          {
+            "key_name": "NAGAR",
+            "value": "रेवाड़ी नगर",
+            "region_id": 13,
+            "total_tolies": 4
+          },
+          {
+            "key_name": "KHAND",
+            "value": "बावल खंड",
+            "region_id": 14,
+            "total_tolies": 3
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "NAGAR",
+            "value": "रेवाड़ी नगर",
+            "region_id": 13,
+            "total_families": 110,
+            "total_contacted": 90,
+            "male_count": "300",
+            "female_count": "280",
+            "kids_count": "200"
+          },
+          {
+            "key_name": "KHAND",
+            "value": "बावल खंड",
+            "region_id": 14,
+            "total_families": 60,
+            "total_contacted": 50,
+            "male_count": "180",
+            "female_count": "140",
+            "kids_count": "120"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "NAGAR",
+            "value": "रेवाड़ी नगर",
+            "region_id": 13,
+            "utsuk_count": 6
+          },
+          {
+            "key_name": "KHAND",
+            "value": "बावल खंड",
+            "region_id": 14,
+            "utsuk_count": 4
+          }
+        ]
+      }
+    },
+    "11": {
+      "name": "गुरुग्राम नगर",
+      "type": "NAGAR",
+      "parent_id": 5,
+      "children": {
+        "toli": [
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 14 बस्ती",
+            "region_id": 15,
+            "total_tolies": 2
+          },
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 29 बस्ती",
+            "region_id": 16,
+            "total_tolies": 3
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 14 बस्ती",
+            "region_id": 15,
+            "total_families": 80,
+            "total_contacted": 70,
+            "male_count": "200",
+            "female_count": "190",
+            "kids_count": "130"
+          },
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 29 बस्ती",
+            "region_id": 16,
+            "total_families": 100,
+            "total_contacted": 90,
+            "male_count": "280",
+            "female_count": "260",
+            "kids_count": "170"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 14 बस्ती",
+            "region_id": 15,
+            "utsuk_count": 5
+          },
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 29 बस्ती",
+            "region_id": 16,
+            "utsuk_count": 5
+          }
+        ]
+      }
+    },
+    "12": {
+      "name": "सोहना खंड",
+      "type": "KHAND",
+      "parent_id": 5,
+      "children": {
+        "toli": [
+          {
+            "key_name": "GRAM",
+            "value": "सोहना ग्राम",
+            "region_id": 17,
+            "total_tolies": 2
+          },
+          {
+            "key_name": "GRAM",
+            "value": "बहरामपुर ग्राम",
+            "region_id": 18,
+            "total_tolies": 1
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "GRAM",
+            "value": "सोहना ग्राम",
+            "region_id": 17,
+            "total_families": 60,
+            "total_contacted": 50,
+            "male_count": "160",
+            "female_count": "150",
+            "kids_count": "100"
+          },
+          {
+            "key_name": "GRAM",
+            "value": "बहरामपुर ग्राम",
+            "region_id": 18,
+            "total_families": 40,
+            "total_contacted": 30,
+            "male_count": "80",
+            "female_count": "80",
+            "kids_count": "80"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "GRAM",
+            "value": "सोहना ग्राम",
+            "region_id": 17,
+            "utsuk_count": 3
+          },
+          {
+            "key_name": "GRAM",
+            "value": "बहरामपुर ग्राम",
+            "region_id": 18,
+            "utsuk_count": 2
+          }
+        ]
+      }
+    },
+    "7": {
+      "name": "फरीदाबाद जिला",
+      "type": "JILA",
+      "parent_id": 3,
+      "children": {
+        "toli": [
+          {
+            "key_name": "NAGAR",
+            "value": "फरीदाबाद नगर",
+            "region_id": 19,
+            "total_tolies": 4
+          },
+          {
+            "key_name": "KHAND",
+            "value": "बल्लभगढ़ खंड",
+            "region_id": 20,
+            "total_tolies": 2
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "NAGAR",
+            "value": "फरीदाबाद नगर",
+            "region_id": 19,
+            "total_families": 120,
+            "total_contacted": 100,
+            "male_count": "320",
+            "female_count": "300",
+            "kids_count": "200"
+          },
+          {
+            "key_name": "KHAND",
+            "value": "बल्लभगढ़ खंड",
+            "region_id": 20,
+            "total_families": 60,
+            "total_contacted": 60,
+            "male_count": "160",
+            "female_count": "150",
+            "kids_count": "100"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "NAGAR",
+            "value": "फरीदाबाद नगर",
+            "region_id": 19,
+            "utsuk_count": 6
+          },
+          {
+            "key_name": "KHAND",
+            "value": "बल्लभगढ़ खंड",
+            "region_id": 20,
+            "utsuk_count": 4
+          }
+        ]
+      }
+    },
+    "19": {
+      "name": "फरीदाबाद नगर",
+      "type": "NAGAR",
+      "parent_id": 7,
+      "children": {
+        "toli": [
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 15 बस्ती",
+            "region_id": 21,
+            "total_tolies": 2
+          },
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 21 बस्ती",
+            "region_id": 22,
+            "total_tolies": 2
+          }
+        ],
+        "parivar": [
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 15 बस्ती",
+            "region_id": 21,
+            "total_families": 60,
+            "total_contacted": 50,
+            "male_count": "160",
+            "female_count": "150",
+            "kids_count": "100"
+          },
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 21 बस्ती",
+            "region_id": 22,
+            "total_families": 60,
+            "total_contacted": 50,
+            "male_count": "160",
+            "female_count": "150",
+            "kids_count": "100"
+          }
+        ],
+        "utsuk": [
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 15 बस्ती",
+            "region_id": 21,
+            "utsuk_count": 3
+          },
+          {
+            "key_name": "BASTI",
+            "value": "सेक्टर 21 बस्ती",
+            "region_id": 22,
+            "utsuk_count": 3
+          }
+        ]
+      }
+    }
+  }
+}
