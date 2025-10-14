@@ -1,6 +1,8 @@
 import { Get, Post } from './axiosInstance';
 import axiosInstance from './axiosInstance';
 import API_PATHS from './constant';
+import { DummyDataService } from '@/services/dummyDataService';
+import { shouldUseRealAPI } from '@/config/appConfig';
 import type {
   LoginRequest,
   LoginResponse,
@@ -29,6 +31,7 @@ import type {
   UtsukSummaryResponse,
   ParivarSummaryResponse,
   SahityaSummaryResponse,
+  HierarchicalSummaryResponse,
 } from '@/types';
 
 // Authentication Services
@@ -228,5 +231,72 @@ export const reportingService = {
   getSahityaSummary: async (): Promise<apiResponseType<SahityaSummaryResponse>> => {
     const response = await Get<SahityaSummaryResponse>("USER", API_PATHS.SAHITYA_SUMMARY);
     return response;
+  },
+
+  // Hierarchical Summary Services
+  getToliSummaryList: async (regionId: number): Promise<HierarchicalSummaryResponse> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Toli summary, regionId:', regionId);
+        const response = await axiosInstance.get<HierarchicalSummaryResponse>(API_PATHS.TOLI_SUMMARY_LIST, { 
+          params: { 'region-id': regionId } 
+        });
+        console.log('✅ API response for Toli summary:', response.data);
+        return response.data;
+      } catch (error) {
+        console.log('❌ API failed, falling back to dummy data for Toli summary, regionId:', regionId, error);
+        return DummyDataService.getToliSummaryList(regionId);
+      }
+    } else {
+      // Using dummy data
+      console.log('📦 Using dummy data for Toli summary, regionId:', regionId);
+      const dummyResponse = DummyDataService.getToliSummaryList(regionId);
+      console.log('📦 Dummy data response:', dummyResponse);
+      return dummyResponse;
+    }
+  },
+
+  getParivarSummaryList: async (regionId: number): Promise<HierarchicalSummaryResponse> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Parivar summary, regionId:', regionId);
+        const response = await axiosInstance.get<HierarchicalSummaryResponse>(API_PATHS.PARIVAR_SUMMARY_LIST, { 
+          params: { 'region-id': regionId } 
+        });
+        console.log('✅ API response for Parivar summary:', response.data);
+        return response.data;
+      } catch (error) {
+        console.log('❌ API failed, falling back to dummy data for Parivar summary, regionId:', regionId, error);
+        return DummyDataService.getParivarSummaryList(regionId);
+      }
+    } else {
+      // Using dummy data
+      console.log('📦 Using dummy data for Parivar summary, regionId:', regionId);
+      const dummyResponse = DummyDataService.getParivarSummaryList(regionId);
+      console.log('📦 Dummy data response:', dummyResponse);
+      return dummyResponse;
+    }
+  },
+
+  getUtsukSummaryList: async (regionId: number): Promise<HierarchicalSummaryResponse> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Utsuk summary, regionId:', regionId);
+        const response = await axiosInstance.get<HierarchicalSummaryResponse>(API_PATHS.UTSUK_SUMMARY_LIST, { 
+          params: { 'region-id': regionId } 
+        });
+        console.log('✅ API response for Utsuk summary:', response.data);
+        return response.data;
+      } catch (error) {
+        console.log('❌ API failed, falling back to dummy data for Utsuk summary, regionId:', regionId, error);
+        return DummyDataService.getUtsukSummaryList(regionId);
+      }
+    } else {
+      // Using dummy data
+      console.log('📦 Using dummy data for Utsuk summary, regionId:', regionId);
+      const dummyResponse = DummyDataService.getUtsukSummaryList(regionId);
+      console.log('📦 Dummy data response:', dummyResponse);
+      return dummyResponse;
+    }
   },
 };

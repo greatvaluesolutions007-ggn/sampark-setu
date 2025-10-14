@@ -278,3 +278,24 @@ export interface SahityaSummaryResponse {
   nishulk_books?: number;
   shashulk_books?: number;
 }
+
+// Hierarchical Summary Types
+export interface SummaryItem {
+  key_name: string;
+  value: string;
+  region_id: number;
+  total_tolies?: number;
+  total_families?: number;
+  total_contacted?: number;
+  male_count?: string;
+  female_count?: string;
+  kids_count?: string;
+  utsuk_count?: number;
+}
+
+export interface HierarchicalSummaryResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: SummaryItem[];
+}
