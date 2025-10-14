@@ -38,6 +38,7 @@ export default function ParivarTab() {
     }
   }
 
+
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold text-primary mb-4">परिवार विवरण</h2>

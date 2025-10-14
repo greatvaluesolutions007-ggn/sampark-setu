@@ -1,7 +1,9 @@
 import { Home, BookOpen, FileText, LogOut, Users } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { Label } from '@/components/ui/label'
+import { useState, useEffect } from 'react'
+import { authService } from '@/api/services'
 import NavTab from '@/components/NavTab'
 import OverviewTab from '@/components/OverviewTab'
 import SahityaTab from '@/components/SahityaTab'
@@ -12,6 +14,74 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk' | 'sashulk'>('overview')
   const [detailsCardData, setDetailsCardData] = useState<DetailsCardData | null>(null)
   const isDashboard = ['BASTI_KARYAKARTA', 'GRAM_KARYAKARTA'].includes(user?.role ?? '')
+
+  useEffect(() => {
+    getUserRegion()
+  }, [])
+
+  const getUserRegion = async () => {
+    try {
+      const userRegion = await authService.getCurrentUser()
+      if (userRegion.success && userRegion.data) {
+        // Build region hierarchy string from user's region details
+        if (userRegion.data.region_details) {
+          const details = userRegion.data.region_details
+          const hierarchy = []
+          
+          // Always show Prant, Vibhag, Jila
+          if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
+          if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
+          if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
+          
+          // Show hierarchy based on user role
+          if (userRegion.data.role === 'GRAM_KARYAKARTA') {
+            // GRAM_KARYAKARTA: Prant -> Vibhag -> Jila -> Khand -> Mandal -> Gram
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+          } else if (userRegion.data.role === 'BASTI_KARYAKARTA') {
+            // BASTI_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar -> Basti
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          } else if (userRegion.data.role === 'NAGAR_KARYAKARTA') {
+            // NAGAR_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+          } else if (userRegion.data.role === 'JILA_KARYAKARTA') {
+            // JILA_KARYAKARTA: Prant -> Vibhag -> Jila
+            // Already included above
+          } else if (userRegion.data.role === 'VIBHAG_KARYAKARTA') {
+            // VIBHAG_KARYAKARTA: Prant -> Vibhag
+            // Already included above
+          } else if (userRegion.data.role === 'PRANT_KARYAKARTA') {
+            // PRANT_KARYAKARTA: Prant
+            // Already included above
+          } else {
+            // For other roles, show available details
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          }
+          
+          setRegionHierarchy(hierarchy.join(' > '))
+          
+          // Set user role display name
+          const roleDisplayNames: { [key: string]: string } = {
+            'PRANT_KARYAKARTA': 'प्रांत कार्यकर्ता',
+            'VIBHAG_KARYAKARTA': 'विभाग कार्यकर्ता',
+            'JILA_KARYAKARTA': 'जिला कार्यकर्ता',
+            'NAGAR_KARYAKARTA': 'नगर कार्यकर्ता',
+            'BASTI_KARYAKARTA': 'बस्ती कार्यकर्ता',
+            'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
+          }
+          setUserRole(roleDisplayNames[userRegion.data.role] || userRegion.data.role)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user region:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-orange-50/40 to-white">

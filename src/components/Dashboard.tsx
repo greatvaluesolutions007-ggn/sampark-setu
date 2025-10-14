@@ -61,11 +61,6 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white p-4">
       <div className="max-w-4xl mx-auto py-8 space-y-6">
         
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">संपर्क सेतु</h1>
-          <p className="text-gray-600">डैशबोर्ड</p>
-        </div>
 
         {/* Toli Section */}
         <Card className="border-2 border-orange-200 shadow-lg">
