@@ -8,17 +8,17 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
-import RegionSelector from '@/components/RegionSelector'
 import { authService, personService } from '@/api/services'
 import type { CreatePersonRequest } from '@/types'
 
 export default function UtsukPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
-   const [regionId, setRegionId] = useState<number | null>(null) 
+  const [regionId, setRegionId] = useState<number | null>(null) 
   
-  // Region states
-  const [, setNagar] = useState<string>('')
+  // Region hierarchy state
+  const [regionHierarchy, setRegionHierarchy] = useState<string>('')
+  const [userRole, setUserRole] = useState<string>('')
   
   // Form states
   const [form, setForm] = useState({
@@ -64,20 +64,59 @@ export default function UtsukPage() {
     }, [])
 
   const getUserRegion = async () => {
-      try {
-        const userRegion = await authService.getCurrentUser()
-        if (userRegion.success && userRegion.data) {
-          setRegionId(userRegion.data.region_id)     
+    try {
+      const userRegion = await authService.getCurrentUser()
+      if (userRegion.success && userRegion.data) {
+        setRegionId(userRegion.data.region_id)
+        
+        // Build region hierarchy string from user's region details
+        if (userRegion.data.region_details) {
+          const details = userRegion.data.region_details
+          const hierarchy = []
+          
+          // Always show Prant, Vibhag, Jila
+          if (details.prant) hierarchy.push(`प्रांत: ${details.prant.name}`)
+          if (details.vibhag) hierarchy.push(`विभाग: ${details.vibhag.name}`)
+          if (details.jila) hierarchy.push(`जिला: ${details.jila.name}`)
+          
+          // Show hierarchy based on user role
+          if (userRegion.data.role === 'GRAM_KARYAKARTA') {
+            // GRAM_KARYAKARTA: Prant -> Vibhag -> Jila -> Khand -> Mandal -> Gram
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+          } else if (userRegion.data.role === 'BASTI_KARYAKARTA') {
+            // BASTI_KARYAKARTA: Prant -> Vibhag -> Jila -> Nagar -> Basti
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          } else {
+            // For other roles, show available details
+            if (details.nagar) hierarchy.push(`नगर: ${details.nagar.name}`)
+            if (details.khand) hierarchy.push(`खंड: ${details.khand.name}`)
+            if (details.mandal) hierarchy.push(`मंडल: ${details.mandal.name}`)
+            if (details.gram) hierarchy.push(`ग्राम: ${details.gram.name}`)
+            if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
+          }
+          
+          setRegionHierarchy(hierarchy.join(' > '))
+          
+          // Set user role display name
+          const roleDisplayNames: { [key: string]: string } = {
+            'PRANT_KARYAKARTA': 'प्रांत कार्यकर्ता',
+            'VIBHAG_KARYAKARTA': 'विभाग कार्यकर्ता',
+            'JILA_KARYAKARTA': 'जिला कार्यकर्ता',
+            'NAGAR_KARYAKARTA': 'नगर कार्यकर्ता',
+            'BASTI_KARYAKARTA': 'बस्ती कार्यकर्ता',
+            'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
+          }
+          setUserRole(roleDisplayNames[userRegion.data.role] || userRegion.data.role)
         }
-      } catch (error) {
-        console.error('Error fetching user region:', error)
       }
+    } catch (error) {
+      console.error('Error fetching user region:', error)
+    }
   }
 
-  // Handle region changes from RegionSelector
-  const handleRegionChange = (_prantValue: string, _vibhagValue: string, _jilaValue: string, nagarValue: string) => {
-    setNagar(nagarValue)
-  }
 
   // Handle phone input - only allow digits and limit to 10
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +163,6 @@ export default function UtsukPage() {
       // Reset form on success
       setForm({ name: '', phone: '', email: '', sex: '', address: '', vishesh: '' })
       setAnswers(Array(questions.length).fill(''))
-      setNagar('')
       setSubmitAttempted(false)
       setTouchedFields({ name: false, sex: false, address: false })
 
@@ -155,10 +193,25 @@ export default function UtsukPage() {
             </CardHeader>
             <CardContent>
               <form id="utsuk-form" onSubmit={handleSubmit} className="space-y-4">
-              <RegionSelector 
-                onRegionChange={handleRegionChange}
-                disabled={isLoading}
-              />
+              
+              {/* Display User Region Hierarchy and Role */}
+              {(regionHierarchy || userRole) && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <div className="space-y-2">
+                    {userRole && (
+                      <div>
+                        <p className="text-sm text-blue-700">{userRole}</p>
+                      </div>
+                    )}
+                    {regionHierarchy && (
+                      <div>
+                        <Label className="text-sm font-medium text-blue-800">आपका क्षेत्र</Label>
+                        <p className="text-sm text-blue-700 mt-1">{regionHierarchy}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label>नाम</Label>
