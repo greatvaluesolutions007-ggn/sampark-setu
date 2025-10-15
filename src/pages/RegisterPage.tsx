@@ -260,7 +260,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="username">उपयोगकर्ता नाम</Label>
+                <Label htmlFor="username">उपयोगकर्ता नाम / Username</Label>
                 <Input
                   id="username"
                   type="text"
@@ -278,7 +278,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="password">पासवर्ड</Label>
+                <Label htmlFor="password">पासवर्ड / Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
