@@ -183,7 +183,7 @@ export default function RegisterPage() {
             <div className="flex-1" />
           </div>
           <CardTitle className="text-2xl font-bold text-orange-600">
-            {step === 'code' ? 'कोड दर्ज करें' : 'पंजीकरण करें'}
+            <p>{step === 'code' ? 'कोड दर्ज करें' : 'पंजीकरण करें'} {" "} {code==="1925" ? "(टौली प्रयोग हेतु)" : "(डैशबोर्ड देखने हेतु)"}</p>
           </CardTitle>
           <p className="text-gray-600">
             {step === 'code' 
@@ -244,7 +244,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="fullName">पूरा नाम</Label>
+                <Label htmlFor="fullName">पूरा नाम / Full Name</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -260,7 +260,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="username">उपयोगकर्ता नाम</Label>
+                <Label htmlFor="username">उपयोगकर्ता नाम / Username</Label>
                 <Input
                   id="username"
                   type="text"
@@ -278,7 +278,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="password">पासवर्ड</Label>
+                <Label htmlFor="password">पासवर्ड / Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -305,7 +305,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="confirmPassword">पासवर्ड की पुष्टि करें</Label>
+                <Label htmlFor="confirmPassword">पासवर्ड की पुष्टि करें / COnfirm Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -332,7 +332,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="mobileNumber">मोबाइल नंबर</Label>
+                <Label htmlFor="mobileNumber">मोबाइल नंबर / Mobile No.</Label>
                 <Input
                   id="mobileNumber"
                   type="tel"
@@ -350,6 +350,44 @@ export default function RegisterPage() {
                   <p className="text-red-500 text-sm mt-1">वैध मोबाइल नंबर दर्ज करें (10 अंक)</p>
                 )}
               </div>
+
+             {code==='1925'&& <div>
+                <Label htmlFor="sangh">संघ / विविध क्षेत्र का दायित्व (यदि है)</Label>
+                <Input
+                  id="sangh"
+                  type="text"
+                  
+                  onChange={(e) => {
+                    // const value = e.target.value.replace(/\D/g, '').slice(0, 10)
+                    // setMobileNumber(value)
+                  }}
+                  onBlur={() =>{}}
+                  placeholder="संघ / विविध क्षेत्र का दायित्व (यदि है) तो दर्ज करे"
+                  // className={touchedFields.mobileNumber && !mobileNumberValid ? 'border-red-500' : ''}
+                />
+                {/* {touchedFields.mobileNumber && !mobileNumberValid && (
+                  <p className="text-red-500 text-sm mt-1">वैध मोबाइल नंबर दर्ज करें (10 अंक)</p>
+                )} */}
+              </div>}
+
+              {code ==='1925' && <div>
+                <Label htmlFor="toatlHouse">कुल लक्षित घर / परिवार</Label>
+                <Input
+                  id="toatlHouse"
+                  type="text"
+                 
+                  onChange={(e) => {
+                    // const value = e.target.value.replace(/\D/g, '').slice(0, 10)
+                    // setMobileNumber(value)
+                  }}
+                  onBlur={() => {}}
+                  placeholder="कुल लक्षित घर / परिवार दर्ज करे"
+                  // className={touchedFields.mobileNumber && !mobileNumberValid ? 'border-red-500' : ''}
+                />
+                {/* {touchedFields.mobileNumber && !mobileNumberValid && (
+                  <p className="text-red-500 text-sm mt-1">वैध मोबाइल नंबर दर्ज करें (10 अंक)</p>
+                )} */}
+              </div>}
 
               <div>
                 {/* <Label>क्षेत्र चुनें</Label> */}

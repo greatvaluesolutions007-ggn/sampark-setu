@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Plus, Minus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
@@ -76,9 +78,12 @@ export default function ParivarPage() {
   // Form states
   const [samparkit, setSamparkit] = useState('')
   const [phone, setPhone] = useState('')
+  const [isSpecialContact, setIsSpecialContact] = useState<'yes' | 'no'>('no')
+  const [specialInfo, setSpecialInfo] = useState('')
   const [purush, setPurush] = useState(0)
   const [mahila, setMahila] = useState(0)
   const [bachche, setBachche] = useState(0)
+  const [nahiMilSake, setNahiMilSake] = useState(0)
   
   // Calculate total automatically
   const kul = purush + mahila + bachche
@@ -136,7 +141,9 @@ export default function ParivarPage() {
         nishulk_sticker: nishulkSticker,
         nishulk_folder: nishulkFolder,
         nishulk_books: nishulkPustak,
-        shashulk_pushtak: shashulkPustak
+        shashulk_pushtak: shashulkPustak,
+        is_special_contact: isSpecialContact === 'yes',
+        special_contact_info: isSpecialContact === 'yes' ? specialInfo : undefined
         // region_id will be extracted from auth token in backend
       }
 
@@ -156,9 +163,12 @@ export default function ParivarPage() {
       // Reset form on success
       setSamparkit('')
       setPhone('')
+      setIsSpecialContact('no')
+      setSpecialInfo('')
       setPurush(0)
       setMahila(0)
       setBachche(0)
+      setNahiMilSake(0)
       setNishulkSticker(0)
       setNishulkFolder(0)
       setNishulkPustak(0)
@@ -241,12 +251,49 @@ export default function ParivarPage() {
                     <p className="text-sm text-primary">कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें</p>
                   )}
                 </div>
+
+                {/* Special Contact List Question */}
+                <div className="space-y-3">
+                  <Label className="text-base font-medium">क्या विशेष सम्पर्क सूची में है?</Label>
+                  <RadioGroup 
+                    value={isSpecialContact} 
+                    onValueChange={(value: 'yes' | 'no') => {
+                      setIsSpecialContact(value)
+                      if (value === 'no') {
+                        setSpecialInfo('')
+                      }
+                    }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="special-yes" />
+                      <Label htmlFor="special-yes" className="font-normal cursor-pointer">हाँ</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="special-no" />
+                      <Label htmlFor="special-no" className="font-normal cursor-pointer">नहीं</Label>
+                    </div>
+                  </RadioGroup>
+
+                  {/* Conditional Special Information Text Area */}
+                  {isSpecialContact === 'yes' && (
+                    <div className="space-y-2 mt-3">
+                      <Label>विशेष जानकारी</Label>
+                      <Textarea
+                        placeholder="विशेष जानकारी यहाँ दर्ज करें..."
+                        value={specialInfo}
+                        onChange={(e) => setSpecialInfo(e.target.value)}
+                        rows={4}
+                        className="resize-none"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-4">
                 {/* Total Family Members - Read Only */}
                 <div className="bg-gray-50 border rounded-lg p-4 flex items-center justify-between">
-                  <Label className="text-base font-medium">परिवार में कुल सदस्य</Label>
+                  <Label className="text-base font-medium">परिवार में कुल सम्पर्कित सदस्य</Label>
                   <div className="flex items-center gap-2">
                     <span className="w-8 text-center font-medium text-gray-600">{kul}</span>
                   </div>
@@ -257,7 +304,7 @@ export default function ParivarPage() {
 
                 {/* Male Counter */}
                 <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
-                  <Label className="text-base font-medium">पुरुष</Label>
+                  <Label className="text-base font-medium">सम्पर्कित पुरुष</Label>
                   <div className="flex items-center gap-2">
                     <Button 
                       type="button" 
@@ -283,7 +330,7 @@ export default function ParivarPage() {
 
                 {/* Female Counter */}
                 <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
-                  <Label className="text-base font-medium">महिलाएं</Label>
+                  <Label className="text-base font-medium">सम्पर्कित महिलाएं</Label>
                   <div className="flex items-center gap-2">
                     <Button 
                       type="button" 
@@ -309,7 +356,7 @@ export default function ParivarPage() {
 
                 {/* Children Counter */}
                 <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
-                  <Label className="text-base font-medium">बच्चे</Label>
+                  <Label className="text-base font-medium">सम्पर्कित बच्चे</Label>
                   <div className="flex items-center gap-2">
                     <Button 
                       type="button" 
@@ -332,6 +379,33 @@ export default function ParivarPage() {
                     </Button>
                   </div>
                 </div>
+
+                {/* Not Contacted Counter */}
+                <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
+                  <Label className="text-base font-medium">नहीं मिल सके ऐसे कितने पारिवारिक सदस्य</Label>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => dec(setNahiMilSake)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-8 text-center font-medium">{nahiMilSake}</span>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => inc(setNahiMilSake)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
               </div>
 
 
@@ -392,7 +466,7 @@ export default function ParivarPage() {
                   </div>
 
                   {/* Pustak Counter */}
-                  <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
+                  {/* <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
                     <Label className="text-base font-medium">पुस्तक</Label>
                     <div className="flex items-center gap-2">
                       <Button
@@ -415,13 +489,13 @@ export default function ParivarPage() {
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
               {/* Shashulk Sahitya */}
               <div className="space-y-4">
-                <Label className="text-lg font-semibold">शुल्क साहित्य</Label>
+                <Label className="text-lg font-semibold">सशुल्क</Label>
                 <div className="space-y-3 p-4 border rounded-lg">
                   {/* Pustak Counter */}
                   <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
