@@ -305,7 +305,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <Label htmlFor="confirmPassword">पासवर्ड की पुष्टि करें / COnfirm Password</Label>
+                <Label htmlFor="confirmPassword">पासवर्ड की पुष्टि करें / Confirm Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"

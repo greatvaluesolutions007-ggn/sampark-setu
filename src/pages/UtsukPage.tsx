@@ -191,7 +191,7 @@ export default function UtsukPage() {
           </Button>
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl text-center">उत्सुकत शक्ति जोड़ें</CardTitle>
+              <CardTitle className="text-xl text-center">उत्सुक शक्ति जोड़ें</CardTitle>
             </CardHeader>
             <CardContent>
               <form id="utsuk-form" onSubmit={handleSubmit} className="space-y-4">
@@ -231,9 +231,9 @@ export default function UtsukPage() {
               {/* //TODO: add this field to api */}
 
                <div className="space-y-2">
-                <Label>पिताजी का नाम</Label>
+                <Label>पिता जी का नाम</Label>
                 <Input
-                  placeholder="पिताजी का नाम"
+                  placeholder="पिता जी का नाम"
                   onChange={(e) =>{}}
                 />
                 {/* {(submitAttempted || touchedFields.name) && !nameValid && (
@@ -294,7 +294,7 @@ export default function UtsukPage() {
               <div className="space-y-2">
                 <Label>पूरा पता</Label>
                 <Input
-                  placeholder="पता"
+                  placeholder="पूरा पता"
                   value={form.address}
                   onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, address: true }))}
