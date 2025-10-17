@@ -89,7 +89,7 @@ export default function LoginPage() {
             <TabsContent value="login">
               <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">उपयोगकर्ता नाम</Label>
+                  <Label htmlFor="username">उपयोगकर्ता नाम / Username</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                       <User className="h-4 w-4" />
@@ -103,7 +103,7 @@ export default function LoginPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">पासवर्ड</Label>
+                  <Label htmlFor="password">पासवर्ड / Password</Label>
                   <div className="relative">
                     <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="अपका पासवर्ड दर्ज करें (कम से कम 6 अक्षर)" value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
                     <button type="button" aria-label={showPassword ? 'पासवर्ड छुपाएँ' : 'पासवर्ड दिखाएँ'} onClick={() => setShowPassword((s) => !s)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">

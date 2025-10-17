@@ -32,10 +32,12 @@ export default function UtsukPage() {
   
   // Questions
   const questions = [
-    'क्या आप संघ के कार्यक्रमों में भाग लेते हैं?',
-    'क्या आप नियमित रूप से शाखा में जाते हैं?',
-    'क्या आप संघ के साहित्य पढ़ते हैं?',
-    'क्या आप संघ के कार्यों में सहयोग करना चाहते हैं?'
+    'पहले से संघ स्वयंसेवक हैं ?',
+    "संघ परिवार पृष्ठभूमि से हैं ?",
+    'संघ विचार से प्रभावित हैं ?',
+    'अपने किसी विविध संगठन से सम्बन्धित हैं ?',
+    'कोई परिचित / मित्र आदि स्वयंसेवक हैं ?'
+
   ]
   const [answers, setAnswers] = useState<string[]>(Array(questions.length).fill(''))
   
@@ -189,7 +191,7 @@ export default function UtsukPage() {
           </Button>
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl text-center">उत्सुक शक्ति</CardTitle>
+              <CardTitle className="text-xl text-center">उत्सुकत शक्ति जोड़ें</CardTitle>
             </CardHeader>
             <CardContent>
               <form id="utsuk-form" onSubmit={handleSubmit} className="space-y-4">
@@ -224,6 +226,19 @@ export default function UtsukPage() {
                 {(submitAttempted || touchedFields.name) && !nameValid && (
                   <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
                 )}
+              </div>
+
+              {/* //TODO: add this field to api */}
+
+               <div className="space-y-2">
+                <Label>पिताजी का नाम</Label>
+                <Input
+                  placeholder="पिताजी का नाम"
+                  onChange={(e) =>{}}
+                />
+                {/* {(submitAttempted || touchedFields.name) && !nameValid && (
+                  <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
+                )} */}
               </div>
 
               <div className="space-y-2">
@@ -277,7 +292,7 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>पता</Label>
+                <Label>पूरा पता</Label>
                 <Input
                   placeholder="पता"
                   value={form.address}
@@ -290,9 +305,17 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>विशेषता</Label>
+                <Label>रक्त गट</Label>
                 <Input
-                  placeholder="विशेषता"
+                  placeholder="रक्त गट"
+                  
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>कोई विशेष उल्लेखनीय जानकारी ( प्रतिमा , सामाजिक भूमिका आदि )</Label>
+                <Input
+                  placeholder="कोई विशेष उल्लेखनीय जानकारी ( प्रतिमा , सामाजिक भूमिका आदि ) डालें"
                   value={form.vishesh}
                   onChange={(e) => setForm(prev => ({ ...prev, vishesh: e.target.value }))}
                 />
@@ -300,6 +323,7 @@ export default function UtsukPage() {
 
               <div className="space-y-4">
                 <Label className="text-lg font-semibold">प्रश्न</Label>
+                <p>संघ एक्सपोज़र</p>
                 {questions.map((question, index) => (
                   <div key={index} className="space-y-2">
                     <Label className="text-sm font-medium">{question}</Label>
@@ -328,6 +352,18 @@ export default function UtsukPage() {
               </div>
 
               {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+
+              <div className="space-y-2">
+                <Label>किस प्रकार के कार्य के लिए उपयुक्त हो सकते हैं (संप कार्य / विविध संगठन) ?</Label>
+                <Input
+                  placeholder=""
+                  onChange={(e) =>{}}
+                />
+                {/* {(submitAttempted || touchedFields.name) && !nameValid && (
+                  <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
+                )} */}
+              </div>
+              
             </form>
           </CardContent>
         </Card>

@@ -120,19 +120,19 @@ export default function HomePage() {
                 />
                 <NavTab
                   icon={<Users className="h-4 w-4" />}
-                  label="परिवार"
+                  label="सम्पर्कित परिवार जानकारी"
                   active={activeTab === 'parivar'}
                   onClick={() => setActiveTab('parivar')}
                 />
                 <NavTab
                   icon={<BookOpen className="h-4 w-4" />}
-                  label="उत्सुक शक्ति"
+                  label="उत्सुक शक्ति जानकारी"
                   active={activeTab === 'utsuk'}
                   onClick={() => setActiveTab('utsuk')}
                 />
                 <NavTab
                   icon={<FileText className="h-4 w-4" />}
-                  label="साहित्य"
+                  label="साहित्य जानकारी"
                   active={activeTab === 'sashulk'}
                   onClick={() => setActiveTab('sashulk')}
                 />
