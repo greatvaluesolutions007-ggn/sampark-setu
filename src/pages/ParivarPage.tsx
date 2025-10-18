@@ -138,6 +138,7 @@ export default function ParivarPage() {
         male_count: purush,
         female_count: mahila,
         kids_count: bachche,
+        not_found: nahiMilSake,
         nishulk_sticker: nishulkSticker,
         nishulk_folder: nishulkFolder,
         nishulk_books: nishulkPustak,

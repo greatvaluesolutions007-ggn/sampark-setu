@@ -170,6 +170,7 @@ export interface CreateVisitRequest extends IParams {
   male_count: number;
   female_count: number;
   kids_count: number;
+  not_found: number;
   nishulk_sticker: number;
   nishulk_folder: number;
   nishulk_books: number;
@@ -281,6 +282,7 @@ export interface ParivarListItem {
   purush_count: number; // पुरुष count
   mahila_count: number; // महिला count
   bal_count: number; // बाल count
+  not_found: number; // नहीं मिल सके ऐसे पारिवारिक सदस्य count
   created_at: string;
   updated_at: string;
 }
