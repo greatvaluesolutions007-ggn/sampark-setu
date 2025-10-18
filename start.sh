@@ -13,13 +13,13 @@ LOG_FILE="${APP_NAME}.out"
 ##### comment from line number 8 to 18 if running locally
 # Backend/API env (defaults set here; can be overridden when invoking)
 export VITE_API_PROTOCOL="${VITE_API_PROTOCOL:-http}"
-export VITE_API_HOST="${VITE_API_HOST:-13.235.114.249}"
+export VITE_API_HOST="${VITE_API_HOST:-3.109.132.197}"
 export VITE_API_PORT="${VITE_API_PORT:-3000}"
 export VITE_API_PREFIX="${VITE_API_PREFIX:-/api}"
 
 # Dev server origin env (used by app utils) and CLI defaults
 export VITE_DEV_PROTOCOL="${VITE_DEV_PROTOCOL:-http}"
-export VITE_DEV_HOST="${VITE_DEV_HOST:-13.235.114.249}"
+export VITE_DEV_HOST="${VITE_DEV_HOST:-3.109.132.197}"
 export VITE_DEV_PORT="${VITE_DEV_PORT:-80}"
 
 # CLI host/port for Vite dev server
