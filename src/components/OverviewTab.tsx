@@ -14,8 +14,17 @@ interface OverviewTabProps {
 export default function OverviewTab({ user, activeTab = 'overview', onDetailsCardChange }: OverviewTabProps) {
   const isDashboard = ['BASTI_KARYAKARTA', 'GRAM_KARYAKARTA'].includes(user?.role ?? '')
 
+  // For dashboard users, show appropriate view based on active tab
   if (isDashboard) {
-    return <Dashboard />
+    switch (activeTab) {
+      case 'parivar':
+        return <ParivarView user={user} onDetailsCardChange={onDetailsCardChange} />
+      case 'utsuk':
+        return <UtsukView user={user} onDetailsCardChange={onDetailsCardChange} />
+      case 'overview':
+      default:
+        return <Dashboard />
+    }
   }
 
   // For non-dashboard users, show appropriate view based on active tab
