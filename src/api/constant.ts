@@ -36,6 +36,9 @@ const API_PATHS = {
   TOLI_SUMMARY_LIST: '/reporting/tolis/summary-list',
   PARIVAR_SUMMARY_LIST: '/reporting/parivar/summary-list',
   UTSUK_SUMMARY_LIST: '/reporting/utsukshakti/summary-list',
+  
+  // Parivar List API
+  PARIVAR_LIST: 'reporting/parivar/list',
 }
 
 export default API_PATHS;

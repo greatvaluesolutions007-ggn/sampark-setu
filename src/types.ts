@@ -170,6 +170,7 @@ export interface CreateVisitRequest extends IParams {
   male_count: number;
   female_count: number;
   kids_count: number;
+  not_found: number;
   nishulk_sticker: number;
   nishulk_folder: number;
   nishulk_books: number;
@@ -272,6 +273,25 @@ export interface ParivarSummaryResponse {
   male_count?: number;
   female_count?: number;
   kids_count?: number;
+}
+
+// Parivar List Types
+export interface ParivarListItem {
+  parivar_id: number;
+  samparkit_sadasya: string; // संपर्कित सदस्य
+  purush_count: number; // पुरुष count
+  mahila_count: number; // महिला count
+  bal_count: number; // बाल count
+  not_found: number; // नहीं मिल सके ऐसे पारिवारिक सदस्य count
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ParivarListResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: ParivarListItem[];
 }
 
 export interface SahityaSummaryResponse {

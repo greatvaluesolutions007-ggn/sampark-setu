@@ -32,6 +32,8 @@ import type {
   ParivarSummaryResponse,
   SahityaSummaryResponse,
   HierarchicalSummaryResponse,
+  ParivarListResponse,
+  ParivarListItem,
 } from '@/types';
 
 // Authentication Services
@@ -295,6 +297,31 @@ export const reportingService = {
       // Using dummy data
       console.log('📦 Using dummy data for Utsuk summary, regionId:', regionId);
       const dummyResponse = DummyDataService.getUtsukSummaryList(regionId);
+      console.log('📦 Dummy data response:', dummyResponse);
+      return dummyResponse;
+    }
+  },
+};
+
+// Parivar List Service
+export const parivarListService = {
+  getParivarList: async (regionId: number): Promise<ParivarListResponse> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Parivar list, regionId:', regionId);
+        const response = await axiosInstance.get<ParivarListResponse>(API_PATHS.PARIVAR_LIST, { 
+          params: { 'region-id': regionId } 
+        });
+        console.log('✅ API response for Parivar list:', response.data);
+        return response.data;
+      } catch (error) {
+        console.log('❌ API failed, falling back to dummy data for Parivar list, regionId:', regionId, error);
+        return DummyDataService.getParivarList(regionId);
+      }
+    } else {
+      // Using dummy data
+      console.log('📦 Using dummy data for Parivar list, regionId:', regionId);
+      const dummyResponse = DummyDataService.getParivarList(regionId);
       console.log('📦 Dummy data response:', dummyResponse);
       return dummyResponse;
     }

@@ -401,6 +401,7 @@ Authorization: Bearer <your_jwt_token>
   "male_count": 3,
   "female_count": 2,
   "kids_count": 1,
+  "not_found": 0,
   "nishulk_sticker": 10,
   "nishulk_folder": 5,
   "nishulk_books": 3,

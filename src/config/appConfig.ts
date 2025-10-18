@@ -4,7 +4,7 @@ export const APP_CONFIG = {
   USE_REAL_API: true,
   
   // API Configuration
-  API_BASE_URL: 'http://13.235.114.249:3000',
+  API_BASE_URL: 'http://3.109.132.197:3000',
   
   // Development flags
   DEBUG_MODE: true,
