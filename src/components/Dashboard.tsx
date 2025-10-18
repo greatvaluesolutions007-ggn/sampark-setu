@@ -121,68 +121,79 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Data Collection Cards */}
-        <div className="grid md:grid-cols-2 gap-6">
-          
-          {/* Parivar Data Card */}
-          <Card className="border-2 border-blue-200 shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-xl">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Home className="h-5 w-5 text-blue-600" />
-                परिवार डेटा
-              </CardTitle>
-              <CardDescription>
-                परिवार की जानकारी जोड़ें
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <p className="text-sm text-gray-600 mb-4">
-                परिवार के सदस्यों की संख्या, साहित्य वितरण आदि की जानकारी दर्ज करें।
-              </p>
-              <Button
-                onClick={() => navigate('/parivar')}
-                className="w-full bg-blue-600 hover:bg-blue-700 gap-2"
-                size="lg"
-              >
-                <Plus className="h-5 w-5" />
-                परिवार डेटा जोड़ें
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Data Collection Cards - Only show when toli exists */}
+        {toli && (
+          <div className="grid md:grid-cols-2 gap-6">
+            
+            {/* Parivar Data Card */}
+            <Card className="border-2 border-blue-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-xl">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Home className="h-5 w-5 text-blue-600" />
+                  परिवार डेटा
+                </CardTitle>
+                <CardDescription>
+                  परिवार की जानकारी जोड़ें
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <p className="text-sm text-gray-600 mb-4">
+                  परिवार के सदस्यों की संख्या, साहित्य वितरण आदि की जानकारी दर्ज करें।
+                </p>
+                <Button
+                  onClick={() => navigate('/parivar')}
+                  className="w-full bg-blue-600 hover:bg-blue-700 gap-2"
+                  size="lg"
+                >
+                  <Plus className="h-5 w-5" />
+                  परिवार डेटा जोड़ें
+                </Button>
+              </CardContent>
+            </Card>
 
-          {/* Utsuk Shakti Card */}
-          <Card className="border-2 border-purple-200 shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-t-xl">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <UserPlus className="h-5 w-5 text-purple-600" />
-                उत्सुक शक्ति
-              </CardTitle>
-              <CardDescription>
-                नए संपर्क व्यक्ति जोड़ें
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <p className="text-sm text-gray-600 mb-4">
-                उत्सुक व्यक्तियों की जानकारी और उनसे जुड़े प्रश्नों के उत्तर दर्ज करें।
-              </p>
-              <Button
-                onClick={() => navigate('/utsuk')}
-                className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
-                size="lg"
-              >
-                <Plus className="h-5 w-5" />
-                उत्सुक शक्ति जोड़ें
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Utsuk Shakti Card */}
+            <Card className="border-2 border-purple-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-t-xl">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <UserPlus className="h-5 w-5 text-purple-600" />
+                  उत्सुक शक्ति
+                </CardTitle>
+                <CardDescription>
+                  नए संपर्क व्यक्ति जोड़ें
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <p className="text-sm text-gray-600 mb-4">
+                  उत्सुक व्यक्तियों की जानकारी और उनसे जुड़े प्रश्नों के उत्तर दर्ज करें।
+                </p>
+                <Button
+                  onClick={() => navigate('/utsuk')}
+                  className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
+                  size="lg"
+                >
+                  <Plus className="h-5 w-5" />
+                  उत्सुक शक्ति जोड़ें
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Info Section */}
         <Card className="border border-gray-200">
           <CardContent className="pt-6">
             <div className="text-sm text-gray-600 space-y-2">
-              <p>💡 <strong>सुझाव:</strong> पहले टोली बनाएं, फिर परिवार और उत्सुक शक्ति डेटा जोड़ें।</p>
-              <p>📊 सभी डेटा स्वचालित रूप से आपके क्षेत्र से जुड़ जाएगा।</p>
+              {!toli ? (
+                <>
+                  <p>💡 <strong>सुझाव:</strong> पहले टोली बनाएं, फिर परिवार और उत्सुक शक्ति डेटा जोड़ें।</p>
+                  <p>📊 सभी डेटा स्वचालित रूप से आपके क्षेत्र से जुड़ जाएगा।</p>
+                </>
+              ) : (
+                <>
+                  <p>✅ <strong>टोली बनाई गई:</strong> अब आप परिवार और उत्सुक शक्ति डेटा जोड़ सकते हैं।</p>
+                  <p>📊 सभी डेटा स्वचालित रूप से आपके क्षेत्र से जुड़ जाएगा।</p>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
