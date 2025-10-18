@@ -27,7 +27,8 @@ export default function UtsukPage() {
     email: '',
     sex: '',
     address: '',
-    vishesh: ''
+    vishesh: '',
+    upyogita: ''
   })
   
   // Questions
@@ -39,7 +40,7 @@ export default function UtsukPage() {
     'कोई परिचित / मित्र आदि स्वयंसेवक हैं ?'
 
   ]
-  const [answers, setAnswers] = useState<string[]>(Array(questions.length).fill(''))
+  const [selectedAnswer, setSelectedAnswer] = useState<string>('')
   
   // Validation states
   const [submitAttempted, setSubmitAttempted] = useState(false)
@@ -57,7 +58,7 @@ export default function UtsukPage() {
   const emailValid = !form.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
   const sexValid = form.sex !== ''
   const addressValid = form.address.length >= 10
-  const questionsValid = answers.every(answer => answer !== '')
+  const questionsValid = selectedAnswer !== ''
   
   const isFormValid = nameValid && phoneValid && emailValid && sexValid && addressValid && questionsValid
 
@@ -143,10 +144,10 @@ export default function UtsukPage() {
         address_text: form.address || undefined,
         region_id: regionId!,
         visheshta: form.vishesh || undefined,
-        answers: answers.reduce((acc, answer, index) => {
-          acc[`question_${index + 1}`] = answer
-          return acc
-        }, {} as Record<string, string>)
+        upyogita: form.upyogita || undefined,
+        answers: selectedAnswer ? {
+          [questions[parseInt(selectedAnswer.split('-')[0])]]: selectedAnswer.split('-')[1] === 'yes' ? 'हाँ' : 'नहीं'
+        } : {}
       }
 
       const response = await personService.createPerson(personData)
@@ -163,8 +164,8 @@ export default function UtsukPage() {
       })
 
       // Reset form on success
-      setForm({ name: '', phone: '', email: '', sex: '', address: '', vishesh: '' })
-      setAnswers(Array(questions.length).fill(''))
+      setForm({ name: '', phone: '', email: '', sex: '', address: '', vishesh: '', upyogita: '' })
+      setSelectedAnswer('')
       setSubmitAttempted(false)
       setTouchedFields({ name: false, sex: false, address: false })
 
@@ -216,9 +217,9 @@ export default function UtsukPage() {
               )}
 
               <div className="space-y-2">
-                <Label>नाम</Label>
+                <Label>नाम / Name</Label>
                 <Input
-                  placeholder="नाम"
+                  placeholder="नाम / Name"
                   value={form.name}
                   onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, name: true }))}
@@ -231,9 +232,9 @@ export default function UtsukPage() {
               {/* //TODO: add this field to api */}
 
                <div className="space-y-2">
-                <Label>पिता जी का नाम</Label>
+                <Label>पिता जी का नाम / Father's Name</Label>
                 <Input
-                  placeholder="पिता जी का नाम"
+                  placeholder="पिता जी का नाम / Father's Name"
                   onChange={(e) =>{}}
                 />
                 {/* {(submitAttempted || touchedFields.name) && !nameValid && (
@@ -242,9 +243,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>मोबाइल नंबर</Label>
+                <Label>मोबाइल नंबर / Mobile Number</Label>
                 <Input
-                  placeholder="मोबाइल नंबर"
+                  placeholder="मोबाइल नंबर / Mobile Number"
                   value={form.phone}
                   onChange={handlePhoneChange}
                   maxLength={10}
@@ -255,9 +256,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>ईमेल</Label>
+                <Label>ईमेल / Email</Label>
                 <Input
-                  placeholder="ईमेल"
+                  placeholder="ईमेल / Email"
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm(prev => ({ ...prev, email: e.target.value }))}
@@ -268,7 +269,7 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>लिंग</Label>
+                <Label>लिंग / Gender</Label>
                 <Select 
                   value={form.sex} 
                   onValueChange={(value) => {
@@ -277,7 +278,7 @@ export default function UtsukPage() {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="लिंग चुनें" />
+                    <SelectValue placeholder="लिंग चुनें / Select Gender" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MALE">पुरुष</SelectItem>
@@ -292,9 +293,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>पूरा पता</Label>
+                <Label>पूरा पता / Full Address</Label>
                 <Input
-                  placeholder="पूरा पता"
+                  placeholder="पूरा पता / Full Address"
                   value={form.address}
                   onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, address: true }))}
@@ -305,9 +306,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>रक्त गट</Label>
+                <Label>रक्त गट / Blood Group</Label>
                 <Input
-                  placeholder="रक्त गट"
+                  placeholder="रक्त गट / Blood Group"
                   
                 />
               </div>
@@ -323,45 +324,41 @@ export default function UtsukPage() {
 
               <div className="space-y-4">
                 <Label className="text-lg font-semibold">प्रश्न</Label>
-                <p>संघ एक्सपोज़र</p>
-                {questions.map((question, index) => (
-                  <div key={index} className="space-y-2">
-                    <Label className="text-sm font-medium">{question}</Label>
-                    <RadioGroup
-                      value={answers[index]}
-                      onValueChange={(value: string) => {
-                        const newAnswers = [...answers]
-                        newAnswers[index] = value
-                        setAnswers(newAnswers)
-                      }}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="yes" id={`yes-${index}`} />
-                        <Label htmlFor={`yes-${index}`}>हाँ</Label>
+                <p>संघ एक्सपोज़र - कृपया केवल एक विकल्प चुनें</p>
+                <RadioGroup
+                  value={selectedAnswer}
+                  onValueChange={setSelectedAnswer}
+                >
+                  {questions.map((question, index) => (
+                    <div key={index} className="space-y-2 border rounded-lg p-3">
+                      <Label className="text-sm font-medium">{question}</Label>
+                      <div className="flex space-x-6">
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value={`${index}-yes`} id={`yes-${index}`} />
+                          <Label htmlFor={`yes-${index}`}>हाँ</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value={`${index}-no`} id={`no-${index}`} />
+                          <Label htmlFor={`no-${index}`}>नहीं</Label>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="no" id={`no-${index}`} />
-                        <Label htmlFor={`no-${index}`}>नहीं</Label>
-                      </div>
-                    </RadioGroup>
-                    {submitAttempted && !answers[index] && (
-                      <p className="text-sm text-primary">कृपया एक विकल्प चुनें</p>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))}
+                </RadioGroup>
+                {submitAttempted && !selectedAnswer && (
+                  <p className="text-sm text-primary">कृपया एक विकल्प चुनें</p>
+                )}
               </div>
 
               {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
               <div className="space-y-2">
-                <Label>किस प्रकार के कार्य के लिए उपयुक्त हो सकते हैं (संप कार्य / विविध संगठन) ?</Label>
+                <Label>किस प्रकार के कार्य के लिए उपयुक्त हो सकते हैं (संघ कार्य / विविध संगठन) ?</Label>
                 <Input
-                  placeholder=""
-                  onChange={(e) =>{}}
+                  placeholder="संघ कार्य / विविध संगठन"
+                  value={form.upyogita}
+                  onChange={(e) => setForm(prev => ({ ...prev, upyogita: e.target.value }))}
                 />
-                {/* {(submitAttempted || touchedFields.name) && !nameValid && (
-                  <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
-                )} */}
               </div>
               
             </form>

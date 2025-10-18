@@ -149,6 +149,7 @@ export interface CreatePersonRequest extends IParams {
   address_text?: string;
   region_id?: number;
   visheshta?: string;
+  upyogita?: string;
   answers?: Record<string, string>;
 }
 
@@ -205,6 +206,7 @@ export interface Person {
   region_id: number | null;
   created_by: number;
   visheshta: string | null;
+  upyogita: string | null;
   answers_json: Record<string, string> | null;
   created_at: string;
   updated_at: string;
