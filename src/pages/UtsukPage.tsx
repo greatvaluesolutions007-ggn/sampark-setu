@@ -217,9 +217,9 @@ export default function UtsukPage() {
               )}
 
               <div className="space-y-2">
-                <Label>नाम</Label>
+                <Label>नाम / Name</Label>
                 <Input
-                  placeholder="नाम"
+                  placeholder="नाम / Name"
                   value={form.name}
                   onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, name: true }))}
@@ -232,9 +232,9 @@ export default function UtsukPage() {
               {/* //TODO: add this field to api */}
 
                <div className="space-y-2">
-                <Label>पिता जी का नाम</Label>
+                <Label>पिता जी का नाम / Father's Name</Label>
                 <Input
-                  placeholder="पिता जी का नाम"
+                  placeholder="पिता जी का नाम / Father's Name"
                   onChange={(e) =>{}}
                 />
                 {/* {(submitAttempted || touchedFields.name) && !nameValid && (
@@ -243,9 +243,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>मोबाइल नंबर</Label>
+                <Label>मोबाइल नंबर / Mobile Number</Label>
                 <Input
-                  placeholder="मोबाइल नंबर"
+                  placeholder="मोबाइल नंबर / Mobile Number"
                   value={form.phone}
                   onChange={handlePhoneChange}
                   maxLength={10}
@@ -256,9 +256,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>ईमेल</Label>
+                <Label>ईमेल / Email</Label>
                 <Input
-                  placeholder="ईमेल"
+                  placeholder="ईमेल / Email"
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm(prev => ({ ...prev, email: e.target.value }))}
@@ -269,7 +269,7 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>लिंग</Label>
+                <Label>लिंग / Gender</Label>
                 <Select 
                   value={form.sex} 
                   onValueChange={(value) => {
@@ -278,7 +278,7 @@ export default function UtsukPage() {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="लिंग चुनें" />
+                    <SelectValue placeholder="लिंग चुनें / Select Gender" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MALE">पुरुष</SelectItem>
@@ -293,9 +293,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>पूरा पता</Label>
+                <Label>पूरा पता / Full Address</Label>
                 <Input
-                  placeholder="पूरा पता"
+                  placeholder="पूरा पता / Full Address"
                   value={form.address}
                   onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, address: true }))}
