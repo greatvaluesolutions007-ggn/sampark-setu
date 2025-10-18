@@ -415,7 +415,7 @@ export default function ParivarPage() {
                 <div className="space-y-3 p-4 border rounded-lg">
                   {/* Sticker Counter */}
                   <div className="bg-white border rounded-lg p-4 flex items-center justify-between">
-                    <Label className="text-base font-medium">स्टिकर</Label>
+                    <Label className="text-base font-medium">स्टीकर</Label>
                     <div className="flex items-center gap-2">
                       <Button
                         type="button"

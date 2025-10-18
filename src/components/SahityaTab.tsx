@@ -53,12 +53,6 @@ export default function SahityaTab() {
           icon={<BookOpen className="h-6 w-6" />}
           color="bg-blue-100 text-blue-600"
         />
-        <StatCard
-          title="कुल पुस्तकें (निशुल्क)"
-          value={isLoading ? '...' : summary.nishulk_books.toString()}
-          icon={<BookOpen className="h-6 w-6" />}
-          color="bg-purple-100 text-purple-600"
-        />
       </div>
 
       {/* Paid Content Section */}

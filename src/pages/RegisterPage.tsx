@@ -183,7 +183,7 @@ export default function RegisterPage() {
             <div className="flex-1" />
           </div>
           <CardTitle className="text-2xl font-bold text-orange-600">
-            <p>{step === 'code' ? 'कोड दर्ज करें' : 'पंजीकरण करें'} {" "} {code==="1925" ? "(टौली प्रयोग हेतु)" : "(डैशबोर्ड देखने हेतु)"}</p>
+            <p>{step === 'code' ? 'कोड दर्ज करें' : 'पंजीकरण करें'} {" "} {code==="1925" ? "(टोली प्रयोग हेतु)" : "(डैशबोर्ड देखने हेतु)"}</p>
           </CardTitle>
           <p className="text-gray-600">
             {step === 'code' 
