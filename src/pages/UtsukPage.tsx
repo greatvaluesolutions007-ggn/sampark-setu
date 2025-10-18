@@ -27,7 +27,8 @@ export default function UtsukPage() {
     email: '',
     sex: '',
     address: '',
-    vishesh: ''
+    vishesh: '',
+    upyogita: ''
   })
   
   // Questions
@@ -143,6 +144,7 @@ export default function UtsukPage() {
         address_text: form.address || undefined,
         region_id: regionId!,
         visheshta: form.vishesh || undefined,
+        upyogita: form.upyogita || undefined,
         answers: selectedAnswer ? {
           [questions[parseInt(selectedAnswer.split('-')[0])]]: selectedAnswer.split('-')[1] === 'yes' ? 'हाँ' : 'नहीं'
         } : {}
@@ -162,7 +164,7 @@ export default function UtsukPage() {
       })
 
       // Reset form on success
-      setForm({ name: '', phone: '', email: '', sex: '', address: '', vishesh: '' })
+      setForm({ name: '', phone: '', email: '', sex: '', address: '', vishesh: '', upyogita: '' })
       setSelectedAnswer('')
       setSubmitAttempted(false)
       setTouchedFields({ name: false, sex: false, address: false })
@@ -304,9 +306,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>रक्त गट</Label>
+                <Label>रक्त गट / Blood Group</Label>
                 <Input
-                  placeholder="रक्त गट"
+                  placeholder="रक्त गट / Blood Group"
                   
                 />
               </div>
@@ -351,14 +353,12 @@ export default function UtsukPage() {
               {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
               <div className="space-y-2">
-                <Label>किस प्रकार के कार्य के लिए उपयुक्त हो सकते हैं (संप कार्य / विविध संगठन) ?</Label>
+                <Label>किस प्रकार के कार्य के लिए उपयुक्त हो सकते हैं (संघ कार्य / विविध संगठन) ?</Label>
                 <Input
-                  placeholder=""
-                  onChange={(e) =>{}}
+                  placeholder="संघ कार्य / विविध संगठन"
+                  value={form.upyogita}
+                  onChange={(e) => setForm(prev => ({ ...prev, upyogita: e.target.value }))}
                 />
-                {/* {(submitAttempted || touchedFields.name) && !nameValid && (
-                  <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
-                )} */}
               </div>
               
             </form>
