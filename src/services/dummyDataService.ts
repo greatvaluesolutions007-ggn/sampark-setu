@@ -75,4 +75,33 @@ export class DummyDataService {
   static getUtsukSummaryList(regionId: number): DummyDataResponse {
     return this.getRegionData(regionId, 'utsuk')
   }
+
+  static getParivarList(regionId: number): DummyDataResponse {
+    // For now, return empty data - you can add dummy parivar list data later
+    return {
+      success: true,
+      message: 'Parivar list retrieved successfully',
+      statusCode: 200,
+      data: [
+        {
+          parivar_id: 1,
+          samparkit_sadasya: 'Rajesh Kumar',
+          purush_count: 2,
+          mahila_count: 1,
+          bal_count: 1,
+          created_at: '2024-01-15T10:30:00Z',
+          updated_at: '2024-01-15T10:30:00Z'
+        },
+        {
+          parivar_id: 2,
+          samparkit_sadasya: 'Mohan Lal',
+          purush_count: 1,
+          mahila_count: 2,
+          bal_count: 0,
+          created_at: '2024-01-16T14:20:00Z',
+          updated_at: '2024-01-16T14:20:00Z'
+        }
+      ]
+    }
+  }
 }

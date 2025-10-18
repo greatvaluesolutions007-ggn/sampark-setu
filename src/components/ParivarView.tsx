@@ -1,4 +1,4 @@
-import HierarchicalTreeView from '@/components/HierarchicalTreeView'
+import ParivarListView from '@/components/ParivarListView'
 import type { User } from '@/types'
 import type { DetailsCardData } from '@/components/DetailsCard'
 
@@ -8,5 +8,5 @@ interface ParivarViewProps {
 }
 
 export default function ParivarView({ user, onDetailsCardChange }: ParivarViewProps) {
-  return <HierarchicalTreeView user={user} dataType="parivar" onDetailsCardChange={onDetailsCardChange} />
+  return <ParivarListView user={user} />
 }
