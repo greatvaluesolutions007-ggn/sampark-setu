@@ -76,32 +76,34 @@ export class DummyDataService {
     return this.getRegionData(regionId, 'utsuk')
   }
 
-  static getParivarList(regionId: number): DummyDataResponse {
-    // For now, return empty data - you can add dummy parivar list data later
+  static getParivarList(_regionId: number): DummyDataResponse {
+    // Generate more dummy data for testing pagination
+    const dummyParivarList = []
+    const names = [
+      'Rajesh Kumar', 'Mohan Lal', 'Suresh Singh', 'Ramesh Gupta', 'Vikram Sharma',
+      'Amit Kumar', 'Sunil Yadav', 'Pradeep Singh', 'Rajesh Verma', 'Manoj Kumar',
+      'Vikash Singh', 'Ravi Kumar', 'Sandeep Sharma', 'Anil Kumar', 'Deepak Singh',
+      'Naveen Kumar', 'Rohit Sharma', 'Ajay Kumar', 'Vijay Singh', 'Sanjay Kumar',
+      'Rakesh Kumar', 'Mukesh Kumar', 'Dinesh Kumar', 'Suresh Kumar', 'Mahesh Kumar'
+    ]
+    
+    for (let i = 1; i <= 25; i++) {
+      dummyParivarList.push({
+        parivar_id: i,
+        samparkit_sadasya: names[i % names.length] + ` (${i})`,
+        purush_count: Math.floor(Math.random() * 4) + 1,
+        mahila_count: Math.floor(Math.random() * 3) + 1,
+        bal_count: Math.floor(Math.random() * 4),
+        created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+        updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
+      })
+    }
+    
     return {
       success: true,
       message: 'Parivar list retrieved successfully',
       statusCode: 200,
-      data: [
-        {
-          parivar_id: 1,
-          samparkit_sadasya: 'Rajesh Kumar',
-          purush_count: 2,
-          mahila_count: 1,
-          bal_count: 1,
-          created_at: '2024-01-15T10:30:00Z',
-          updated_at: '2024-01-15T10:30:00Z'
-        },
-        {
-          parivar_id: 2,
-          samparkit_sadasya: 'Mohan Lal',
-          purush_count: 1,
-          mahila_count: 2,
-          bal_count: 0,
-          created_at: '2024-01-16T14:20:00Z',
-          updated_at: '2024-01-16T14:20:00Z'
-        }
-      ]
+      data: dummyParivarList
     }
   }
 }
