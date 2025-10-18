@@ -214,7 +214,7 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
                     
                     <div className="mt-3 pt-2 border-t border-gray-200">
                       <div className="text-xs text-gray-500 text-center">
-                        <span>ID: {parivar.parivar_id}</span>
+                        <span>नहीं मिल सके ऐसे सदस्य: {parivar.not_found}</span>
                       </div>
                     </div>
                   </CardContent>
