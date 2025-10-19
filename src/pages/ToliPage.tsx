@@ -304,8 +304,13 @@ export default function ToliPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, name: true }))}
+                  disabled={!!existingToliId}
+                  className={existingToliId ? 'bg-gray-100 cursor-not-allowed' : ''}
                 />
-                {(submitAttempted || touchedFields.name) && !nameValid && (
+                {existingToliId && (
+                  <p className="text-sm text-gray-500">टोली का नाम संपादित नहीं किया जा सकता</p>
+                )}
+                {(submitAttempted || touchedFields.name) && !nameValid && !existingToliId && (
                   <p className="text-sm text-primary">टोली का नाम कम से कम 3 अक्षरों का होना चाहिए</p>
                 )}
               </div>

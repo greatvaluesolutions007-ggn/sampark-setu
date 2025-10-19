@@ -105,7 +105,9 @@ export default function Dashboard() {
                 {toli.members_json && toli.members_json.length > 0 && (
                   <div className="bg-white border rounded-lg p-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">सदस्यों की संख्या</p>
-                    <p className="text-2xl font-bold text-orange-600">{toli.members_json.length}</p>
+                    <p className="text-2xl font-bold text-orange-600">
+                      {toli.members_json.length + (toli.pramukh_json ? 1 : 0)}
+                    </p>
                   </div>
                 )}
 
