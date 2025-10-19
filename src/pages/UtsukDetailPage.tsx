@@ -76,11 +76,8 @@ export default function UtsukDetailPage() {
         
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
-            <UserCheck className="h-6 w-6 text-purple-600" />
-            उत्सुक शक्ति जानकारी
-          </h1>
-          <p className="text-gray-600">आपके क्षेत्र की उत्सुक शक्ति की विस्तृत जानकारी</p>
+        <h1 className="text-2xl font-bold text-primary mb-2">उत्सुक शक्ति जानकारी</h1>
+        <p className="text-gray-600">आपके क्षेत्र की उत्सुक शक्ति की विस्तृत जानकारी</p>
         </div>
 
         {error && (
