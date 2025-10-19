@@ -256,6 +256,8 @@ export interface CreateUserWithCodeRequest extends IParams {
   full_name: string;
   mobile_number: string;
   region_id: number;
+  sangh?: string;
+  total_house?: number;
 }
 
 // Reporting Summary Types
