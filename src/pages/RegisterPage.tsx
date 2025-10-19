@@ -34,6 +34,7 @@ export default function RegisterPage() {
   
   // Region state
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
+  const [selectedRegionType, setSelectedRegionType] = useState<string | null>(null)
   
   // UI state
   const [isLoading, setIsLoading] = useState(false)
@@ -58,7 +59,10 @@ export default function RegisterPage() {
   const mobileNumberValid = /^[6-9]\d{9}$/.test(mobileNumber)
   const sanghValid = sangh.trim().length === 0 || /^[a-zA-Z\u0900-\u097F\s]+$/.test(sangh.trim())
   const totalHouseValid = totalHouse.trim().length === 0 || /^\d+$/.test(totalHouse.trim())
-  const regionValid = selectedRegionId !== null
+  const regionValid = selectedRegionId !== null && (
+    code !== '1925' || 
+    (selectedRegionType === 'BASTI' || selectedRegionType === 'GRAM')
+  )
   
   const isCodeFormValid = codeValid
   const isDetailsFormValid = fullNameValid && usernameValid && passwordValid && confirmPasswordValid && mobileNumberValid && sanghValid && totalHouseValid && regionValid
@@ -163,6 +167,7 @@ export default function RegisterPage() {
   // Handle region selection
   const handleRegionChange = (regionId: number, regionName: string, regionType: string) => {
     setSelectedRegionId(regionId)
+    setSelectedRegionType(regionType)
     console.log('Region selected:', { regionId, regionName, regionType })
   }
 
@@ -410,6 +415,9 @@ export default function RegisterPage() {
                 />
                 {!regionValid && selectedRegionId === null && (
                   <p className="text-red-500 text-sm mt-1">कृपया अपना क्षेत्र चुनें</p>
+                )}
+                {!regionValid && selectedRegionId !== null && code === '1925' && (
+                  <p className="text-red-500 text-sm mt-1">कृपया BASTI या GRAM क्षेत्र चुनें</p>
                 )}
               </div>
 
