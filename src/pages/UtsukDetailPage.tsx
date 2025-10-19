@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, UserCheck, Users, User } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { UserCheck, Users } from 'lucide-react'
 import { utsukDetailService, authService } from '@/api/services'
-import type { UtsukDetailItem, UtsukSummaryData, User } from '@/types'
+import type { UtsukDetailItem, UtsukSummaryData } from '@/types'
 
 export default function UtsukDetailPage() {
-  const navigate = useNavigate()
-  const [user, setUser] = useState<User | null>(null)
   const [summaryData, setSummaryData] = useState<UtsukSummaryData | null>(null)
   const [detailList, setDetailList] = useState<UtsukDetailItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -28,7 +25,6 @@ export default function UtsukDetailPage() {
       // Get current user
       const userResponse = await authService.getCurrentUser()
       if (userResponse.success && userResponse.data.region_id) {
-        setUser(userResponse.data)
         const regionId = userResponse.data.region_id
 
         // Fetch summary data
@@ -79,17 +75,12 @@ export default function UtsukDetailPage() {
       <div className="max-w-6xl mx-auto py-8 space-y-6">
         
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" /> वापस जाएँ
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <UserCheck className="h-6 w-6 text-purple-600" />
-              उत्सुक शक्ति जानकारी
-            </h1>
-            <p className="text-gray-600">आपके क्षेत्र की उत्सुक शक्ति की विस्तृत जानकारी</p>
-          </div>
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
+            <UserCheck className="h-6 w-6 text-purple-600" />
+            उत्सुक शक्ति जानकारी
+          </h1>
+          <p className="text-gray-600">आपके क्षेत्र की उत्सुक शक्ति की विस्तृत जानकारी</p>
         </div>
 
         {error && (
@@ -117,7 +108,7 @@ export default function UtsukDetailPage() {
             <Card className="border-2 border-blue-200 shadow-lg">
               <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-xl">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <User className="h-5 w-5 text-blue-600" />
+                  <Users className="h-5 w-5 text-blue-600" />
                   पुरुष
                 </CardTitle>
               </CardHeader>
@@ -156,57 +147,50 @@ export default function UtsukDetailPage() {
                 <p className="text-gray-500">कोई उत्सुक शक्ति डेटा उपलब्ध नहीं है</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {detailList.map((item) => (
-                  <Card key={item.person_id} className="border border-gray-200">
-                    <CardContent className="p-6">
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Basic Info */}
-                        <div className="space-y-3">
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
-                            <p className="text-sm text-gray-500">ID: {item.person_id}</p>
-                          </div>
-                          
-                          {item.visheshta && (
-                            <div>
-                              <p className="text-sm font-medium text-gray-700">विशेषता:</p>
-                              <p className="text-sm text-gray-600">{item.visheshta}</p>
-                            </div>
-                          )}
-                          
-                          {item.upyogita && (
-                            <div>
-                              <p className="text-sm font-medium text-gray-700">उपयोगिता:</p>
-                              <p className="text-sm text-gray-600">{item.upyogita}</p>
-                            </div>
-                          )}
+                  <Card key={item.person_id} className="border border-gray-200 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        {/* Name */}
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm">{item.name}</h3>
                         </div>
+                        
+                        {/* Visheshta */}
+                        {item.visheshta && (
+                          <div>
+                            <span className="text-xs text-gray-600">विशेषता: </span>
+                            <span className="text-xs text-gray-800">{item.visheshta}</span>
+                          </div>
+                        )}
+                        
+                        {/* Upyogita */}
+                        {item.upyogita && (
+                          <div>
+                            <span className="text-xs text-gray-600">उपयोगिता: </span>
+                            <span className="text-xs text-gray-800">{item.upyogita}</span>
+                          </div>
+                        )}
 
                         {/* Questions and Answers */}
                         {item.answers_json && Object.keys(item.answers_json).length > 0 && (
-                          <div className="space-y-3">
-                            <p className="text-sm font-medium text-gray-700">प्रश्न और उत्तर:</p>
-                            <div className="space-y-2">
-                              {Object.entries(item.answers_json).map(([question, answer]) => (
-                                <div key={question} className="bg-gray-50 p-3 rounded-lg">
-                                  <p className="text-sm font-medium text-gray-800 mb-1">
-                                    प्रश्न: {question}
-                                  </p>
-                                  <p className="text-sm text-gray-600">
-                                    उत्तर: {answer}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                          <div className="space-y-1">
+                            {Object.entries(item.answers_json).map(([question, answer]) => (
+                              <div key={question} className="bg-gray-50 p-2 rounded text-xs">
+                                <span className="text-gray-600">{question}: </span>
+                                <span className="text-gray-800">{answer}</span>
+                              </div>
+                            ))}
                           </div>
                         )}
-                      </div>
-                      
-                      <div className="mt-4 pt-4 border-t border-gray-200">
-                        <p className="text-xs text-gray-500">
-                          जोड़ा गया: {formatDate(item.created_at)}
-                        </p>
+                        
+                        {/* Date */}
+                        <div className="pt-2 border-t border-gray-100">
+                          <p className="text-xs text-gray-500">
+                            जोड़ा गया: {formatDate(item.created_at)}
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
