@@ -164,7 +164,7 @@ export default function Dashboard() {
                 </CardTitle>
                 <CardDescription>
                   {user?.role === 'BASTI_KARYAKARTA' || user?.role === 'GRAM_KARYAKARTA' 
-                    ? 'उत्सुक शक्ति की विस्तृत जानकारी देखें'
+                    ? 'उत्सुक शक्ति डेटा जोड़ें और देखें'
                     : 'नए संपर्क व्यक्ति जोड़ें'
                   }
                 </CardDescription>
@@ -172,19 +172,30 @@ export default function Dashboard() {
               <CardContent className="pt-6">
                 <p className="text-sm text-gray-600 mb-4">
                   {user?.role === 'BASTI_KARYAKARTA' || user?.role === 'GRAM_KARYAKARTA'
-                    ? 'आपके क्षेत्र की उत्सुक शक्ति की विस्तृत जानकारी और सांख्यिकी देखें।'
+                    ? 'उत्सुक व्यक्तियों की जानकारी जोड़ें और आपके क्षेत्र की विस्तृत जानकारी देखें।'
                     : 'उत्सुक व्यक्तियों की जानकारी और उनसे जुड़े प्रश्नों के उत्तर दर्ज करें।'
                   }
                 </p>
                 {user?.role === 'BASTI_KARYAKARTA' || user?.role === 'GRAM_KARYAKARTA' ? (
-                  <Button
-                    onClick={() => navigate('/utsuk-detail')}
-                    className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
-                    size="lg"
-                  >
-                    <Eye className="h-5 w-5" />
-                    उत्सुक शक्ति जानकारी देखें
-                  </Button>
+                  <div className="space-y-3">
+                    <Button
+                      onClick={() => navigate('/utsuk')}
+                      className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
+                      size="lg"
+                    >
+                      <Plus className="h-5 w-5" />
+                      उत्सुक शक्ति जोड़ें
+                    </Button>
+                    <Button
+                      onClick={() => navigate('/utsuk-detail')}
+                      variant="outline"
+                      className="w-full border-purple-300 text-purple-700 hover:bg-purple-50 gap-2"
+                      size="lg"
+                    >
+                      <Eye className="h-5 w-5" />
+                      उत्सुक शक्ति जानकारी देखें
+                    </Button>
+                  </div>
                 ) : (
                   <Button
                     onClick={() => navigate('/utsuk')}
