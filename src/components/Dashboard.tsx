@@ -186,15 +186,6 @@ export default function Dashboard() {
                       <Plus className="h-5 w-5" />
                       उत्सुक शक्ति जोड़ें
                     </Button>
-                    <Button
-                      onClick={() => navigate('/utsuk-detail')}
-                      variant="outline"
-                      className="w-full border-purple-300 text-purple-700 hover:bg-purple-50 gap-2"
-                      size="lg"
-                    >
-                      <Eye className="h-5 w-5" />
-                      उत्सुक शक्ति जानकारी देखें
-                    </Button>
                   </div>
                 ) : (
                   <Button
