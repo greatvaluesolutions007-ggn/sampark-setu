@@ -306,6 +306,36 @@ export interface ParivarListResponse {
   data: ParivarListItem[];
 }
 
+// Utsuk Shakti Detailed Types
+export interface UtsukDetailItem {
+  person_id: number;
+  name: string;
+  visheshta: string | null;
+  upyogita: string | null;
+  answers_json: Record<string, string> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UtsukDetailResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: UtsukDetailItem[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+  };
+}
+
+export interface UtsukSummaryData {
+  total_utsuk: number;
+  total_purush: number;
+  total_mahila: number;
+}
+
 export interface SahityaSummaryResponse {
   sticker_count?: number;
   total_folder?: number;

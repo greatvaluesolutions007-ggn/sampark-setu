@@ -39,6 +39,10 @@ const API_PATHS = {
   
   // Parivar List API
   PARIVAR_LIST: 'reporting/parivar/list',
+  
+  // Utsuk Shakti Detailed APIs
+  UTSUK_SUMMARY_DATA: 'reporting/utsukshakti/summary-data',
+  UTSUK_DETAIL_LIST: 'reporting/utsukshakti/detail-list',
 }
 
 export default API_PATHS;

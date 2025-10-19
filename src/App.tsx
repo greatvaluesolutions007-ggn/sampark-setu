@@ -4,6 +4,7 @@ import RegisterPage from '@/pages/RegisterPage'
 import HomePage from '@/pages/HomePage'
 import ParivarPage from '@/pages/ParivarPage'
 import UtsukPage from '@/pages/UtsukPage'
+import UtsukDetailPage from '@/pages/UtsukDetailPage'
 import ToliPage from '@/pages/ToliPage'
 // import AddToHomePrompt from '@/components/AddToHomePrompt'
 import { Toaster } from '@/components/ui/toaster'
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
           <Route path="/parivar" element={<PrivateRoute><ParivarPage /></PrivateRoute>} />
           <Route path="/utsuk" element={<PrivateRoute><UtsukPage /></PrivateRoute>} />
+          <Route path="/utsuk-detail" element={<PrivateRoute><UtsukDetailPage /></PrivateRoute>} />
           <Route path="/toli" element={<PrivateRoute><ToliPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
          
