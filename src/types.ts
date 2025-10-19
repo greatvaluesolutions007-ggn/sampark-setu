@@ -141,6 +141,16 @@ export interface CreateToliResponse {
   status: string;
 }
 
+export interface UpdateToliRequest extends IParams {
+  toli_id: number;
+  members: ToliMember[];
+}
+
+export interface UpdateToliResponse {
+  toli_id: number;
+  status: string;
+}
+
 export interface CreatePersonRequest extends IParams {
   name: string;
   phone_number?: string;
