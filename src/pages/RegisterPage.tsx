@@ -27,11 +27,14 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [mobileNumber, setMobileNumber] = useState('')
+  const [sangh, setSangh] = useState('')
+  const [totalHouse, setTotalHouse] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   
   // Region state
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
+  const [selectedRegionType, setSelectedRegionType] = useState<string | null>(null)
   
   // UI state
   const [isLoading, setIsLoading] = useState(false)
@@ -42,7 +45,9 @@ export default function RegisterPage() {
     username: false,
     password: false,
     confirmPassword: false,
-    mobileNumber: false
+    mobileNumber: false,
+    sangh: false,
+    totalHouse: false
   })
 
   // Validation functions
@@ -52,10 +57,15 @@ export default function RegisterPage() {
   const passwordValid = password.length >= 6
   const confirmPasswordValid = password === confirmPassword && confirmPassword.length > 0
   const mobileNumberValid = /^[6-9]\d{9}$/.test(mobileNumber)
-  const regionValid = selectedRegionId !== null
+  const sanghValid = sangh.trim().length === 0 || /^[a-zA-Z\u0900-\u097F\s]+$/.test(sangh.trim())
+  const totalHouseValid = totalHouse.trim().length === 0 || /^\d+$/.test(totalHouse.trim())
+  const regionValid = selectedRegionId !== null && (
+    code !== '1925' || 
+    (selectedRegionType === 'BASTI' || selectedRegionType === 'GRAM')
+  )
   
   const isCodeFormValid = codeValid
-  const isDetailsFormValid = fullNameValid && usernameValid && passwordValid && confirmPasswordValid && mobileNumberValid && regionValid
+  const isDetailsFormValid = fullNameValid && usernameValid && passwordValid && confirmPasswordValid && mobileNumberValid && sanghValid && totalHouseValid && regionValid
 
   // Handle code validation
   async function handleCodeValidation(e: React.FormEvent) {
@@ -104,7 +114,9 @@ export default function RegisterPage() {
       username: true, 
       password: true, 
       confirmPassword: true,
-      mobileNumber: true
+      mobileNumber: true,
+      sangh: true,
+      totalHouse: true
     }))
     
     if (!isDetailsFormValid) {
@@ -122,7 +134,9 @@ export default function RegisterPage() {
         password: password,
         full_name: fullName,
         mobile_number: mobileNumber,
-        region_id: selectedRegionId!
+        region_id: selectedRegionId!,
+        sangh: sangh.trim() || undefined,
+        total_house: totalHouse.trim() ? parseInt(totalHouse, 10) : undefined
       }
 
       const response = await authService.createUserWithCode(registerRequest)
@@ -153,6 +167,7 @@ export default function RegisterPage() {
   // Handle region selection
   const handleRegionChange = (regionId: number, regionName: string, regionType: string) => {
     setSelectedRegionId(regionId)
+    setSelectedRegionType(regionType)
     console.log('Region selected:', { regionId, regionName, regionType })
   }
 
@@ -356,37 +371,40 @@ export default function RegisterPage() {
                 <Input
                   id="sangh"
                   type="text"
-                  
+                  value={sangh}
                   onChange={(e) => {
-                    // const value = e.target.value.replace(/\D/g, '').slice(0, 10)
-                    // setMobileNumber(value)
+                    const value = e.target.value
+                    // Only allow text characters (letters and spaces), no numbers
+                    if (/^[a-zA-Z\u0900-\u097F\s]*$/.test(value)) {
+                      setSangh(value)
+                    }
                   }}
-                  onBlur={() =>{}}
+                  onBlur={() => handleFieldBlur('sangh')}
                   placeholder="संघ / विविध क्षेत्र का दायित्व (यदि है) तो दर्ज करे"
-                  // className={touchedFields.mobileNumber && !mobileNumberValid ? 'border-red-500' : ''}
+                  className={touchedFields.sangh && !sanghValid ? 'border-red-500' : ''}
                 />
-                {/* {touchedFields.mobileNumber && !mobileNumberValid && (
-                  <p className="text-red-500 text-sm mt-1">वैध मोबाइल नंबर दर्ज करें (10 अंक)</p>
-                )} */}
+                {touchedFields.sangh && !sanghValid && (
+                  <p className="text-red-500 text-sm mt-1">केवल अक्षर और स्पेस दर्ज करें, संख्या नहीं</p>
+                )}
               </div>}
 
               {code ==='1925' && <div>
-                <Label htmlFor="toatlHouse">कुल लक्षित घर / परिवार</Label>
+                <Label htmlFor="totalHouse">कुल लक्षित घर / परिवार</Label>
                 <Input
-                  id="toatlHouse"
+                  id="totalHouse"
                   type="text"
-                 
+                  value={totalHouse}
                   onChange={(e) => {
-                    // const value = e.target.value.replace(/\D/g, '').slice(0, 10)
-                    // setMobileNumber(value)
+                    const value = e.target.value.replace(/\D/g, '')
+                    setTotalHouse(value)
                   }}
-                  onBlur={() => {}}
+                  onBlur={() => handleFieldBlur('totalHouse')}
                   placeholder="कुल लक्षित घर / परिवार दर्ज करे"
-                  // className={touchedFields.mobileNumber && !mobileNumberValid ? 'border-red-500' : ''}
+                  className={touchedFields.totalHouse && !totalHouseValid ? 'border-red-500' : ''}
                 />
-                {/* {touchedFields.mobileNumber && !mobileNumberValid && (
-                  <p className="text-red-500 text-sm mt-1">वैध मोबाइल नंबर दर्ज करें (10 अंक)</p>
-                )} */}
+                {touchedFields.totalHouse && !totalHouseValid && (
+                  <p className="text-red-500 text-sm mt-1">केवल संख्या दर्ज करें</p>
+                )}
               </div>}
 
               <div>
@@ -397,6 +415,9 @@ export default function RegisterPage() {
                 />
                 {!regionValid && selectedRegionId === null && (
                   <p className="text-red-500 text-sm mt-1">कृपया अपना क्षेत्र चुनें</p>
+                )}
+                {!regionValid && selectedRegionId !== null && code === '1925' && (
+                  <p className="text-red-500 text-sm mt-1">कृपया BASTI या GRAM क्षेत्र चुनें</p>
                 )}
               </div>
 

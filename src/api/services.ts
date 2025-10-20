@@ -14,6 +14,8 @@ import type {
   Region,
   CreateToliRequest,
   CreateToliResponse,
+  UpdateToliRequest,
+  UpdateToliResponse,
   CreatePersonRequest,
   CreatePersonResponse,
   CreateVisitRequest,
@@ -34,6 +36,9 @@ import type {
   HierarchicalSummaryResponse,
   ParivarListResponse,
   ParivarListItem,
+  UtsukDetailResponse,
+  UtsukDetailItem,
+  UtsukSummaryData,
 } from '@/types';
 
 // Authentication Services
@@ -170,6 +175,11 @@ export const toliService = {
   createToli: async (toliData: CreateToliRequest): Promise<apiResponseType<CreateToliResponse>> => {
     const response = await Post<CreateToliResponse>("USER", API_PATHS.CREATE_TOLI, toliData);
     return response;
+  },
+
+  updateToli: async (toliData: UpdateToliRequest): Promise<apiResponseType<UpdateToliResponse>> => {
+    const response = await axiosInstance.put<apiResponseType<UpdateToliResponse>>(API_PATHS.CREATE_TOLI, toliData);
+    return response.data;
   },
 
   getTolis: async (params?: { region_id?: number; type?: string; limit?: number; offset?: number }): Promise<apiResponseType<Toli[]>> => {
@@ -324,6 +334,145 @@ export const parivarListService = {
       const dummyResponse = DummyDataService.getParivarList(regionId);
       console.log('📦 Dummy data response:', dummyResponse);
       return dummyResponse;
+    }
+  },
+};
+
+// Utsuk Shakti Detailed Service
+export const utsukDetailService = {
+  getUtsukSummaryData: async (regionId: number): Promise<apiResponseType<UtsukSummaryData>> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Utsuk summary data, regionId:', regionId);
+        const response = await axiosInstance.get<apiResponseType<UtsukSummaryData>>(API_PATHS.UTSUK_SUMMARY_DATA, { 
+          params: { 'region-id': regionId } 
+        });
+        console.log('✅ API response for Utsuk summary data:', response.data);
+        return response.data;
+      } catch (error) {
+        console.log('❌ API failed for Utsuk summary data, regionId:', regionId, error);
+        // Return dummy data for now
+        return {
+          success: true,
+          message: 'Dummy data',
+          statusCode: 200,
+          data: {
+            total_utsuk: 15,
+            total_purush: 8,
+            total_mahila: 7
+          }
+        };
+      }
+    } else {
+      // Using dummy data
+      console.log('📦 Using dummy data for Utsuk summary data, regionId:', regionId);
+      return {
+        success: true,
+        message: 'Dummy data',
+        statusCode: 200,
+        data: {
+          total_utsuk: 15,
+          total_purush: 8,
+          total_mahila: 7
+        }
+      };
+    }
+  },
+
+  getUtsukDetailList: async (regionId: number, page: number = 1, limit: number = 10): Promise<UtsukDetailResponse> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Utsuk detail list, regionId:', regionId, 'page:', page);
+        const response = await axiosInstance.get<UtsukDetailResponse>(API_PATHS.UTSUK_DETAIL_LIST, { 
+          params: { 
+            'region-id': regionId,
+            page: page,
+            limit: limit
+          } 
+        });
+        console.log('✅ API response for Utsuk detail list:', response.data);
+        return response.data;
+      } catch (error) {
+        console.log('❌ API failed for Utsuk detail list, regionId:', regionId, error);
+        // Return dummy data for now
+        return {
+          success: true,
+          message: 'Dummy data',
+          statusCode: 200,
+          data: [
+            {
+              person_id: 1,
+              name: 'राम कुमार',
+              visheshta: 'शिक्षक',
+              upyogita: 'सामाजिक कार्य',
+              answers_json: {
+                'question1': 'हां, मैं संघ कार्य में रुचि रखता हूं',
+                'question2': 'साप्ताहिक शाखा में भाग लेना चाहूंगा'
+              },
+              created_at: '2024-01-15T10:30:00Z',
+              updated_at: '2024-01-15T10:30:00Z'
+            },
+            {
+              person_id: 2,
+              name: 'सीता देवी',
+              visheshta: 'गृहिणी',
+              upyogita: 'सामाजिक सेवा',
+              answers_json: {
+                'question1': 'हां, मैं महिला कार्य में भाग लेना चाहती हूं',
+                'question2': 'महिला शाखा में सक्रिय रहना चाहती हूं'
+              },
+              created_at: '2024-01-16T11:00:00Z',
+              updated_at: '2024-01-16T11:00:00Z'
+            }
+          ],
+          pagination: {
+            total: 15,
+            page: page,
+            limit: limit,
+            total_pages: 2
+          }
+        };
+      }
+    } else {
+      // Using dummy data
+      console.log('📦 Using dummy data for Utsuk detail list, regionId:', regionId);
+      return {
+        success: true,
+        message: 'Dummy data',
+        statusCode: 200,
+        data: [
+          {
+            person_id: 1,
+            name: 'राम कुमार',
+            visheshta: 'शिक्षक',
+            upyogita: 'सामाजिक कार्य',
+            answers_json: {
+              'question1': 'हां, मैं संघ कार्य में रुचि रखता हूं',
+              'question2': 'साप्ताहिक शाखा में भाग लेना चाहूंगा'
+            },
+            created_at: '2024-01-15T10:30:00Z',
+            updated_at: '2024-01-15T10:30:00Z'
+          },
+          {
+            person_id: 2,
+            name: 'सीता देवी',
+            visheshta: 'गृहिणी',
+            upyogita: 'सामाजिक सेवा',
+            answers_json: {
+              'question1': 'हां, मैं महिला कार्य में भाग लेना चाहती हूं',
+              'question2': 'महिला शाखा में सक्रिय रहना चाहती हूं'
+            },
+            created_at: '2024-01-16T11:00:00Z',
+            updated_at: '2024-01-16T11:00:00Z'
+          }
+        ],
+        pagination: {
+          total: 15,
+          page: page,
+          limit: limit,
+          total_pages: 2
+        }
+      };
     }
   },
 };

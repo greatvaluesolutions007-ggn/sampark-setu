@@ -2,6 +2,7 @@ import Dashboard from '@/components/Dashboard'
 import ToliView from '@/components/ToliView'
 import ParivarView from '@/components/ParivarView'
 import UtsukView from '@/components/UtsukView'
+import UtsukDetailPage from '@/pages/UtsukDetailPage'
 import type { User } from '@/types'
 import type { DetailsCardData } from '@/components/DetailsCard'
 
@@ -20,7 +21,7 @@ export default function OverviewTab({ user, activeTab = 'overview', onDetailsCar
       case 'parivar':
         return <ParivarView user={user} onDetailsCardChange={onDetailsCardChange} />
       case 'utsuk':
-        return <UtsukView user={user} onDetailsCardChange={onDetailsCardChange} />
+        return <UtsukDetailPage />
       case 'overview':
       default:
         return <Dashboard />

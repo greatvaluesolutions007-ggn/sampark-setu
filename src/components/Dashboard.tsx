@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Users, UserPlus, Home, Plus } from 'lucide-react'
+import { Users, UserPlus, Home, Plus, Eye } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { toliService, authService } from '@/api/services'
-import type { Toli } from '@/types'
+import type { Toli, User } from '@/types'
 
 export default function Dashboard() {
   const navigate = useNavigate()
   const [toli, setToli] = useState<Toli | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoadingToli, setIsLoadingToli] = useState(true)
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function Dashboard() {
       // Get current user
       const userResponse = await authService.getCurrentUser()
       if (userResponse.success && userResponse.data.user_id) {
+        setUser(userResponse.data)
         const userId = userResponse.data.user_id
         const regionId = userResponse.data.region_id
         
@@ -105,7 +107,9 @@ export default function Dashboard() {
                 {toli.members_json && toli.members_json.length > 0 && (
                   <div className="bg-white border rounded-lg p-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">सदस्यों की संख्या</p>
-                    <p className="text-2xl font-bold text-orange-600">{toli.members_json.length}</p>
+                    <p className="text-2xl font-bold text-orange-600">
+                      {toli.members_json.length + (toli.pramukh_json ? 1 : 0)}
+                    </p>
                   </div>
                 )}
 
@@ -159,21 +163,40 @@ export default function Dashboard() {
                   उत्सुक शक्ति
                 </CardTitle>
                 <CardDescription>
-                  नए संपर्क व्यक्ति जोड़ें
+                  {user?.role === 'BASTI_KARYAKARTA' || user?.role === 'GRAM_KARYAKARTA' 
+                    ? 'उत्सुक शक्ति डेटा जोड़ें और देखें'
+                    : 'नए संपर्क व्यक्ति जोड़ें'
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
                 <p className="text-sm text-gray-600 mb-4">
-                  उत्सुक व्यक्तियों की जानकारी और उनसे जुड़े प्रश्नों के उत्तर दर्ज करें।
+                  {user?.role === 'BASTI_KARYAKARTA' || user?.role === 'GRAM_KARYAKARTA'
+                    ? 'उत्सुक व्यक्तियों की जानकारी जोड़ें और आपके क्षेत्र की विस्तृत जानकारी देखें।'
+                    : 'उत्सुक व्यक्तियों की जानकारी और उनसे जुड़े प्रश्नों के उत्तर दर्ज करें।'
+                  }
                 </p>
-                <Button
-                  onClick={() => navigate('/utsuk')}
-                  className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
-                  size="lg"
-                >
-                  <Plus className="h-5 w-5" />
-                  उत्सुक शक्ति जोड़ें
-                </Button>
+                {user?.role === 'BASTI_KARYAKARTA' || user?.role === 'GRAM_KARYAKARTA' ? (
+                  <div className="space-y-3">
+                    <Button
+                      onClick={() => navigate('/utsuk')}
+                      className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
+                      size="lg"
+                    >
+                      <Plus className="h-5 w-5" />
+                      उत्सुक शक्ति जोड़ें
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => navigate('/utsuk')}
+                    className="w-full bg-purple-600 hover:bg-purple-700 gap-2"
+                    size="lg"
+                  >
+                    <Plus className="h-5 w-5" />
+                    उत्सुक शक्ति जोड़ें
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>

@@ -7,7 +7,7 @@ import { ArrowLeft, Plus, Trash } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { authService, toliService } from '@/api/services'
-import type { CreateToliRequest, ToliMember } from '@/types'
+import type { CreateToliRequest, UpdateToliRequest, ToliMember } from '@/types'
 
 export default function ToliPage() {
   const navigate = useNavigate()
@@ -45,13 +45,16 @@ export default function ToliPage() {
   const membersValid = members.every(member => 
     member.name.length >= 3 && /^[6-9]\d{9}$/.test(member.mobile)
   )
+  const membersLimitValid = members.length <= 4
   
-  const isFormValid = nameValid && membersValid
+  const isFormValid = nameValid && membersValid && membersLimitValid
 
 
 
   const addMember = () => {
-    setMembers([...members, { name: '', mobile: '' }])
+    if (members.length < 4) {
+      setMembers([...members, { name: '', mobile: '' }])
+    }
   }
 
   const removeMember = (index: number) => {
@@ -168,16 +171,29 @@ export default function ToliPage() {
     try {
       setIsLoading(true)
       setError('')
-      const toliData: CreateToliRequest = {
-        name: name,
-        members: members.filter(m => m.name.trim() !== '' || m.mobile.trim() !== '')
+      
+      const filteredMembers = members.filter(m => m.name.trim() !== '' || m.mobile.trim() !== '')
+      
+      let response
+      if (existingToliId) {
+        // Update existing toli
+        const updateData: UpdateToliRequest = {
+          toli_id: existingToliId,
+          members: filteredMembers
+        }
+        response = await toliService.updateToli(updateData)
+      } else {
+        // Create new toli
+        const createData: CreateToliRequest = {
+          name: name,
+          members: filteredMembers
+        }
+        response = await toliService.createToli(createData)
       }
-
-      const response = await toliService.createToli(toliData)
 
       // Check if the response is successful
       if (!response.success) {
-        throw new Error(response.message || 'Failed to create toli')
+        throw new Error(response.message || 'Failed to process toli')
       }
 
       // Show success toast
@@ -201,7 +217,7 @@ export default function ToliPage() {
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'टोली बनाने में त्रुटि हुई'
       setError(errorMessage)
-      console.error('Error creating toli:', err)
+      console.error('Error processing toli:', err)
     } finally {
       setIsLoading(false)
     }
@@ -288,8 +304,13 @@ export default function ToliPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, name: true }))}
+                  disabled={!!existingToliId}
+                  className={existingToliId ? 'bg-gray-100 cursor-not-allowed' : ''}
                 />
-                {(submitAttempted || touchedFields.name) && !nameValid && (
+                {existingToliId && (
+                  <p className="text-sm text-gray-500">टोली का नाम संपादित नहीं किया जा सकता</p>
+                )}
+                {(submitAttempted || touchedFields.name) && !nameValid && !existingToliId && (
                   <p className="text-sm text-primary">टोली का नाम कम से कम 3 अक्षरों का होना चाहिए</p>
                 )}
               </div>
@@ -335,11 +356,19 @@ export default function ToliPage() {
                   <p className="text-sm text-primary">सभी सदस्यों का नाम और मोबाइल नंबर वैध होना चाहिए</p>
                 )}
 
-                <div className="flex justify-start">
+                {submitAttempted && !membersLimitValid && (
+                  <p className="text-sm text-primary">अधिकतम 4 सदस्य जोड़े जा सकते हैं</p>
+                )}
+
+                <div className="flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    सदस्य: {members.length}/4
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={addMember}
+                    disabled={members.length >= 4}
                     className="flex items-center gap-2"
                   >
                     <Plus className="h-4 w-4" />

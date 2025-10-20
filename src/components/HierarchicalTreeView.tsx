@@ -257,7 +257,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
             </div>
             <h3 className="text-lg font-semibold flex items-center">
               {getIcon()}
-              <span className="ml-2">{getTitle()} - {level.regionName}</span>
+              <span className="ml-2">{getTitle()} - {level.regionName} ({getRegionTypeLabel(level.regionType)})</span>
             </h3>
             {level.isLoading && (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
@@ -317,7 +317,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
                               </div>
                               <div className="text-xs text-gray-500">परिवार</div>
                               <div className="text-xs text-gray-400 flex flex-wrap gap-x-2">
-                                {item.total_contacted && (
+                                {item.total_contacted !== undefined && (
                                   <span className="text-blue-600">संपर्कित: {item.total_contacted}</span>
                                 )}
                                 {item.male_count && (

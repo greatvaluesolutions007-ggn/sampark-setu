@@ -141,6 +141,16 @@ export interface CreateToliResponse {
   status: string;
 }
 
+export interface UpdateToliRequest extends IParams {
+  toli_id: number;
+  members: ToliMember[];
+}
+
+export interface UpdateToliResponse {
+  toli_id: number;
+  status: string;
+}
+
 export interface CreatePersonRequest extends IParams {
   name: string;
   phone_number?: string;
@@ -256,6 +266,8 @@ export interface CreateUserWithCodeRequest extends IParams {
   full_name: string;
   mobile_number: string;
   region_id: number;
+  sangh?: string;
+  total_house?: number;
 }
 
 // Reporting Summary Types
@@ -292,6 +304,36 @@ export interface ParivarListResponse {
   message: string;
   statusCode: number;
   data: ParivarListItem[];
+}
+
+// Utsuk Shakti Detailed Types
+export interface UtsukDetailItem {
+  person_id: number;
+  name: string;
+  visheshta: string | null;
+  upyogita: string | null;
+  answers_json: Record<string, string> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UtsukDetailResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: UtsukDetailItem[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+  };
+}
+
+export interface UtsukSummaryData {
+  total_utsuk: number;
+  total_purush: number;
+  total_mahila: number;
 }
 
 export interface SahityaSummaryResponse {
