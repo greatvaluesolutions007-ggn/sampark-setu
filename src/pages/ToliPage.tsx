@@ -152,6 +152,12 @@ export default function ToliPage() {
             setExistingToliId(userToli.toli_id)
             setName(userToli.name)
             setMembers(userToli.members_json || [])
+            //Arvind code start
+            // If full_name is not available, fall back to pramukh_json.name for display
+            if (!userResponse.data.full_name && userToli.pramukh_json && userToli.pramukh_json.name) {
+              setUserName(userToli.pramukh_json.name)
+            }
+            //Arvind code end
           }
         }
       }
