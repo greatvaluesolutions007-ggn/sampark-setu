@@ -133,7 +133,7 @@ export default function ToliPage() {
           setUserRole(roleDisplayNames[userResponse.data.role] || userResponse.data.role)
           
           // Set user name and mobile for Toli Pramukh info
-          setUserName(userResponse.data.full_name || userResponse.data.user_name || '')
+          setUserName(userResponse.data.full_name || '')
           setUserMobile(userResponse.data.mobile || '')
         }
         
