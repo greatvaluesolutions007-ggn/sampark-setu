@@ -25,6 +25,17 @@ export default function UtsukDetailPage() {
       // Get current user
       const userResponse = await authService.getCurrentUser()
       if (userResponse.success && userResponse.data.region_id) {
+        //Arvind code start
+        // If toli is not created for main roles, show empty state and skip fetching
+        const userRole = userResponse.data.role
+        const isToliCreated = (userResponse.data as any).is_toli_create
+        if ((userRole === 'BASTI_KARYAKARTA' || userRole === 'GRAM_KARYAKARTA') && isToliCreated === false) {
+          setSummaryData({ total_utsuk: 0, total_purush: 0, total_mahila: 0 })
+          setDetailList([])
+          setTotalPages(1)
+          return
+        }
+        //Arvind code End
         const regionId = userResponse.data.region_id
 
         // Fetch summary data
