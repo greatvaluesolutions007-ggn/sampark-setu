@@ -59,6 +59,11 @@ export interface User {
   created_at: string;
   updated_at: string;
   region_details?:RegionDetails | null;
+  is_toli_create?: boolean;
+  toli_details?: {
+    toli_name: string;
+    member_details: ToliMember[];
+  };
 }
 
 

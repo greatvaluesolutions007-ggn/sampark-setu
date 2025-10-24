@@ -7,7 +7,7 @@ import { ArrowLeft, Plus, Trash } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
 import { authService, toliService } from '@/api/services'
-import type { CreateToliRequest, UpdateToliRequest, ToliMember } from '@/types'
+import type { CreateToliRequest, ToliMember } from '@/types'
 
 export default function ToliPage() {
   const navigate = useNavigate()
@@ -75,7 +75,6 @@ export default function ToliPage() {
       const userResponse = await authService.getCurrentUser();
       if(userResponse.success && userResponse.data.user_id){
         const userId = userResponse.data.user_id
-        const userRegionId = userResponse.data.region_id
         
         
         // Build region hierarchy and role display
@@ -137,22 +136,12 @@ export default function ToliPage() {
           setUserMobile(userResponse.data.mobile || '')
         }
         
-        // Fetch user's existing toli and load it into form
-        const toliResponse = await toliService.getTolis({
-          region_id: userRegionId || undefined,
-          limit: 10,
-          offset: 0
-        })
-        
-        if(toliResponse.success && toliResponse.data.length > 0) {
-          // Find the user's toli (if exists)
-          const userToli = toliResponse.data.find(t => t.toli_user_id === userId)
-          if (userToli) {
-            // Load existing toli data into form fields
-            setExistingToliId(userToli.toli_id)
-            setName(userToli.name)
-            setMembers(userToli.members_json || [])
-          }
+        // Load toli details from user response if available
+        if (userResponse.data.toli_details && userResponse.data.is_toli_create) {
+          // Load existing toli data into form fields
+          setExistingToliId(userId) // Use user_id as toli_id for existing toli
+          setName(userResponse.data.toli_details.toli_name)
+          setMembers(userResponse.data.toli_details.member_details || [])
         }
       }
     }catch(e){
@@ -176,12 +165,13 @@ export default function ToliPage() {
       
       let response
       if (existingToliId) {
-        // Update existing toli
-        const updateData: UpdateToliRequest = {
-          toli_id: existingToliId,
+        // Update existing toli - for now, we'll treat it as creating a new one
+        // since we don't have the actual toli_id from the API
+        const createData: CreateToliRequest = {
+          name: name,
           members: filteredMembers
         }
-        response = await toliService.updateToli(updateData)
+        response = await toliService.createToli(createData)
       } else {
         // Create new toli
         const createData: CreateToliRequest = {
@@ -201,7 +191,7 @@ export default function ToliPage() {
         title: "सफलतापूर्वक सहेजा गया!",
         description: existingToliId 
           ? `टोली सफलतापूर्वक अपडेट की गई।`
-          : `टोली सफलतापूर्वक बनाई गई। Toli ID: ${response.data.toli_id}`,
+          : `टोली सफलतापूर्वक बनाई गई।`,
       })
 
       // If creating new, reload to show as existing
