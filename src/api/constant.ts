@@ -16,6 +16,7 @@ const API_PATHS = {
   
   // Toli Management
   CREATE_TOLI: '/toli',
+  UPDATE_TOLI_DATA: '/update-toli-data',
   GET_TOLIS: '/toli',
   
   // Person Management (Utsuk Shakti)

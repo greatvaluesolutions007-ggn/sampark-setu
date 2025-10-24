@@ -18,6 +18,7 @@ export default function ToliPage() {
   const [userRole, setUserRole] = useState<string>('')
   const [userName, setUserName] = useState<string>('')
   const [userMobile, setUserMobile] = useState<string>('')
+  const [userRegionId, setUserRegionId] = useState<number | null>(null)
   
   // Form states
   const [name, setName] = useState('')
@@ -134,6 +135,9 @@ export default function ToliPage() {
           // Set user name and mobile for Toli Pramukh info
           setUserName(userResponse.data.full_name || '')
           setUserMobile(userResponse.data.mobile || '')
+          
+          // Set user region ID for update API
+          setUserRegionId(userResponse.data.region_id)
         }
         
         // Load toli details from user response if available
@@ -165,13 +169,13 @@ export default function ToliPage() {
       
       let response
       if (existingToliId) {
-        // Update existing toli - for now, we'll treat it as creating a new one
-        // since we don't have the actual toli_id from the API
-        const createData: CreateToliRequest = {
-          name: name,
-          members: filteredMembers
+        // Update existing toli using the new update API
+        const updateData = {
+          toli_name: name,
+          region: userRegionId?.toString() || '',
+          members_json: filteredMembers
         }
-        response = await toliService.createToli(createData)
+        response = await toliService.updateToliData(updateData)
       } else {
         // Create new toli
         const createData: CreateToliRequest = {

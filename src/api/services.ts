@@ -16,6 +16,8 @@ import type {
   CreateToliResponse,
   UpdateToliRequest,
   UpdateToliResponse,
+  UpdateToliDataRequest,
+  UpdateToliDataResponse,
   CreatePersonRequest,
   CreatePersonResponse,
   CreateVisitRequest,
@@ -180,6 +182,11 @@ export const toliService = {
   updateToli: async (toliData: UpdateToliRequest): Promise<apiResponseType<UpdateToliResponse>> => {
     const response = await axiosInstance.put<apiResponseType<UpdateToliResponse>>(API_PATHS.CREATE_TOLI, toliData);
     return response.data;
+  },
+
+  updateToliData: async (toliData: UpdateToliDataRequest): Promise<apiResponseType<UpdateToliDataResponse>> => {
+    const response = await Post<UpdateToliDataResponse>("USER", API_PATHS.UPDATE_TOLI_DATA, toliData);
+    return response;
   },
 
   getTolis: async (params?: { region_id?: number; type?: string; limit?: number; offset?: number }): Promise<apiResponseType<Toli[]>> => {
