@@ -20,11 +20,11 @@ export VITE_API_PREFIX="${VITE_API_PREFIX:-/api}"
 # Dev server origin env (used by app utils) and CLI defaults
 export VITE_DEV_PROTOCOL="${VITE_DEV_PROTOCOL:-http}"
 export VITE_DEV_HOST="${VITE_DEV_HOST:-3.109.132.197}"
-export VITE_DEV_PORT="${VITE_DEV_PORT:-80}"
+export VITE_DEV_PORT="${VITE_DEV_PORT:-8080}"
 
 # CLI host/port for Vite dev server
 HOST=0.0.0.0
-PORT=80
+PORT=8080
 
 # Install deps if node_modules missing (safe no-op if already installed)
 if [ ! -d node_modules ]; then
