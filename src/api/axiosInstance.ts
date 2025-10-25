@@ -3,9 +3,9 @@ import { getBasePath } from "@/lib/utils";
 import type { apiResponseType, BasePathType, IParams } from "@/types";
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 // Build base URL from Vite environment variables (fallbacks provided)
-const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || "http";
-const apiHost = (import.meta as any).env?.VITE_API_HOST || "localhost";
-const apiPort = (import.meta as any).env?.VITE_API_PORT ?? "3000";
+const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || "https";
+const apiHost = (import.meta as any).env?.VITE_API_HOST || "api.rsssgs.com";
+const apiPort = (import.meta as any).env?.VITE_API_PORT ?? "";
 const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || "/api";
 const baseURL = `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ""}${apiPrefix}`;
 

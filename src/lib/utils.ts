@@ -24,9 +24,9 @@ export const getBasePath = (base: BasePathType): string => {
   switch (base) {
     case 'USER':
       {
-        const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || 'http';
-        const apiHost = (import.meta as any).env?.VITE_API_HOST || 'localhost';
-        const apiPort = (import.meta as any).env?.VITE_API_PORT ?? '3000';
+        const apiProtocol = (import.meta as any).env?.VITE_API_PROTOCOL || 'https';
+        const apiHost = (import.meta as any).env?.VITE_API_HOST || 'api.rsssgs.com';
+        const apiPort = (import.meta as any).env?.VITE_API_PORT ?? '';
         const apiPrefix = (import.meta as any).env?.VITE_API_PREFIX || '/api';
                 // return `http://3.109.132.197:3000${apiPrefix}`
         return `${apiProtocol}://${apiHost}${apiPort ? `:${apiPort}` : ''}${apiPrefix}`;

@@ -4,13 +4,13 @@ export const APP_CONFIG = {
   USE_REAL_API: true,
   
   // API Configuration
-  API_BASE_URL: 'http://3.109.132.197:3000',
+  API_BASE_URL: 'https://api.rsssgs.com',
   
   // Development flags
   DEBUG_MODE: true,
   ENABLE_CONSOLE_LOGS: true,
 }
-
+https://api.rsssgs.com
 // Helper function to check if we should use real API
 export const shouldUseRealAPI = (): boolean => {
   return APP_CONFIG.USE_REAL_API

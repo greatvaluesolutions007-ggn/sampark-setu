@@ -12,9 +12,9 @@ LOG_FILE="${APP_NAME}.out"
 
 ##### comment from line number 8 to 18 if running locally
 # Backend/API env (defaults set here; can be overridden when invoking)
-export VITE_API_PROTOCOL="${VITE_API_PROTOCOL:-http}"
-export VITE_API_HOST="${VITE_API_HOST:-3.109.132.197}"
-export VITE_API_PORT="${VITE_API_PORT:-3000}"
+export VITE_API_PROTOCOL="${VITE_API_PROTOCOL:-https}"
+export VITE_API_HOST="${VITE_API_HOST:-api.rsssgs.com}"
+export VITE_API_PORT="${VITE_API_PORT:-}"
 export VITE_API_PREFIX="${VITE_API_PREFIX:-/api}"
 
 # Dev server origin env (used by app utils) and CLI defaults
