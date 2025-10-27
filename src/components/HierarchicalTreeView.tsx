@@ -180,33 +180,102 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
     }
   }
 
-  // Initialize with root level
+  // Initialize with root level based on user's region_id
   useEffect(() => {
-    if (user?.region_details?.prant?.region_id) {
-      const rootLevel: HierarchyLevel = {
+    if (!user?.region_id || !user?.region_details) {
+      return
+    }
+
+    // Find which region matches the user's region_id
+    const { region_details } = user
+    let rootLevel: HierarchyLevel | null = null
+
+    // Check each region type to find a match
+    if (region_details.prant?.region_id === user.region_id) {
+      rootLevel = {
         level: 0,
-        regionId: user.region_details.prant.region_id,
-        regionName: user.region_details.prant.name,
+        regionId: region_details.prant.region_id,
+        regionName: region_details.prant.name,
         regionType: 'PRANT',
         data: [],
         isExpanded: false,
         isLoading: false
       }
-      setHierarchyLevels([rootLevel])
-      fetchDataForLevel(user.region_details.prant.region_id, 0)
-    } else {
-      // Fallback to region ID 1 (Haryana Prant)
-      const rootLevel: HierarchyLevel = {
+    } else if (region_details.vibhag?.region_id === user.region_id) {
+      rootLevel = {
         level: 0,
-        regionId: 1,
-        regionName: 'हरियाणा प्रांत',
-        regionType: 'PRANT',
+        regionId: region_details.vibhag.region_id,
+        regionName: region_details.vibhag.name,
+        regionType: 'VIBHAG',
         data: [],
         isExpanded: false,
         isLoading: false
       }
+    } else if (region_details.jila?.region_id === user.region_id) {
+      rootLevel = {
+        level: 0,
+        regionId: region_details.jila.region_id,
+        regionName: region_details.jila.name,
+        regionType: 'JILA',
+        data: [],
+        isExpanded: false,
+        isLoading: false
+      }
+    } else if (region_details.nagar?.region_id === user.region_id) {
+      rootLevel = {
+        level: 0,
+        regionId: region_details.nagar.region_id,
+        regionName: region_details.nagar.name,
+        regionType: 'NAGAR',
+        data: [],
+        isExpanded: false,
+        isLoading: false
+      }
+    } else if (region_details.khand?.region_id === user.region_id) {
+      rootLevel = {
+        level: 0,
+        regionId: region_details.khand.region_id,
+        regionName: region_details.khand.name,
+        regionType: 'KHAND',
+        data: [],
+        isExpanded: false,
+        isLoading: false
+      }
+    } else if (region_details.mandal?.region_id === user.region_id) {
+      rootLevel = {
+        level: 0,
+        regionId: region_details.mandal.region_id,
+        regionName: region_details.mandal.name,
+        regionType: 'MANDAL',
+        data: [],
+        isExpanded: false,
+        isLoading: false
+      }
+    } else if (region_details.gram?.region_id === user.region_id) {
+      rootLevel = {
+        level: 0,
+        regionId: region_details.gram.region_id,
+        regionName: region_details.gram.name,
+        regionType: 'GRAM',
+        data: [],
+        isExpanded: false,
+        isLoading: false
+      }
+    } else if (region_details.basti?.region_id === user.region_id) {
+      rootLevel = {
+        level: 0,
+        regionId: region_details.basti.region_id,
+        regionName: region_details.basti.name,
+        regionType: 'BASTI',
+        data: [],
+        isExpanded: false,
+        isLoading: false
+      }
+    }
+
+    if (rootLevel) {
       setHierarchyLevels([rootLevel])
-      fetchDataForLevel(1, 0)
+      fetchDataForLevel(rootLevel.regionId, 0)
     }
   }, [user, fetchDataForLevel])
 
