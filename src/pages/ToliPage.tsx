@@ -330,6 +330,9 @@ export default function ToliPage() {
                         onChange={(e) => updateMember(index, 'mobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
                         maxLength={10}
                       />
+                       {member.mobile && member.mobile.length > 0 && !/^[6-9]/.test(member.mobile.charAt(0)) && (
+                        <p className="text-sm text-red-600">Please enter valid number</p>
+                      )}
                     </div>
                     <div className="flex justify-end">
                       <Button
