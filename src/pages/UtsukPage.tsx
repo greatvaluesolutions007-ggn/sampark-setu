@@ -314,9 +314,9 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>कोई विशेष उल्लेखनीय जानकारी ( प्रतिमा , सामाजिक भूमिका आदि )</Label>
+                <Label>कोई विशेष उल्लेखनीय जानकारी ( प्रतिभा , सामाजिक भूमिका आदि )</Label>
                 <Input
-                  placeholder="कोई विशेष उल्लेखनीय जानकारी ( प्रतिमा , सामाजिक भूमिका आदि ) डालें"
+                  placeholder="कोई विशेष उल्लेखनीय जानकारी ( प्रतिभा , सामाजिक भूमिका आदि ) डालें"
                   value={form.vishesh}
                   onChange={(e) => setForm(prev => ({ ...prev, vishesh: e.target.value }))}
                 />
