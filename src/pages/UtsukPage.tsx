@@ -37,8 +37,8 @@ export default function UtsukPage() {
     "संघ परिवार पृष्ठभूमि से हैं ?",
     'संघ विचार से प्रभावित हैं ?',
     'अपने किसी विविध संगठन से सम्बन्धित हैं ?',
-    'कोई परिचित / मित्र आदि स्वयंसेवक हैं ?'
-
+    'कोई परिचित / मित्र आदि स्वयंसेवक हैं ?',
+    'अन्य कारण'
   ]
   const [selectedAnswer, setSelectedAnswer] = useState<string>('')
   
@@ -313,26 +313,32 @@ export default function UtsukPage() {
               <div className="space-y-4">
                 <Label className="text-lg font-semibold">प्रश्न</Label>
                 <p>संघ के बारे में कैसे जानना हुआ - कृपया केवल एक विकल्प चुनें</p>
-                <RadioGroup
-                  value={selectedAnswer}
-                  onValueChange={setSelectedAnswer}
-                >
-                  {questions.map((question, index) => (
-                    <div key={index} className="space-y-2 border rounded-lg p-3">
-                      <Label className="text-sm font-medium">{question}</Label>
-                      <div className="flex space-x-6">
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value={`${index}-yes`} id={`yes-${index}`} />
-                          <Label htmlFor={`yes-${index}`}>हाँ</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value={`${index}-no`} id={`no-${index}`} />
-                          <Label htmlFor={`no-${index}`}>नहीं</Label>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </RadioGroup>
+                <div className="border rounded-lg p-4 space-y-3">
+              <RadioGroup
+                value={selectedAnswer}
+                onValueChange={setSelectedAnswer}
+                className="space-y-2"
+              >
+                {questions.map((question, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
+                    <Label
+                      htmlFor={`yes-${index}`}
+                      className="text-sm font-medium text-gray-800"
+                    >
+                      {question}
+                    </Label>
+                    <RadioGroupItem
+                      value={`${index}-yes`}
+                      id={`yes-${index}`}
+                      className="h-5 w-5 border-2 border-gray-600"
+                    />
+                  </div>
+                ))}
+              </RadioGroup>
+          </div>
                 {submitAttempted && !selectedAnswer && (
                   <p className="text-sm text-primary">कृपया एक विकल्प चुनें</p>
                 )}
