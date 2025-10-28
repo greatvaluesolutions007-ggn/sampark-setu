@@ -312,7 +312,7 @@ export default function UtsukPage() {
 
               <div className="space-y-4">
                 <Label className="text-lg font-semibold">प्रश्न</Label>
-                <p>संघ एक्सपोज़र - कृपया केवल एक विकल्प चुनें</p>
+                <p>संघ के बारे में कैसे जानना हुआ - कृपया केवल एक विकल्प चुनें</p>
                 <RadioGroup
                   value={selectedAnswer}
                   onValueChange={setSelectedAnswer}
