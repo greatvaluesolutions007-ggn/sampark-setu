@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ArrowLeft, Plus, Minus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '@/hooks/use-toast'
@@ -78,6 +79,7 @@ export default function ParivarPage() {
   // Form states
   const [samparkit, setSamparkit] = useState('')
   const [phone, setPhone] = useState('')
+  const [gender, setGender] = useState<string>('')
   const [isSpecialContact, setIsSpecialContact] = useState<'yes' | 'no'>('no')
   const [specialInfo, setSpecialInfo] = useState('')
   const [purush, setPurush] = useState(0)
@@ -98,18 +100,20 @@ export default function ParivarPage() {
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [touchedName, setTouchedName] = useState(false)
   const [touchedPhone, setTouchedPhone] = useState(false)
+  const [touchedGender, setTouchedGender] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   // Validation functions
   const nameValid = samparkit.length >= 3
-  const phoneValid = /^\d{10}$/.test(phone)
+  const phoneValid = phone === '' || /^\d{10}$/.test(phone) // Phone is optional, but if provided must be valid
+  const genderValid = gender !== ''
   const kulValid = kul > 0
   const purushValid = purush >= 0
   const mahilaValid = mahila >= 0
   const bachcheValid = bachche >= 0
   
-  const isFormValid = nameValid && phoneValid && kulValid && purushValid && mahilaValid && bachcheValid
+  const isFormValid = nameValid && phoneValid && genderValid && kulValid && purushValid && mahilaValid && bachcheValid
 
   // Counter functions
   const inc = (setter: React.Dispatch<React.SetStateAction<number>>) => {
@@ -133,7 +137,7 @@ export default function ParivarPage() {
       const visitData: CreateVisitRequest = {
         person_name: samparkit,
         person_phone: phone,
-        person_sex: 'OTHER',
+        person_sex: gender as 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED',
         total_members: kul,
         male_count: purush,
         female_count: mahila,
@@ -164,6 +168,7 @@ export default function ParivarPage() {
       // Reset form on success
       setSamparkit('')
       setPhone('')
+      setGender('')
       setIsSpecialContact('no')
       setSpecialInfo('')
       setPurush(0)
@@ -176,6 +181,7 @@ export default function ParivarPage() {
       setShashulkPustak(0)
       setSubmitAttempted(false)
       setTouchedPhone(false)
+      setTouchedGender(false)
 
       // Navigate to home page after a short delay
       setTimeout(() => {
@@ -239,17 +245,41 @@ export default function ParivarPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>फ़ोन नंबर</Label>
+                  <Label>फ़ोन नंबर (वैकल्पिक)</Label>
                   <Input
                     type="tel"
-                    placeholder="10 अंकों का मोबाइल नंबर"
+                    placeholder="10 अंकों का मोबाइल नंबर (वैकल्पिक)"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     onBlur={() => setTouchedPhone(true)}
                     maxLength={10}
                   />
                   {(submitAttempted || touchedPhone) && !phoneValid && (
-                    <p className="text-sm text-primary">कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें</p>
+                    <p className="text-sm text-primary">कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें या खाली छोड़ें</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>लिंग / Gender</Label>
+                  <Select
+                    value={gender}
+                    onValueChange={(value) => {
+                      setGender(value)
+                      setTouchedGender(true)
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="लिंग चुनें / Select Gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MALE">पुरुष</SelectItem>
+                      <SelectItem value="FEMALE">महिला</SelectItem>
+                      <SelectItem value="OTHER">अन्य</SelectItem>
+                      <SelectItem value="UNSPECIFIED">अनिर्दिष्ट</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {(submitAttempted || touchedGender) && !genderValid && (
+                    <p className="text-sm text-primary">कृपया लिंग का चयन करें</p>
                   )}
                 </div>
 
