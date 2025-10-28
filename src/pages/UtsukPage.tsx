@@ -273,7 +273,6 @@ export default function UtsukPage() {
                     <SelectItem value="MALE">पुरुष</SelectItem>
                     <SelectItem value="FEMALE">महिला</SelectItem>
                     <SelectItem value="OTHER">अन्य</SelectItem>
-                    <SelectItem value="UNSPECIFIED">अनिर्दिष्ट</SelectItem>
                   </SelectContent>
                 </Select>
                 {(submitAttempted || touchedFields.sex) && !sexValid && (

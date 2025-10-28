@@ -113,7 +113,7 @@ export default function ParivarPage() {
   const mahilaValid = mahila >= 0
   const bachcheValid = bachche >= 0
   
-  const isFormValid = nameValid && phoneValid && genderValid && kulValid && purushValid && mahilaValid && bachcheValid
+  const isFormValid = nameValid  && genderValid && kulValid && purushValid && mahilaValid && bachcheValid
 
   // Counter functions
   const inc = (setter: React.Dispatch<React.SetStateAction<number>>) => {
@@ -275,7 +275,6 @@ export default function ParivarPage() {
                       <SelectItem value="MALE">पुरुष</SelectItem>
                       <SelectItem value="FEMALE">महिला</SelectItem>
                       <SelectItem value="OTHER">अन्य</SelectItem>
-                      <SelectItem value="UNSPECIFIED">अनिर्दिष्ट</SelectItem>
                     </SelectContent>
                   </Select>
                   {(submitAttempted || touchedGender) && !genderValid && (
