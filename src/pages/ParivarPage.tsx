@@ -106,7 +106,7 @@ export default function ParivarPage() {
 
   // Validation functions
   const nameValid = samparkit.length >= 3
-  const phoneValid = phone === '' || /^\d{10}$/.test(phone) // Phone is optional, but if provided must be valid
+  const phoneValid = phone === '' || /^[6-9]\d{9}$/.test(phone) // Phone is optional, but if provided must be valid
   const genderValid = gender !== ''
   const kulValid = kul > 0
   const purushValid = purush >= 0
