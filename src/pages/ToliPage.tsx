@@ -46,14 +46,14 @@ export default function ToliPage() {
   const membersValid = members.every(member => 
     member.name.length >= 3 && /^[6-9]\d{9}$/.test(member.mobile)
   )
-  const membersLimitValid = members.length <= 4
+  const membersLimitValid = members.length <= 3
   
   const isFormValid = nameValid && membersValid && membersLimitValid
 
 
 
   const addMember = () => {
-    if (members.length < 4) {
+    if (members.length < 3) {
       setMembers([...members, { name: '', mobile: '' }])
     }
   }
@@ -354,7 +354,7 @@ export default function ToliPage() {
                 )}
 
                 {submitAttempted && !membersLimitValid && (
-                  <p className="text-sm text-primary">अधिकतम 4 सदस्य जोड़े जा सकते हैं</p>
+                  <p className="text-sm text-primary">अधिकतम 3 सदस्य जोड़े जा सकते हैं</p>
                 )}
 
                 <div className="flex justify-between items-center">
@@ -365,7 +365,7 @@ export default function ToliPage() {
                     type="button"
                     variant="outline"
                     onClick={addMember}
-                    disabled={members.length >= 4}
+                    disabled={members.length >= 3}
                     className="flex items-center gap-2"
                   >
                     <Plus className="h-4 w-4" />
