@@ -57,11 +57,11 @@ export default function UtsukPage() {
   const phoneValid = !form.phone || /^[6-9]\d{9}$/.test(form.phone)
   const emailValid = !form.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
   const sexValid = form.sex !== ''
-  const addressValid = form.address.length >= 10
+ // const addressValid = form.address.length >= 10
   const questionsValid = selectedAnswer !== ''
   
-  const isFormValid = nameValid && phoneValid && emailValid && sexValid && addressValid && questionsValid
-
+ // const isFormValid = nameValid && phoneValid && emailValid && sexValid && addressValid && questionsValid
+  const isFormValid = nameValid && phoneValid && emailValid && sexValid && questionsValid
    useEffect(() => {
      getUserRegion()
     }, [])
@@ -288,9 +288,6 @@ export default function UtsukPage() {
                   onChange={(e) => setForm(prev => ({ ...prev, address: e.target.value }))}
                   onBlur={() => setTouchedFields(prev => ({ ...prev, address: true }))}
                 />
-                {(submitAttempted || touchedFields.address) && !addressValid && (
-                  <p className="text-sm text-primary">पता कम से कम 10 अक्षरों का होना चाहिए</p>
-                )}
               </div>
 
               <div className="space-y-2">
