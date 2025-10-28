@@ -136,7 +136,7 @@ export default function ParivarPage() {
 
       const visitData: CreateVisitRequest = {
         person_name: samparkit,
-        person_phone: phone,
+        ...(phone && { person_phone: phone }), // Only include person_phone if phone is provided
         person_sex: gender as 'MALE' | 'FEMALE' | 'OTHER' | 'UNSPECIFIED',
         total_members: kul,
         male_count: purush,
