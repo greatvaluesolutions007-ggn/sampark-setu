@@ -359,7 +359,7 @@ export default function ToliPage() {
 
                 <div className="flex justify-between items-center">
                   <div className="text-sm text-gray-500">
-                    सदस्य: {members.length}/4
+                    सदस्य: {members.length + 1}/4
                   </div>
                   <Button
                     type="button"
