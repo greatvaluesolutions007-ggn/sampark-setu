@@ -294,14 +294,6 @@ export default function UtsukPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>रक्त गट / Blood Group</Label>
-                <Input
-                  placeholder="रक्त गट / Blood Group"
-                  
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label>कोई विशेष उल्लेखनीय जानकारी ( प्रतिभा , सामाजिक भूमिका आदि )</Label>
                 <Input
                   placeholder="कोई विशेष उल्लेखनीय जानकारी ( प्रतिभा , सामाजिक भूमिका आदि ) डालें"
