@@ -230,18 +230,6 @@ export default function UtsukPage() {
               </div>
 
               {/* //TODO: add this field to api */}
-
-               <div className="space-y-2">
-                <Label>पिता जी का नाम / Father's Name</Label>
-                <Input
-                  placeholder="पिता जी का नाम / Father's Name"
-                  onChange={(e) =>{}}
-                />
-                {/* {(submitAttempted || touchedFields.name) && !nameValid && (
-                  <p className="text-sm text-primary">नाम कम से कम 3 अक्षरों का होना चाहिए</p>
-                )} */}
-              </div>
-
               <div className="space-y-2">
                 <Label>मोबाइल नंबर / Mobile Number</Label>
                 <Input
