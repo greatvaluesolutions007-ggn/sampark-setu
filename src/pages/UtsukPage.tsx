@@ -234,7 +234,7 @@ export default function UtsukPage() {
               <div className="space-y-2">
                 <Label>मोबाइल नंबर / Mobile Number</Label>
                 <Input
-                  placeholder="मोबाइल नंबर / Mobile Number"
+                  placeholder="मोबाइल नंबर / Mobile Number (Optional)"
                   value={form.phone}
                   onChange={handlePhoneChange}
                   maxLength={10}
@@ -247,7 +247,7 @@ export default function UtsukPage() {
               <div className="space-y-2">
                 <Label>ईमेल / Email</Label>
                 <Input
-                  placeholder="ईमेल / Email"
+                  placeholder="ईमेल / Email  (Optional)"
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm(prev => ({ ...prev, email: e.target.value }))}
