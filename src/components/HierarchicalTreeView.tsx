@@ -35,9 +35,9 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
 
   const getTitle = () => {
     switch (dataType) {
-      case 'toli': return 'टोली जानकरी'
-      case 'parivar': return 'परिवार जानकरी'
-      case 'utsuk': return 'उत्सुक शक्ति (संघ कार्य से जुड़ने की इच्छा रखने वाले) जानकरी'
+      case 'toli': return 'टोली जानकारी'
+      case 'parivar': return 'परिवार जानकारी'
+      case 'utsuk': return 'उत्सुक शक्ति (संघ कार्य से जुड़ने की इच्छा रखने वाले) जानकारी'
     }
   }
 
