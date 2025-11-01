@@ -95,7 +95,7 @@ export default function DetailsCard({
                   {getTotalCount(currentLevel)}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {dataType === 'toli' ? 'टोलिया' : 'उत्सुक शक्ति'}
+                  {dataType === 'toli' ? 'टोलियाँ' : 'उत्सुक शक्ति'}
                 </div>
               </div>
             )}
@@ -150,7 +150,7 @@ export default function DetailsCard({
                       {getTotalCount(topLevel)}
                     </div>
                     <div className="text-xs text-gray-500">
-                      कुल {dataType === 'toli' ? 'टोलिया' : 'उत्सुक शक्ति'}
+                      कुल {dataType === 'toli' ? 'टोलियाँ' : 'उत्सुक शक्ति'}
                     </div>
                   </div>
                 )}
