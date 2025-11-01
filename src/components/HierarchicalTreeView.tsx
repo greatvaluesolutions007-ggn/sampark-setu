@@ -406,7 +406,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
                                 {getCardValue(item)}
                               </div>
                               <div className="text-xs text-gray-500">
-                                {dataType === 'toli' ? 'टोलिया' : 'उत्सुक शक्ति'}
+                                {dataType === 'toli' ? 'टोलियाँ' : 'उत्सुक शक्ति'}
                               </div>
                             </>
                           )}
