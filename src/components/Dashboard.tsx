@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Users, UserPlus, Home, Plus, Eye } from 'lucide-react'
+import { Users, UserPlus, Home, Plus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { toliService, authService } from '@/api/services'
 import type { Toli, User } from '@/types'
@@ -27,17 +27,28 @@ export default function Dashboard() {
         const userId = userResponse.data.user_id
         const regionId = userResponse.data.region_id
         
-        // Check if user has a toli - filter by region or user
-        const toliResponse = await toliService.getTolis({
-          region_id: regionId || undefined,
-          limit: 1,
-          offset: 0
-        })
-        
-        if (toliResponse.success && toliResponse.data.length > 0) {
-          // Find toli created by or assigned to this user
-          const userToli = toliResponse.data.find(t => t.toli_user_id === userId) || toliResponse.data[0]
-          setToli(userToli)
+        // Check if user has created a toli based on the API response
+        if (userResponse.data.is_toli_create && userResponse.data.toli_details) {
+          // User has a toli, fetch it by user ID to get full details
+          // We need to fetch tolis and find the one belonging to this user
+          const toliResponse = await toliService.getTolis({
+            region_id: regionId || undefined,
+            limit: 100, // Get more tolis to ensure we find the user's toli
+            offset: 0
+          })
+          
+          if (toliResponse.success && toliResponse.data.length > 0) {
+            // ONLY show toli if it belongs to this user
+            const userToli = toliResponse.data.find(t => t.toli_user_id === userId)
+            if (userToli) {
+              setToli(userToli)
+            }
+            // If no toli found for this user, setToli will remain null (correct behavior)
+          }
+        } else {
+          // User has not created a toli (is_toli_create: false)
+          // Don't fetch or show any toli
+          setToli(null)
         }
       }
     } catch (error) {
