@@ -34,6 +34,13 @@ axiosInstance.interceptors.response.use(
     const status = error.response?.status;
     switch (status) {
       case 401:
+        // Don't redirect if already on login page (allows login errors to be handled by the component)
+        const currentPath = window.location.pathname;
+        if (currentPath === '/login' || currentPath.startsWith('/login')) {
+          // Already on login page, let the component handle the error
+          return Promise.reject(error);
+        }
+        
         // Clear all auth data
         localStorage.removeItem("token");
         localStorage.removeItem("auth");

@@ -47,12 +47,18 @@ export default function LoginPage() {
       
       // Check if the response is successful
       if (!response.success) {
-        throw new Error(response.message || 'Login failed')
+        // Extract error message from response
+        const errorMsg = response.message || 'लॉगिन असफल रहा। कृपया पुनः प्रयास करें।'
+        setError(errorMsg)
+        setIsLoading(false)
+        return
       }
       
       // Validate response data exists
       if (!response.data) {
-        throw new Error('Invalid response data received')
+        setError('अमान्य प्रतिक्रिया प्राप्त हुई। कृपया पुनः प्रयास करें।')
+        setIsLoading(false)
+        return
       }
       
       // Store additional user info
@@ -65,7 +71,35 @@ export default function LoginPage() {
       
       navigate('/')
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'लॉगिन में त्रुटि हुई। कृपया पुनः प्रयास करें।'
+      // Handle axios errors and extract proper error message
+      let errorMessage = 'लॉगिन में त्रुटि हुई। कृपया पुनः प्रयास करें।'
+      
+      if (err && typeof err === 'object' && 'response' in err) {
+        // Axios error with response
+        const axiosError = err as { 
+          response?: { 
+            data?: { 
+              message?: string
+              error_message?: string
+              error_code?: string | number
+              errorCode?: string | number
+            } 
+          } 
+        }
+        
+        if (axiosError.response?.data) {
+          const errorData = axiosError.response.data
+          // Try to get error_message first, then message, then fallback
+          // Don't show error_code, only show user-friendly message
+          errorMessage = errorData.error_message || 
+                        errorData.message || 
+                        errorMessage
+        }
+      } else if (err instanceof Error) {
+        // Standard Error object
+        errorMessage = err.message || errorMessage
+      }
+      
       setError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -112,7 +146,11 @@ export default function LoginPage() {
                   </div>
                   {submitAttempted && !passwordValid && <p className="text-sm text-primary">पासवर्ड कम से कम 6 अक्षरों का होना चाहिए</p>}
                 </div>
-                {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p className="text-sm text-red-600 text-center font-medium">{error}</p>
+                  </div>
+                )}
                 <Button type="submit" className="w-full bg-primary text-primary-foreground hover:opacity-95" disabled={!isFormValid || isLoading}>
                   {isLoading ? 'लॉगिन हो रहा है...' : 'लॉगिन करें'}
                 </Button>
