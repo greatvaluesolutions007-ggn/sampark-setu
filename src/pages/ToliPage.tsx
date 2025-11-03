@@ -209,7 +209,23 @@ export default function ToliPage() {
       }, 1500)
 
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'टोली बनाने में त्रुटि हुई'
+      let errorMessage = 'टोली बनाने में त्रुटि हुई'
+      
+      // Check if it's an axios error with response data containing the API message
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string; success?: boolean } } }
+        // Extract the message from API response if available
+        if (axiosError.response?.data?.message) {
+          errorMessage = axiosError.response.data.message
+        } else if (axiosError.response?.data && typeof axiosError.response.data === 'string') {
+          errorMessage = axiosError.response.data
+        } else if (err instanceof Error) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+      
       setError(errorMessage)
       console.error('Error processing toli:', err)
     } finally {
