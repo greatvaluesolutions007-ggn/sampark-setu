@@ -308,6 +308,9 @@ export default function ToliPage() {
               </div>
 
               <div className="space-y-2">
+                <p className="text-sm font-bold text-green-700"> यदि विशेष संपर्क टोली है , तो टोली का नाम अनिवार्यत:  VST से शुरू करें </p>
+                 <p className="text-sm font-bold text-green-700"> (जैसे VST-GGN01)</p>
+                <div className="space-y-2"></div>
                 <Label>टोली का नाम</Label>
                 <Input
                   placeholder="टोली का नाम"
