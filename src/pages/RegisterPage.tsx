@@ -123,7 +123,23 @@ export default function RegisterPage() {
         setError(response.data?.message || 'अमान्य कोड')
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'कोड सत्यापन में त्रुटि'
+      let errorMessage = 'कोड सत्यापन में त्रुटि'
+      
+      // Check if it's an axios error with response data containing the API message
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string; success?: boolean } } }
+        // Extract the message from API response if available
+        if (axiosError.response?.data?.message) {
+          errorMessage = axiosError.response.data.message
+        } else if (axiosError.response?.data && typeof axiosError.response.data === 'string') {
+          errorMessage = axiosError.response.data
+        } else if (err instanceof Error) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+      
       setError(errorMessage)
       console.error('Code validation error:', err)
     } finally {
@@ -183,7 +199,23 @@ export default function RegisterPage() {
         setError(response.message || 'पंजीकरण में त्रुटि')
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'पंजीकरण में त्रुटि'
+      let errorMessage = 'पंजीकरण में त्रुटि'
+      
+      // Check if it's an axios error with response data containing the API message
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string; success?: boolean } } }
+        // Extract the message from API response if available
+        if (axiosError.response?.data?.message) {
+          errorMessage = axiosError.response.data.message
+        } else if (axiosError.response?.data && typeof axiosError.response.data === 'string') {
+          errorMessage = axiosError.response.data
+        } else if (err instanceof Error) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+      
       setError(errorMessage)
       console.error('Registration error:', err)
     } finally {
