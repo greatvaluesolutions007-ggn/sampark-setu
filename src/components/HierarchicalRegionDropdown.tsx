@@ -8,6 +8,7 @@ interface HierarchicalRegionDropdownProps {
   onRegionChange: (regionId: number, regionName: string, regionType: string) => void
   accessLevel: 'TOLI_CREATION' | 'VIEW_ONLY' | null
   disabled?: boolean
+  maxRegionType?: 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND' | 'BASTI' | 'MANDAL' | 'GRAM' | null
 }
 
 interface RegionState {
@@ -36,7 +37,8 @@ interface SelectedRegions {
 export default function HierarchicalRegionDropdown({ 
   onRegionChange, 
   accessLevel,
-  disabled = false 
+  disabled = false,
+  maxRegionType = null
 }: HierarchicalRegionDropdownProps) {
   const [regions, setRegions] = useState<RegionState>({
     prants: [],
@@ -207,7 +209,10 @@ export default function HierarchicalRegionDropdown({
     if (prant) {
       setSelected(prev => ({ ...prev, prant }))
       resetDependentDropdowns('prant')
-      loadVibhags(prant.code)
+      // Only load vibhags if maxRegionType is not PRANT
+      if (maxRegionType !== 'PRANT') {
+        loadVibhags(prant.code)
+      }
       onRegionChange(prant.region_id, prant.name, prant.type)
     }
   }
@@ -217,7 +222,10 @@ export default function HierarchicalRegionDropdown({
     if (vibhag && selected.prant) {
       setSelected(prev => ({ ...prev, vibhag }))
       resetDependentDropdowns('vibhag')
-      loadJilas(selected.prant.code, vibhag.code)
+      // Only load jilas if maxRegionType is not PRANT or VIBHAG
+      if (maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG') {
+        loadJilas(selected.prant.code, vibhag.code)
+      }
       onRegionChange(vibhag.region_id, vibhag.name, vibhag.type)
     }
   }
@@ -227,9 +235,11 @@ export default function HierarchicalRegionDropdown({
     if (jila && selected.prant && selected.vibhag) {
       setSelected(prev => ({ ...prev, jila }))
       resetDependentDropdowns('jila')
-      // Load both Nagars and Khands for the selected Jila
-      loadNagars(selected.prant.code, selected.vibhag.code, jila.code)
-      loadKhands(selected.prant.code, selected.vibhag.code, jila.code)
+      // Only load Nagars and Khands if maxRegionType is not PRANT, VIBHAG, or JILA
+      if (maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA') {
+        loadNagars(selected.prant.code, selected.vibhag.code, jila.code)
+        loadKhands(selected.prant.code, selected.vibhag.code, jila.code)
+      }
       onRegionChange(jila.region_id, jila.name, jila.type)
     }
   }
@@ -264,9 +274,8 @@ export default function HierarchicalRegionDropdown({
       setSelected(prev => ({ ...prev, nagar }))
       onRegionChange(nagar.region_id, nagar.name, nagar.type)
       
-      // For VIEW_ONLY (2025) users, stop at Nagar level
-      // For TOLI_CREATION (1925) users, continue to load bastis
-      if (accessLevel === 'TOLI_CREATION') {
+      // Only load bastis if maxRegionType is not NAGAR and accessLevel is TOLI_CREATION
+      if (accessLevel === 'TOLI_CREATION' && maxRegionType !== 'NAGAR') {
         loadBastis(selected.prant.code, selected.vibhag.code, selected.jila.code, nagar.code)
       }
     }
@@ -357,7 +366,10 @@ export default function HierarchicalRegionDropdown({
     if (mandal && selected.prant && selected.vibhag && selected.jila && selected.khand) {
       setSelected(prev => ({ ...prev, mandal }))
       onRegionChange(mandal.region_id, mandal.name, mandal.type)
-      loadGrams(selected.prant.code, selected.vibhag.code, selected.jila.code, selected.khand.code, mandal.code)
+      // Only load grams if maxRegionType is not MANDAL
+      if (maxRegionType !== 'MANDAL') {
+        loadGrams(selected.prant.code, selected.vibhag.code, selected.jila.code, selected.khand.code, mandal.code)
+      }
     }
   }
 
@@ -426,7 +438,7 @@ export default function HierarchicalRegionDropdown({
       </div>
 
       {/* Vibhag Dropdown */}
-      {selected.prant && (
+      {selected.prant && maxRegionType !== 'PRANT' && (
         <div>
           <Label>विभाग चुनें *</Label>
           <Select
@@ -451,7 +463,7 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Jila Dropdown */}
-      {selected.vibhag && (
+      {selected.vibhag && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && (
         <div>
           <Label>जिला चुनें *</Label>
           <Select
@@ -476,7 +488,7 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Prakar Selection (Gramniye/Nagariye) */}
-      {selected.jila && (
+      {selected.jila && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA' && (
         <div>
           <Label>प्रकार चुनें *</Label>
           <Select
@@ -496,13 +508,13 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Gramniye Path - खंड Dropdown */}
-      {selected.prakar === 'GRAMNIYE' && (
+      {selected.prakar === 'GRAMNIYE' && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA' && (
         <div>
           <Label>खंड चुनें *</Label>
           <Select
             value={selected.khand?.region_id.toString() || ''}
             onValueChange={handleKhandChange}
-            disabled={disabled || loading.khands || regions.khands.length === 0}
+            disabled={disabled || loading.khands || regions.khands.length === 0 || maxRegionType === 'KHAND'}
           >
             <SelectTrigger>
               <SelectValue 
@@ -528,13 +540,13 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Mandal Dropdown (for Gramniye path) - Only for TOLI_CREATION users */}
-      {selected.khand && accessLevel === 'TOLI_CREATION' && (
+      {selected.khand && accessLevel === 'TOLI_CREATION' && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA' && maxRegionType !== 'KHAND' && (
         <div>
           <Label>मंडल चुनें *</Label>
           <Select
             value={selected.mandal?.region_id.toString() || ''}
             onValueChange={handleMandalChange}
-            disabled={disabled || loading.mandals || regions.mandals.length === 0}
+            disabled={disabled || loading.mandals || regions.mandals.length === 0 || maxRegionType === 'MANDAL'}
           >
             <SelectTrigger>
               <SelectValue 
@@ -560,13 +572,13 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Gram Dropdown (for Gramniye path) - Only for TOLI_CREATION users */}
-      {selected.mandal && accessLevel === 'TOLI_CREATION' && (
+      {selected.mandal && accessLevel === 'TOLI_CREATION' && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA' && maxRegionType !== 'KHAND' && maxRegionType !== 'MANDAL' && (
         <div>
           <Label>ग्राम चुनें *</Label>
           <Select
             value={selected.gram?.region_id.toString() || ''}
             onValueChange={handleGramChange}
-            disabled={disabled || loading.grams || regions.grams.length === 0}
+            disabled={disabled || loading.grams || regions.grams.length === 0 || maxRegionType === 'GRAM'}
           >
             <SelectTrigger>
               <SelectValue 
@@ -592,13 +604,13 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Nagariye Path - नगर Dropdown */}
-      {selected.prakar === 'NAGARIYE' && (
+      {selected.prakar === 'NAGARIYE' && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA' && (
         <div>
           <Label>नगर चुनें *</Label>
           <Select
             value={selected.nagar?.region_id.toString() || ''}
             onValueChange={handleNagarChange}
-            disabled={disabled || loading.nagars || regions.nagars.length === 0}
+            disabled={disabled || loading.nagars || regions.nagars.length === 0 || maxRegionType === 'NAGAR'}
           >
             <SelectTrigger>
               <SelectValue 
@@ -624,13 +636,13 @@ export default function HierarchicalRegionDropdown({
       )}
 
       {/* Basti Dropdown (for Nagariye path) - Only for TOLI_CREATION users */}
-      {selected.nagar && accessLevel === 'TOLI_CREATION' && (
+      {selected.nagar && accessLevel === 'TOLI_CREATION' && maxRegionType !== 'PRANT' && maxRegionType !== 'VIBHAG' && maxRegionType !== 'JILA' && maxRegionType !== 'NAGAR' && (
         <div>
           <Label>बस्ती चुनें *</Label>
           <Select
             value={selected.basti?.region_id.toString() || ''}
             onValueChange={handleBastiChange}
-            disabled={disabled || loading.bastis || regions.bastis.length === 0}
+            disabled={disabled || loading.bastis || regions.bastis.length === 0 || maxRegionType === 'BASTI'}
           >
             <SelectTrigger>
               <SelectValue 

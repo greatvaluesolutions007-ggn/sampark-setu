@@ -230,6 +230,24 @@ export default function RegisterPage() {
     console.log('Region selected:', { regionId, regionName, regionType })
   }
   
+  // Get max region type based on karyakarta type
+  const getMaxRegionType = (): 'PRANT' | 'VIBHAG' | 'JILA' | 'NAGAR' | 'KHAND' | 'BASTI' | 'MANDAL' | 'GRAM' | null => {
+    if (!karyakartaType) return null
+    
+    if (code === '1925') {
+      if (karyakartaType === 'BASTI_KARYAKARTA') return 'BASTI'
+      if (karyakartaType === 'GRAM_KARYAKARTA') return 'GRAM'
+    } else if (code === '2025') {
+      if (karyakartaType === 'PRANT_KARYAKARTA') return 'PRANT'
+      if (karyakartaType === 'VIBHAG_KARYAKARTA') return 'VIBHAG'
+      if (karyakartaType === 'JILA_KARYAKARTA') return 'JILA'
+      if (karyakartaType === 'NAGAR_KARYAKARTA') return 'NAGAR'
+      if (karyakartaType === 'KHAND_KARYAKARTA') return 'KHAND'
+      if (karyakartaType === 'MANDAL_KARYAKARTA') return 'MANDAL'
+    }
+    return null
+  }
+
   // Handle KARYAKARTA type change
   const handleKaryakartaTypeChange = (value: string) => {
     setKaryakartaType(value)
@@ -510,8 +528,10 @@ export default function RegisterPage() {
               <div>
                 <Label>क्षेत्र चुनें *</Label>
                 <HierarchicalRegionDropdown
+                  key={karyakartaType} // Reset component when karyakarta type changes
                   onRegionChange={handleRegionChange}
                   accessLevel={accessLevel}
+                  maxRegionType={getMaxRegionType()}
                 />
                 {!regionValid && selectedRegionId === null && karyakartaTypeValid && (
                   <p className="text-red-500 text-sm mt-1">कृपया अपना क्षेत्र चुनें</p>
