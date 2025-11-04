@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { authService } from '@/api/services'
 import { useToast } from '@/hooks/use-toast'
@@ -32,6 +33,9 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   
+  // KARYAKARTA type state
+  const [karyakartaType, setKaryakartaType] = useState<string>('')
+  
   // Region state
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [selectedRegionType, setSelectedRegionType] = useState<string | null>(null)
@@ -59,13 +63,35 @@ export default function RegisterPage() {
   const mobileNumberValid = /^[6-9]\d{9}$/.test(mobileNumber)
   const sanghValid = sangh.trim().length === 0 || /^[a-zA-Z\u0900-\u097F\s]+$/.test(sangh.trim())
   const totalHouseValid = totalHouse.trim().length === 0 || /^\d+$/.test(totalHouse.trim())
-  const regionValid = selectedRegionId !== null && (
-    code !== '1925' || 
-    (selectedRegionType === 'BASTI' || selectedRegionType === 'GRAM')
-  )
+  
+  // KARYAKARTA type validation
+  const karyakartaTypeValid = karyakartaType !== ''
+  
+  // Region validation based on KARYAKARTA type
+  const getExpectedRegionType = (): string | null => {
+    if (!karyakartaType) return null
+    
+    if (code === '1925') {
+      // For field workers (1925)
+      if (karyakartaType === 'BASTI_KARYAKARTA') return 'BASTI'
+      if (karyakartaType === 'GRAM_KARYAKARTA') return 'GRAM'
+    } else if (code === '2025') {
+      // For viewers (2025)
+      if (karyakartaType === 'PRANT_KARYAKARTA') return 'PRANT'
+      if (karyakartaType === 'VIBHAG_KARYAKARTA') return 'VIBHAG'
+      if (karyakartaType === 'JILA_KARYAKARTA') return 'JILA'
+      if (karyakartaType === 'NAGAR_KARYAKARTA') return 'NAGAR'
+      if (karyakartaType === 'KHAND_KARYAKARTA') return 'KHAND'
+      if (karyakartaType === 'MANDAL_KARYAKARTA') return 'MANDAL'
+    }
+    return null
+  }
+  
+  const expectedRegionType = getExpectedRegionType()
+  const regionValid = selectedRegionId !== null && selectedRegionType !== null && selectedRegionType === expectedRegionType
   
   const isCodeFormValid = codeValid
-  const isDetailsFormValid = fullNameValid && usernameValid && passwordValid && confirmPasswordValid && mobileNumberValid && sanghValid && totalHouseValid && regionValid
+  const isDetailsFormValid = fullNameValid && usernameValid && passwordValid && confirmPasswordValid && mobileNumberValid && sanghValid && totalHouseValid && karyakartaTypeValid && regionValid
 
   // Handle code validation
   async function handleCodeValidation(e: React.FormEvent) {
@@ -135,6 +161,7 @@ export default function RegisterPage() {
         full_name: fullName,
         mobile_number: mobileNumber,
         region_id: selectedRegionId!,
+        role: karyakartaType as 'BASTI_KARYAKARTA' | 'GRAM_KARYAKARTA' | 'PRANT_KARYAKARTA' | 'VIBHAG_KARYAKARTA' | 'JILA_KARYAKARTA' | 'NAGAR_KARYAKARTA' | 'KHAND_KARYAKARTA' | 'MANDAL_KARYAKARTA',
         sangh: sangh.trim() || undefined,
         total_house: totalHouse.trim() ? parseInt(totalHouse, 10) : undefined
       }
@@ -169,6 +196,14 @@ export default function RegisterPage() {
     setSelectedRegionId(regionId)
     setSelectedRegionType(regionType)
     console.log('Region selected:', { regionId, regionName, regionType })
+  }
+  
+  // Handle KARYAKARTA type change
+  const handleKaryakartaTypeChange = (value: string) => {
+    setKaryakartaType(value)
+    // Reset region selection when karyakarta type changes
+    setSelectedRegionId(null)
+    setSelectedRegionType(null)
   }
 
   // Handle field blur for validation
@@ -407,17 +442,59 @@ export default function RegisterPage() {
                 )}
               </div>}
 
+              {/* KARYAKARTA Type Selection */}
               <div>
-                {/* <Label>क्षेत्र चुनें</Label> */}
+                <Label htmlFor="karyakartaType">कार्यकर्ता का प्रकार *</Label>
+                <Select
+                  value={karyakartaType}
+                  onValueChange={handleKaryakartaTypeChange}
+                >
+                  <SelectTrigger id="karyakartaType">
+                    <SelectValue placeholder="कार्यकर्ता का प्रकार चुनें" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {code === '1925' ? (
+                      <>
+                        <SelectItem value="BASTI_KARYAKARTA">बस्ती कार्यकर्ता</SelectItem>
+                        <SelectItem value="GRAM_KARYAKARTA">ग्राम कार्यकर्ता</SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem value="PRANT_KARYAKARTA">प्रांत कार्यकर्ता</SelectItem>
+                        <SelectItem value="VIBHAG_KARYAKARTA">विभाग कार्यकर्ता</SelectItem>
+                        <SelectItem value="JILA_KARYAKARTA">जिला कार्यकर्ता</SelectItem>
+                        <SelectItem value="NAGAR_KARYAKARTA">नगर कार्यकर्ता</SelectItem>
+                        <SelectItem value="KHAND_KARYAKARTA">खंड कार्यकर्ता</SelectItem>
+                        <SelectItem value="MANDAL_KARYAKARTA">मंडल कार्यकर्ता</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+                {!karyakartaTypeValid && (
+                  <p className="text-red-500 text-sm mt-1">कृपया कार्यकर्ता का प्रकार चुनें</p>
+                )}
+              </div>
+
+              <div>
+                <Label>क्षेत्र चुनें *</Label>
                 <HierarchicalRegionDropdown
                   onRegionChange={handleRegionChange}
                   accessLevel={accessLevel}
                 />
-                {!regionValid && selectedRegionId === null && (
+                {!regionValid && selectedRegionId === null && karyakartaTypeValid && (
                   <p className="text-red-500 text-sm mt-1">कृपया अपना क्षेत्र चुनें</p>
                 )}
-                {!regionValid && selectedRegionId !== null && code === '1925' && (
-                  <p className="text-red-500 text-sm mt-1">कृपया BASTI या GRAM क्षेत्र चुनें</p>
+                {!regionValid && selectedRegionId !== null && selectedRegionType !== null && expectedRegionType !== null && selectedRegionType !== expectedRegionType && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {code === '1925' 
+                      ? `कृपया ${expectedRegionType === 'BASTI' ? 'बस्ती' : 'ग्राम'} क्षेत्र चुनें`
+                      : `कृपया ${expectedRegionType === 'PRANT' ? 'प्रांत' : 
+                             expectedRegionType === 'VIBHAG' ? 'विभाग' :
+                             expectedRegionType === 'JILA' ? 'जिला' :
+                             expectedRegionType === 'NAGAR' ? 'नगर' :
+                             expectedRegionType === 'KHAND' ? 'खंड' :
+                             expectedRegionType === 'MANDAL' ? 'मंडल' : ''} क्षेत्र चुनें`}
+                  </p>
                 )}
               </div>
 
