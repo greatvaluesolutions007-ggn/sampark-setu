@@ -282,6 +282,7 @@ export interface CreateUserWithCodeRequest extends IParams {
   full_name: string;
   mobile_number: string;
   region_id: number;
+  role?: 'BASTI_KARYAKARTA' | 'GRAM_KARYAKARTA' | 'PRANT_KARYAKARTA' | 'VIBHAG_KARYAKARTA' | 'JILA_KARYAKARTA' | 'NAGAR_KARYAKARTA' | 'KHAND_KARYAKARTA' | 'MANDAL_KARYAKARTA';
   sangh?: string;
   total_house?: number;
 }
