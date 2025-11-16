@@ -79,6 +79,7 @@ export default function HierarchicalRegionDropdown({
     loadPrants()
   }, [])
 
+
   const loadPrants = async () => {
     try {
       setLoading(prev => ({ ...prev, prants: true }))
@@ -518,7 +519,7 @@ export default function HierarchicalRegionDropdown({
           <Select
             value={selected.khand?.region_id.toString() || ''}
             onValueChange={handleKhandChange}
-            disabled={disabled || loading.khands || regions.khands.length === 0 || maxRegionType === 'KHAND'}
+            disabled={disabled || loading.khands || regions.khands.length === 0}
           >
             <SelectTrigger>
               <SelectValue 
@@ -614,7 +615,7 @@ export default function HierarchicalRegionDropdown({
           <Select
             value={selected.nagar?.region_id.toString() || ''}
             onValueChange={handleNagarChange}
-            disabled={disabled || loading.nagars || regions.nagars.length === 0 || maxRegionType === 'NAGAR'}
+            disabled={disabled || loading.nagars || regions.nagars.length === 0}
           >
             <SelectTrigger>
               <SelectValue 
