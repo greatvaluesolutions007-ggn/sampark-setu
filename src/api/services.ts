@@ -61,12 +61,8 @@ export const authService = {
   },
 
   resetPassword: async (resetData: ResetPasswordRequest): Promise<apiResponseType<ResetPasswordResponse>> => {
-    const response = await axiosInstance.post<apiResponseType<ResetPasswordResponse>>(API_PATHS.RESET_PASSWORD, resetData, {
-      headers: {
-        'x-secret-key': '123'
-      }
-    });
-    return response.data;
+    const response = await Post<ResetPasswordResponse>("USER", API_PATHS.RESET_PASSWORD, resetData);
+    return response;
   },
 
   // New code validation service

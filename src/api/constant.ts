@@ -3,7 +3,7 @@ const API_PATHS = {
   LOGIN: '/login',
   GET_CURRENT_USER: '/users/me',
   CREATE_USER: '/users',
-  RESET_PASSWORD: '/reset-password',
+  RESET_PASSWORD: '/users/reset-password',
   
   // Code Validation (Legacy - keep for backward compatibility)
   VALIDATE_CODE: '/validate-code',

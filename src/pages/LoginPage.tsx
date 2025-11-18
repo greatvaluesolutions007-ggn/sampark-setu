@@ -158,7 +158,7 @@ export default function LoginPage() {
             </TabsContent>
           </Tabs>
           
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-gray-600">
               नया खाता बनाना चाहते हैं?{' '}
               <button
@@ -166,6 +166,15 @@ export default function LoginPage() {
                 className="text-orange-600 hover:text-orange-700 font-medium"
               >
                 पंजीकरण करें
+              </button>
+            </p>
+            <p className="text-sm text-gray-600">
+              पासवर्ड भूल गए?{' '}
+              <button
+                onClick={() => navigate('/reset-password')}
+                className="text-orange-600 hover:text-orange-700 font-medium"
+              >
+                पासवर्ड रीसेट करें
               </button>
             </p>
           </div>

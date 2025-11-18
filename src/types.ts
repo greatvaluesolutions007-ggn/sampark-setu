@@ -25,6 +25,7 @@ export interface LoginResponse {
 
 export interface ResetPasswordRequest extends IParams {
   user_name: string;
+  phone_number: string;
   new_password: string;
 }
 
