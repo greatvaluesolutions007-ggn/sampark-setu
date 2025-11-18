@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
     try {
       const resetData: ResetPasswordRequest = {
         user_name: username,
-        phone_number: phoneNumber,
+        mobile: phoneNumber,
         new_password: newPassword
       }
       
