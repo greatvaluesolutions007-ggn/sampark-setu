@@ -322,23 +322,24 @@ export const reportingService = {
 
 // Parivar List Service
 export const parivarListService = {
-  getParivarList: async (regionId: number): Promise<ParivarListResponse> => {
+  getParivarList: async (regionId: number, page: number = 1, limit: number = 20): Promise<ParivarListResponse> => {
     if (shouldUseRealAPI()) {
       try {
-        console.log('🌐 Making API call for Parivar list, regionId:', regionId);
+        const offset = (page - 1) * limit
+        console.log('🌐 Making API call for Parivar list, regionId:', regionId, 'page:', page, 'limit:', limit, 'offset:', offset);
         const response = await axiosInstance.get<ParivarListResponse>(API_PATHS.PARIVAR_LIST, { 
-          params: { 'region-id': regionId } 
+          params: { 'region-id': regionId, limit, offset } 
         });
         console.log('✅ API response for Parivar list:', response.data);
         return response.data;
       } catch (error) {
         console.log('❌ API failed, falling back to dummy data for Parivar list, regionId:', regionId, error);
-        return DummyDataService.getParivarList(regionId);
+        return DummyDataService.getParivarList(regionId, page, limit);
       }
     } else {
       // Using dummy data
-      console.log('📦 Using dummy data for Parivar list, regionId:', regionId);
-      const dummyResponse = DummyDataService.getParivarList(regionId);
+      console.log('📦 Using dummy data for Parivar list, regionId:', regionId, 'page:', page, 'limit:', limit);
+      const dummyResponse = DummyDataService.getParivarList(regionId, page, limit);
       console.log('📦 Dummy data response:', dummyResponse);
       return dummyResponse;
     }

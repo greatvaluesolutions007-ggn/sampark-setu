@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Users, User, UserCheck, Baby, ChevronRight } from 'lucide-react'
-import { parivarListService } from '@/api/services'
+import { parivarListService, reportingService } from '@/api/services'
 import type { ParivarListItem } from '@/types'
 
 interface ParivarListViewProps {
@@ -11,6 +11,10 @@ interface ParivarListViewProps {
 
 export default function ParivarListView({ user }: ParivarListViewProps) {
   const [parivarList, setParivarList] = useState<ParivarListItem[]>([])
+  const [totalFamilies, setTotalFamilies] = useState<number | null>(null)
+  const [totalPurush, setTotalPurush] = useState<number | null>(null)
+  const [totalMahila, setTotalMahila] = useState<number | null>(null)
+  const [totalKids, setTotalKids] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -18,12 +22,12 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   
   const ITEMS_PER_PAGE = 20
+  // Keep track of IDs already added to avoid duplicates if backend returns same data
+  const seenIdsRef = useRef<Set<number>>(new Set())
 
-  useEffect(() => {
-    fetchParivarList()
-  }, [user])
+  
 
-  const fetchParivarList = async (_page = 1, append = false) => {
+  const fetchParivarList = useCallback(async (_page = 1, append = false) => {
     try {
       if (append) {
         setIsLoadingMore(true)
@@ -37,17 +41,40 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
         return
       }
 
-      const response = await parivarListService.getParivarList(user.region_id)
-      
+      const response = await parivarListService.getParivarList(user.region_id, _page, ITEMS_PER_PAGE)
+
       if (response.success) {
+        const items = response.data || []
+
         if (append) {
-          setParivarList(prev => [...prev, ...response.data])
+          // Filter out already-seen items to avoid duplicates
+          const newItems = items.filter(i => !seenIdsRef.current.has(i.parivar_id))
+
+          if (newItems.length > 0) {
+            setParivarList(prev => {
+              newItems.forEach(it => seenIdsRef.current.add(it.parivar_id))
+              return [...prev, ...newItems]
+            })
+          } else {
+            // Backend returned items we've already seen — stop further loading
+            setHasMore(false)
+          }
         } else {
-          setParivarList(response.data)
+          // Fresh load: replace list and reset seen IDs
+          seenIdsRef.current.clear()
+          items.forEach(it => seenIdsRef.current.add(it.parivar_id))
+          setParivarList(items)
         }
-        
-        // Check if there are more items (simplified logic for now)
-        setHasMore(response.data.length === ITEMS_PER_PAGE)
+
+        // If backend returned fewer items than requested, there are no more pages
+        if (items.length < ITEMS_PER_PAGE) {
+          setHasMore(false)
+        } else if (!append) {
+          // For non-append loads where items === ITEMS_PER_PAGE, allow more
+          setHasMore(true)
+        } else {
+          // For append loads where we added new items, keep hasMore as-is (unless set above)
+        }
       } else {
         setError(response.message || 'Failed to fetch parivar list')
       }
@@ -58,7 +85,31 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
       setIsLoading(false)
       setIsLoadingMore(false)
     }
-  }
+  }, [user])
+
+  useEffect(() => {
+    // Reset pagination and seen IDs when user/region changes
+    seenIdsRef.current.clear()
+    setCurrentPage(1)
+    setHasMore(true)
+
+    // Fetch summary (total families) once on mount/change
+    ;(async () => {
+      try {
+        const summaryResp = await reportingService.getParivarSummary()
+        if (summaryResp && summaryResp.success && summaryResp.data) {
+          setTotalFamilies(summaryResp.data.total_families || 0)
+          setTotalPurush(summaryResp.data.male_count || 0)
+          setTotalMahila(summaryResp.data.female_count || 0)
+          setTotalKids(summaryResp.data.kids_count || 0)
+        }
+      } catch (err) {
+        console.error('Failed to fetch parivar summary:', err)
+      }
+    })()
+
+    fetchParivarList(1, false)
+  }, [user, fetchParivarList])
 
   const loadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
@@ -66,7 +117,7 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
       setCurrentPage(nextPage)
       fetchParivarList(nextPage, true)
     }
-  }, [currentPage, isLoadingMore, hasMore])
+  }, [currentPage, isLoadingMore, hasMore, fetchParivarList])
 
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget
@@ -118,7 +169,7 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-blue-600">कुल परिवार</p>
-                  <p className="text-2xl font-bold text-blue-800">{parivarList.length}</p>
+                  <p className="text-2xl font-bold text-blue-800">{totalFamilies ?? parivarList.length}</p>
                 </div>
                 <Users className="h-8 w-8 text-blue-600" />
               </div>
@@ -130,9 +181,9 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-green-600">कुल पुरुष</p>
-                  <p className="text-2xl font-bold text-green-800">
-                    {parivarList.reduce((sum, item) => sum + item.purush_count, 0)}
-                  </p>
+                          <p className="text-2xl font-bold text-green-800">
+                            {totalPurush ?? parivarList.reduce((sum, item) => sum + item.purush_count, 0)}
+                          </p>
                 </div>
                 <User className="h-8 w-8 text-green-600" />
               </div>
@@ -145,7 +196,7 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
                 <div>
                   <p className="text-sm font-medium text-pink-600">कुल महिलाएं</p>
                   <p className="text-2xl font-bold text-pink-800">
-                    {parivarList.reduce((sum, item) => sum + item.mahila_count, 0)}
+                    {totalMahila ?? parivarList.reduce((sum, item) => sum + item.mahila_count, 0)}
                   </p>
                 </div>
                 <UserCheck className="h-8 w-8 text-pink-600" />
@@ -159,7 +210,7 @@ export default function ParivarListView({ user }: ParivarListViewProps) {
                 <div>
                   <p className="text-sm font-medium text-purple-600">कुल बच्चे</p>
                   <p className="text-2xl font-bold text-purple-800">
-                    {parivarList.reduce((sum, item) => sum + item.bal_count, 0)}
+                    {totalKids ?? parivarList.reduce((sum, item) => sum + item.bal_count, 0)}
                   </p>
                 </div>
                 <Baby className="h-8 w-8 text-purple-600" />

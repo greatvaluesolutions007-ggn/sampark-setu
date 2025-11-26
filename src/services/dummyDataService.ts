@@ -76,9 +76,9 @@ export class DummyDataService {
     return this.getRegionData(regionId, 'utsuk')
   }
 
-  static getParivarList(_regionId: number): DummyDataResponse {
+  static getParivarList(_regionId: number, page: number = 1, limit: number = 20): DummyDataResponse {
     // Generate more dummy data for testing pagination
-    const dummyParivarList = []
+    const dummyParivarList: any[] = []
     const names = [
       'Rajesh Kumar', 'Mohan Lal', 'Suresh Singh', 'Ramesh Gupta', 'Vikram Sharma',
       'Amit Kumar', 'Sunil Yadav', 'Pradeep Singh', 'Rajesh Verma', 'Manoj Kumar',
@@ -87,7 +87,7 @@ export class DummyDataService {
       'Rakesh Kumar', 'Mukesh Kumar', 'Dinesh Kumar', 'Suresh Kumar', 'Mahesh Kumar'
     ]
     
-    for (let i = 1; i <= 25; i++) {
+    for (let i = 1; i <= 125; i++) {
       dummyParivarList.push({
         parivar_id: i,
         samparkit_sadasya: names[i % names.length] + ` (${i})`,
@@ -98,12 +98,16 @@ export class DummyDataService {
         updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
       })
     }
-    
+    // Apply pagination slicing
+    const start = (page - 1) * limit
+    const end = start + limit
+    const pageData = dummyParivarList.slice(start, end)
+
     return {
       success: true,
       message: 'Parivar list retrieved successfully',
       statusCode: 200,
-      data: dummyParivarList
+      data: pageData
     }
   }
 }
