@@ -259,7 +259,6 @@ export default function ToliPage() {
               </CardTitle>
               {existingToliId && (
                 <p className="text-sm text-center text-muted-foreground mt-2">
-                  टोली ID: {existingToliId}
                   <span className="block text-green-600 mt-1">✓ मौजूदा टोली लोड की गई</span>
                 </p>
               )}
