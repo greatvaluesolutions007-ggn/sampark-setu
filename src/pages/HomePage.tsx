@@ -1,19 +1,19 @@
 import { Home, BookOpen, FileText, LogOut, Users } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import { useState, useEffect } from 'react'
 import { authService } from '@/api/services'
 import NavTab from '@/components/NavTab'
 import OverviewTab from '@/components/OverviewTab'
-import SahityaTab from '@/components/SahityaTab'
+import HierarchicalTreeView from '@/components/HierarchicalTreeView'
 import DetailsCard, { type DetailsCardData } from '@/components/DetailsCard'
 
 export default function HomePage() {
   const { logout, user } = useAuth()
   const [activeTab, setActiveTab] = useState<'overview' | 'parivar' | 'nishulk' | 'utsuk' | 'sashulk'>('overview')
   const [detailsCardData, setDetailsCardData] = useState<DetailsCardData | null>(null)
-  const isDashboard = ['BASTI_KARYAKARTA', 'GRAM_KARYAKARTA'].includes(user?.role ?? '')
+  const [_regionHierarchy, _setRegionHierarchy] = useState<string>('')
+  const [_userRole, _setUserRole] = useState<string>('')
 
   useEffect(() => {
     getUserRegion()
@@ -64,7 +64,7 @@ export default function HomePage() {
             if (details.basti) hierarchy.push(`बस्ती: ${details.basti.name}`)
           }
           
-          setRegionHierarchy(hierarchy.join(' > '))
+          _setRegionHierarchy(hierarchy.join(' > '))
           
           // Set user role display name
           const roleDisplayNames: { [key: string]: string } = {
@@ -75,7 +75,7 @@ export default function HomePage() {
             'BASTI_KARYAKARTA': 'बस्ती कार्यकर्ता',
             'GRAM_KARYAKARTA': 'ग्राम कार्यकर्ता'
           }
-          setUserRole(roleDisplayNames[userRegion.data.role] || userRegion.data.role)
+          _setUserRole(roleDisplayNames[userRegion.data.role] || userRegion.data.role)
         }
       }
     } catch (error) {
@@ -140,7 +140,7 @@ export default function HomePage() {
             </div>
 
             {/* Details Card - Only show for hierarchical views */}
-            {detailsCardData && ['overview', 'parivar', 'utsuk'].includes(activeTab) && (
+            {detailsCardData && ['overview', 'parivar', 'utsuk', 'sashulk'].includes(activeTab) && (
               <div className="mt-4">
                 <DetailsCard {...detailsCardData} />
               </div>
@@ -157,7 +157,7 @@ export default function HomePage() {
         {activeTab === 'overview' && <OverviewTab user={user} activeTab="overview" onDetailsCardChange={setDetailsCardData} />}
         {activeTab === 'parivar' && <OverviewTab user={user} activeTab="parivar" onDetailsCardChange={setDetailsCardData} />}
         {activeTab === 'utsuk' && <OverviewTab user={user} activeTab="utsuk" onDetailsCardChange={setDetailsCardData} />}
-        {activeTab === 'sashulk' && <SahityaTab />}
+        {activeTab === 'sashulk' && <HierarchicalTreeView user={user} dataType="sahitya" onDetailsCardChange={setDetailsCardData} />}
       </div>
     </div>
   )

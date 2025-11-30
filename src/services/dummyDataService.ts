@@ -15,13 +15,25 @@ interface RegionInfo {
 }
 
 export class DummyDataService {
-  private static getRegionData(regionId: number, dataType: 'toli' | 'parivar' | 'utsuk'): DummyDataResponse {
+  private static getRegionData(regionId: number, dataType: 'toli' | 'parivar' | 'utsuk' | 'sahitya'): DummyDataResponse {
     const regionKey = regionId.toString()
     console.log('Looking for region:', regionKey, 'dataType:', dataType)
     const region = dummyData.regions[regionKey as keyof typeof dummyData.regions]
     console.log('Found region:', region)
     
-    if (!region || !region.children || !region.children[dataType]) {
+    // Handle sahitya specially since it may not be in dummyData
+    if (dataType === 'sahitya') {
+      // For sahitya, always return empty - don't generate random data
+      // User should see that there's no data available
+      return {
+        success: true,
+        message: 'sahitya summary retrieved successfully',
+        statusCode: 200,
+        data: []
+      }
+    }
+
+    if (!region || !region.children || !region.children[dataType as 'toli' | 'parivar' | 'utsuk']) {
       console.log('No data found for region:', regionKey, 'dataType:', dataType)
       return {
         success: true,
@@ -31,12 +43,12 @@ export class DummyDataService {
       }
     }
 
-    console.log('Returning data:', region.children[dataType])
+    console.log('Returning data:', region.children[dataType as 'toli' | 'parivar' | 'utsuk'])
     return {
       success: true,
       message: `${dataType} summary retrieved successfully`,
       statusCode: 200,
-      data: region.children[dataType]
+      data: region.children[dataType as 'toli' | 'parivar' | 'utsuk']
     }
   }
 
@@ -74,6 +86,10 @@ export class DummyDataService {
 
   static getUtsukSummaryList(regionId: number): DummyDataResponse {
     return this.getRegionData(regionId, 'utsuk')
+  }
+
+  static getSahityaSummaryList(regionId: number): DummyDataResponse {
+    return this.getRegionData(regionId, 'sahitya')
   }
 
   static getParivarList(_regionId: number, page: number = 1, limit: number = 20): DummyDataResponse {

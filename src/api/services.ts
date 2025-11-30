@@ -37,9 +37,7 @@ import type {
   SahityaSummaryResponse,
   HierarchicalSummaryResponse,
   ParivarListResponse,
-  ParivarListItem,
   UtsukDetailResponse,
-  UtsukDetailItem,
   UtsukSummaryData,
 } from '@/types';
 
@@ -316,6 +314,57 @@ export const reportingService = {
       const dummyResponse = DummyDataService.getUtsukSummaryList(regionId);
       console.log('📦 Dummy data response:', dummyResponse);
       return dummyResponse;
+    }
+  },
+
+  getSahityaSummaryList: async (regionId: number): Promise<HierarchicalSummaryResponse> => {
+    if (shouldUseRealAPI()) {
+      try {
+        console.log('🌐 Making API call for Sahitya summary, regionId:', regionId);
+        const response = await axiosInstance.get<HierarchicalSummaryResponse>(API_PATHS.SAHITYA_SUMMARY_LIST, { 
+          params: { 'region-id': regionId } 
+        });
+        console.log('✅ API response for Sahitya summary:', response.data);
+        
+        // Validate and sanitize data
+        if (response.data.data && Array.isArray(response.data.data)) {
+          const validatedData = response.data.data.map(item => ({
+            ...item,
+            sticker_count: Number(item.sticker_count || 0),
+            total_folder: Number(item.total_folder || 0),
+            nishulk_books: Number(item.nishulk_books || 0),
+            shashulk_books: Number(item.shashulk_books || 0),
+            region_id: Number(item.region_id || 0)
+          }));
+          response.data.data = validatedData;
+        }
+        
+        // Log if data is empty
+        if (!response.data.data || response.data.data.length === 0) {
+          console.warn('⚠️ Sahitya API returned empty data for regionId:', regionId);
+        }
+        
+        return response.data;
+      } catch (error) {
+        console.error('❌ API failed for Sahitya summary, regionId:', regionId, error);
+        console.error('❌ Will return empty data instead of dummy data');
+        // Return empty data instead of dummy data for sahitya
+        return {
+          success: true,
+          message: 'Sahitya summary retrieved (no data available)',
+          statusCode: 200,
+          data: []
+        };
+      }
+    } else {
+      // Using dummy data - but for sahitya we should NOT use dummy/random data
+      console.log('📦 Real API disabled, returning empty data for Sahitya (not using random dummy data)');
+      return {
+        success: true,
+        message: 'Sahitya summary (no data available)',
+        statusCode: 200,
+        data: []
+      };
     }
   },
 };

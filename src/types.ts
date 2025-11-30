@@ -372,6 +372,11 @@ export interface SummaryItem {
   female_count?: string;
   kids_count?: string;
   utsuk_count?: number;
+  // Sahitya fields
+  sticker_count?: number;
+  total_folder?: number;
+  nishulk_books?: number;
+  shashulk_books?: number;
 }
 
 export interface HierarchicalSummaryResponse {

@@ -32,6 +32,7 @@ const API_PATHS = {
   UTSUK_SUMMARY: '/reporting/utsukshakti/summary',
   PARIVAR_SUMMARY: '/reporting/parivar/summary',
   SAHITYA_SUMMARY: '/reporting/sahitya/summary',
+  SAHITYA_SUMMARY_LIST: '/reporting/sahitya/summary-list',
   
   // Hierarchical Summary APIs
   TOLI_SUMMARY_LIST: '/reporting/tolis/summary-list',

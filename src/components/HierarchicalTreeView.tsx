@@ -1,12 +1,12 @@
-import { useEffect, useState, useCallback } from 'react'
-import { ChevronRight, Users, Home, UserCheck } from 'lucide-react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
+import { ChevronRight, Users, Home, UserCheck, BookOpen } from 'lucide-react'
 import { reportingService } from '@/api/services'
-import type { SummaryItem, User } from '@/types'
+import type { SummaryItem, User, HierarchicalSummaryResponse } from '@/types'
 import type { DetailsCardData } from '@/components/DetailsCard'
 
 interface HierarchicalTreeViewProps {
   user: User | null
-  dataType: 'toli' | 'parivar' | 'utsuk'
+  dataType: 'toli' | 'parivar' | 'utsuk' | 'sahitya'
   onDetailsCardChange?: (detailsCardData: DetailsCardData) => void
 }
 
@@ -24,12 +24,16 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
   const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([])
   const [selectedHierarchyPath, setSelectedHierarchyPath] = useState<number[]>([])
   const [shouldScrollToNewLevel, setShouldScrollToNewLevel] = useState(false)
+  const orderedLevels = useMemo(() => {
+    return [...hierarchyLevels].sort((a, b) => a.level - b.level)
+  }, [hierarchyLevels])
 
   const getIcon = () => {
     switch (dataType) {
       case 'toli': return <Users className="h-5 w-5" />
       case 'parivar': return <Home className="h-5 w-5" />
       case 'utsuk': return <UserCheck className="h-5 w-5" />
+      case 'sahitya': return <BookOpen className="h-5 w-5" />
     }
   }
 
@@ -38,6 +42,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
       case 'toli': return 'टोली जानकारी'
       case 'parivar': return 'परिवार जानकारी'
       case 'utsuk': return 'उत्सुक शक्ति (संघ कार्य से जुड़ने की इच्छा रखने वाले) जानकारी'
+      case 'sahitya': return 'साहित्य वितरण जानकारी'
     }
   }
 
@@ -56,11 +61,18 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
   }, [])
 
   const isClickable = (keyName: string) => {
-    return keyName !== 'BASTI' && keyName !== 'GRAM' && keyName !== 'बस्ती' && keyName !== 'ग्राम'
+    const k = String(keyName || '').toLowerCase();
+    // Do not allow drilling down for lowest-level regions or for toli items
+    if (k === 'basti' || k === 'gram' || k === 'बस्ती' || k === 'ग्राम') return false
+    // Prevent clicking on toli items (these are user-specific aggregates)
+    if (k === 'toli' || k === 'to li' || k === 'टोली' || k.includes('toli') || k.includes('टोली')) return false
+    return true
   }
 
   const fetchDataForLevel = useCallback(async (regionId: number, level: number) => {
     try {
+      console.log(`[${dataType}] Fetching data for level ${level}, regionId: ${regionId}`)
+      
       setHierarchyLevels(prev => 
         prev.map(levelData => 
           levelData.level === level 
@@ -69,7 +81,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
         )
       )
 
-      let response
+      let response: HierarchicalSummaryResponse
       switch (dataType) {
         case 'toli':
           response = await reportingService.getToliSummaryList(regionId)
@@ -80,7 +92,12 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
         case 'utsuk':
           response = await reportingService.getUtsukSummaryList(regionId)
           break
+        case 'sahitya':
+          response = await reportingService.getSahityaSummaryList(regionId)
+          break
       }
+
+      console.log(`[${dataType}] Response received:`, response)
 
       setHierarchyLevels(prev => 
         prev.map(levelData => 
@@ -95,7 +112,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
         )
       )
     } catch (error) {
-      console.error(`Error fetching ${dataType} data:`, error)
+      console.error(`[${dataType}] Error fetching data:`, error)
       setHierarchyLevels(prev => 
         prev.map(levelData => 
           levelData.level === level 
@@ -142,25 +159,34 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
     fetchDataForLevel(regionId, level + 1)
   }
 
+  const sanitizeNumber = (value: unknown): number => {
+    const num = Number(value)
+    return isNaN(num) ? 0 : Math.max(0, num)
+  }
+
   const getTotalCount = useCallback((level: HierarchyLevel) => {
     switch (dataType) {
       case 'toli':
-        return level.data.reduce((sum, item) => sum + (item.total_tolies || 0), 0)
+        return level.data.reduce((sum, item) => sum + sanitizeNumber(item.total_tolies || 0), 0)
       case 'parivar':
-        return level.data.reduce((sum, item) => sum + (item.total_families || 0), 0)
+        return level.data.reduce((sum, item) => sum + sanitizeNumber(item.total_families || 0), 0)
       case 'utsuk':
-        return level.data.reduce((sum, item) => sum + (item.utsuk_count || 0), 0)
+        return level.data.reduce((sum, item) => sum + sanitizeNumber(item.utsuk_count || 0), 0)
+      case 'sahitya':
+        return level.data.reduce((sum, item) => sum + sanitizeNumber(item.sticker_count || 0) + sanitizeNumber(item.total_folder || 0) + sanitizeNumber(item.nishulk_books || 0) + sanitizeNumber(item.shashulk_books || 0), 0)
     }
   }, [dataType])
 
   const getCardValue = (item: SummaryItem) => {
     switch (dataType) {
       case 'toli':
-        return item.total_tolies || 0
+        return sanitizeNumber(item.total_tolies || 0)
       case 'parivar':
-        return item.total_families || 0
+        return sanitizeNumber(item.total_families || 0)
       case 'utsuk':
-        return item.utsuk_count || 0
+        return sanitizeNumber(item.utsuk_count || 0)
+      case 'sahitya':
+        return sanitizeNumber(item.sticker_count || 0) + sanitizeNumber(item.total_folder || 0) + sanitizeNumber(item.nishulk_books || 0) + sanitizeNumber(item.shashulk_books || 0)
     }
   }
 
@@ -169,6 +195,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
       case 'toli': return 'text-blue-600'
       case 'parivar': return 'text-green-600'
       case 'utsuk': return 'text-purple-600'
+      case 'sahitya': return 'text-orange-600'
     }
   }, [dataType])
 
@@ -177,6 +204,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
       case 'toli': return 'border-blue-600'
       case 'parivar': return 'border-green-600'
       case 'utsuk': return 'border-purple-600'
+      case 'sahitya': return 'border-orange-600'
     }
   }
 
@@ -282,7 +310,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
   // Auto-scroll effect when new levels are added
   useEffect(() => {
     if (shouldScrollToNewLevel && hierarchyLevels.length > 0) {
-      const lastLevel = hierarchyLevels[hierarchyLevels.length - 1]
+      const lastLevel = orderedLevels[orderedLevels.length - 1]
       if (lastLevel) {
         setTimeout(() => {
           const newLevelElement = document.querySelector(`[data-level="${lastLevel.level}"]`)
@@ -297,25 +325,33 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
         }, 200)
       }
     }
-  }, [hierarchyLevels, shouldScrollToNewLevel])
+  }, [orderedLevels, shouldScrollToNewLevel, hierarchyLevels.length])
 
   // Notify parent when details card data changes
   useEffect(() => {
-    if (onDetailsCardChange && hierarchyLevels.length > 0) {
+    if (onDetailsCardChange && orderedLevels.length > 0) {
       onDetailsCardChange({
-        hierarchyLevels,
+        hierarchyLevels: orderedLevels,
         dataType,
         getRegionTypeLabel,
         getTotalCount,
         getCardColor
       })
     }
-  }, [hierarchyLevels, dataType, onDetailsCardChange, getRegionTypeLabel, getTotalCount, getCardColor])
+  }, [orderedLevels, dataType, onDetailsCardChange, getRegionTypeLabel, getTotalCount, getCardColor])
 
   return (
     <div className="space-y-6">
+      {/* Loading/Empty State */}
+      {orderedLevels.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-gray-500 mb-2">डेटा लोड हो रहा है...</div>
+          <div className="text-sm text-gray-400">कृपया प्रतीक्षा करें</div>
+        </div>
+      )}
+
       {/* Hierarchy Levels */}
-      {hierarchyLevels.map((level) => (
+      {orderedLevels.map((level) => (
         <div key={level.level} className="space-y-4">
           {/* Level Header */}
           <div className="flex items-center space-x-2">
@@ -334,7 +370,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
           </div>
 
           {/* Level Data */}
-          {level.data.length > 0 && (
+            {level.data.length > 0 && (
             <div className={`grid grid-cols-1 gap-4 ${
               dataType === 'parivar' 
                 ? 'md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
@@ -400,6 +436,19 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
                                 )}
                               </div>
                             </div>
+                          ) : dataType === 'sahitya' ? (
+                            <div className="space-y-0.5">
+                              <div className={`text-xl font-bold ${getCardColor()}`}>
+                                {getCardValue(item)}
+                              </div>
+                              <div className="text-xs text-gray-500">सामग्री कुल</div>
+                              <div className="text-xs text-gray-400 flex flex-wrap gap-x-2">
+                                <span>स्टीकर: {sanitizeNumber(item.sticker_count ?? 0)}</span>
+                                <span>फोल्डर: {sanitizeNumber(item.total_folder ?? 0)}</span>
+                                {/* निशुल्क field removed as requested */}
+                                <span>सशुल्क: {sanitizeNumber(item.shashulk_books ?? 0)}</span>
+                              </div>
+                            </div>
                           ) : (
                             <>
                               <div className={`text-2xl font-bold ${getCardColor()}`}>
@@ -425,7 +474,7 @@ export default function HierarchicalTreeView({ user, dataType, onDetailsCardChan
           )}
 
           {/* No Data Message */}
-          {!level.isLoading && level.data.length === 0 && level.level > 0 && (
+          {!level.isLoading && level.data.length === 0 && (
             <div className="text-center py-8">
               <div className="text-gray-500 mb-2">इस क्षेत्र में कोई डेटा उपलब्ध नहीं है</div>
               <div className="text-sm text-gray-400">कृपया किसी अन्य क्षेत्र का चयन करें</div>
